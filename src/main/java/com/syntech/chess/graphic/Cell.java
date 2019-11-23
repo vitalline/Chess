@@ -4,50 +4,50 @@ import com.syntech.chess.Main;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
+import org.apache.commons.io.IOUtils;
 import org.ice1000.jimgui.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Cell {
-    private static JImTextureID[] textures;
-    private static String[] names;
+    private static ArrayList<JImTextureID> textures;
+    private static ArrayList<String> names;
 
-    public static void initialize() throws URISyntaxException {
-        String[] textureList = new File(Main.class.getResource("/textures/chess/").toURI()).list();
-        assert textureList != null;
-        textures = new JImTextureID[textureList.length];
-        names = new String[textureList.length];
-        int textureID = 0;
-        loadTexture(textureID++, Side.NONE, PieceType.NONE);
-        textureID = loadSet(textureID, Side.WHITE);
-        textureID = loadSet(textureID, Side.BLACK);
+    public static void initialize() throws IOException {
+        textures = new ArrayList<>();
+        names = new ArrayList<>();
+        loadTexture(Side.NONE, PieceType.NONE);
+        loadSet(Side.WHITE);
+        loadSet(Side.BLACK);
     }
 
-    private static void loadTexture(int textureID, Side side, PieceType type) throws URISyntaxException {
-        textures[textureID] = JImTextureID.fromUri(Main.class.getResource(String.format("/textures/chess/%s.png", getName(side, type))).toURI());
-        names[textureID] = getName(side, type);
+    private static void loadTexture(Side side, PieceType type) throws IOException {
+        String texturePath = String.format("textures/chess/%s.png", getName(side, type));
+        InputStream in = Main.class.getClassLoader().getResourceAsStream(texturePath);
+        assert in != null;
+        textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(in)));
+        names.add(getName(side, type));
     }
 
-    private static int loadSet(int textureID, Side side) throws URISyntaxException {
-        loadTexture(textureID++, side, PieceType.PAWN);
-        loadTexture(textureID++, side, PieceType.KNIGHT);
-        loadTexture(textureID++, side, PieceType.BISHOP);
-        loadTexture(textureID++, side, PieceType.ROOK);
-        loadTexture(textureID++, side, PieceType.QUEEN);
-        loadTexture(textureID++, side, PieceType.KING);
-        return textureID;
+    private static void loadSet(Side side) throws IOException {
+        loadTexture(side, PieceType.PAWN);
+        loadTexture(side, PieceType.KNIGHT);
+        loadTexture(side, PieceType.BISHOP);
+        loadTexture(side, PieceType.ROOK);
+        loadTexture(side, PieceType.QUEEN);
+        loadTexture(side, PieceType.KING);
     }
 
     @Nullable
     private static JImTextureID getTexture(String name) {
-        int index = Arrays.asList(names).indexOf(name);
+        int index = names.indexOf(name);
         if (index >= 0) {
-            return textures[index];
+            return textures.get(index);
         }
         return null;
     }

@@ -22,7 +22,7 @@ public class Board {
     private static final Point pieceNone = new Point(-1, -1);
     private Point[] availableMoves;
 
-    public Board(Piece[][] board, boolean initialize) {
+    public Board(@NotNull Piece[][] board, boolean initialize) {
         height = board.length;
         width = board[0].length;
         this.board = new Piece[height][width];
@@ -44,7 +44,7 @@ public class Board {
         }
     }
 
-    public Board(Piece[][] board) {
+    public Board(@NotNull Piece[][] board) {
         height = board.length;
         width = board[0].length;
         this.board = new Piece[height][width];
@@ -68,7 +68,7 @@ public class Board {
         for (int row = height - 1; row >= 0; row--) {
             for (int col = 0; col < width - 1; col++) {
                 displayCell(imGui, size, row, col);
-                JImGuiGen.sameLine(0, 5);
+                JImGuiGen.sameLine(0, 4);
             }
             int col = width - 1;
             displayCell(imGui, size, row, col);

@@ -10,10 +10,10 @@ import org.ice1000.jimgui.NativeBool;
 import org.ice1000.jimgui.flag.JImWindowFlags;
 import org.ice1000.jimgui.util.JniLoader;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String... args) throws URISyntaxException {
+    public static void main(String... args) throws IOException {
         JniLoader.load();
         final int size = 50;
         try (JImGui imGui = new JImGui("Chess")) {
