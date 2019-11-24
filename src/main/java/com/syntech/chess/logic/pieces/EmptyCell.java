@@ -9,10 +9,6 @@ import java.util.ArrayList;
 
 public class EmptyCell extends Piece {
 
-    public EmptyCell(Point position) {
-        super(Side.NONE, position);
-    }
-
     public EmptyCell() {
         super(Side.NONE);
     }

@@ -18,7 +18,7 @@ public class Main {
         final int size = 50;
         try (JImGui imGui = new JImGui("Chess")) {
             Cell.initialize();
-            Board board = new Board(StartingPos.chess, true);
+            Board board = new Board(StartingPos.forcedChessFA, true);
             imGui.initBeforeMainLoop();
             while (!imGui.windowShouldClose()) {
                 imGui.initNewFrame();

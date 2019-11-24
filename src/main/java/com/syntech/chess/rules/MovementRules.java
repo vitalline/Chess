@@ -31,7 +31,7 @@ public class MovementRules {
         }
     }
 
-    public static void addDiagonalThreating(@NotNull Point pos, @NotNull Board board, Side side, ArrayList<Point> moves) {
+    public static void addDiagonalThreatening(@NotNull Point pos, @NotNull Board board, Side side, ArrayList<Point> moves) {
         int d = 1;
         while (board.isFree(pos.x + d, pos.y + d)) {
             d++;
@@ -81,7 +81,7 @@ public class MovementRules {
         }
     }
 
-    public static void addOrthogonalThreating(@NotNull Point pos, @NotNull Board board, Side side, ArrayList<Point> moves) {
+    public static void addOrthogonalThreatening(@NotNull Point pos, @NotNull Board board, Side side, ArrayList<Point> moves) {
         int d = 0;
         while (board.isFree(pos.x + ++d, pos.y)) {
         }
@@ -105,6 +105,60 @@ public class MovementRules {
         }
         if (board.getSide(pos.x, pos.y + d) == side) {
             moves.add(new Point(pos.x, pos.y + d));
+        }
+    }
+
+    public static void addLeapingMovement(@NotNull Point pos, @NotNull Board board, int x, int y, ArrayList<Point> moves) {
+        if (board.isFree(pos.x + x, pos.y + y)) {
+            moves.add(new Point(pos.x + x, pos.y + y));
+        }
+        if (board.isFree(pos.x + y, pos.y + x)) {
+            moves.add(new Point(pos.x + y, pos.y + x));
+        }
+        if (board.isFree(pos.x - x, pos.y + y)) {
+            moves.add(new Point(pos.x - x, pos.y + y));
+        }
+        if (board.isFree(pos.x - y, pos.y + x)) {
+            moves.add(new Point(pos.x - y, pos.y + x));
+        }
+        if (board.isFree(pos.x + x, pos.y - y)) {
+            moves.add(new Point(pos.x + x, pos.y - y));
+        }
+        if (board.isFree(pos.x + y, pos.y - x)) {
+            moves.add(new Point(pos.x + y, pos.y - x));
+        }
+        if (board.isFree(pos.x - x, pos.y - y)) {
+            moves.add(new Point(pos.x - x, pos.y - y));
+        }
+        if (board.isFree(pos.x - y, pos.y - x)) {
+            moves.add(new Point(pos.x - y, pos.y - x));
+        }
+    }
+
+    public static void addLeapingThreatening(@NotNull Point pos, @NotNull Board board, int x, int y, Side side, ArrayList<Point> moves) {
+        if (board.getSide(pos.x + x, pos.y + y) == side) {
+            moves.add(new Point(pos.x + x, pos.y + y));
+        }
+        if (board.getSide(pos.x + y, pos.y + x) == side) {
+            moves.add(new Point(pos.x + y, pos.y + x));
+        }
+        if (board.getSide(pos.x - x, pos.y + y) == side) {
+            moves.add(new Point(pos.x - x, pos.y + y));
+        }
+        if (board.getSide(pos.x - y, pos.y + x) == side) {
+            moves.add(new Point(pos.x - y, pos.y + x));
+        }
+        if (board.getSide(pos.x + x, pos.y - y) == side) {
+            moves.add(new Point(pos.x + x, pos.y - y));
+        }
+        if (board.getSide(pos.x + y, pos.y - x) == side) {
+            moves.add(new Point(pos.x + y, pos.y - x));
+        }
+        if (board.getSide(pos.x - x, pos.y - y) == side) {
+            moves.add(new Point(pos.x - x, pos.y - y));
+        }
+        if (board.getSide(pos.x - y, pos.y - x) == side) {
+            moves.add(new Point(pos.x - y, pos.y - x));
         }
     }
 }

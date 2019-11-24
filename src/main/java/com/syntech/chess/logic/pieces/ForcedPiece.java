@@ -9,10 +9,6 @@ import java.util.ArrayList;
 
 public abstract class ForcedPiece extends Piece {
 
-    public ForcedPiece(Side side, Point position) {
-        super(side, position);
-    }
-
     public ForcedPiece(Side side) {
         super(side);
     }

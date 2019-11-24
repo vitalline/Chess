@@ -5,14 +5,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.chess.KingType;
 
-import java.awt.*;
-
 public class King extends Piece {
-
-    public King(Side side, Point position) {
-        super(side, position);
-        movementType = new KingType(side);
-    }
 
     public King(Side side) {
         super(side);

@@ -205,7 +205,7 @@ public class Board {
         return !isFree(row, col) && (getSide(row, col) != side) && (getSide(row, col) != Side.NONE);
     }
 
-    private Piece getPiece(int row, int col) {
+    public Piece getPiece(int row, int col) {
         try {
             return board[row][col];
         } catch (ArrayIndexOutOfBoundsException ignore) {

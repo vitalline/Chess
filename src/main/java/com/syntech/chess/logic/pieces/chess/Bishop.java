@@ -5,14 +5,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.chess.BishopType;
 
-import java.awt.*;
-
 public class Bishop extends Piece {
-
-    public Bishop(Side side, Point position) {
-        super(side, position);
-        movementType = new BishopType();
-    }
 
     public Bishop(Side side) {
         super(side);

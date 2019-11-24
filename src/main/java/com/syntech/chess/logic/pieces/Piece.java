@@ -16,12 +16,6 @@ public abstract class Piece implements Cloneable {
     protected MovementType movementType;
 
     @Contract(pure = true)
-    public Piece(Side side, Point position) {
-        this.side = side;
-        this.position = position;
-    }
-
-    @Contract(pure = true)
     public Piece(Side side) {
         this.side = side;
         this.position = new Point(0, 0);
@@ -34,16 +28,8 @@ public abstract class Piece implements Cloneable {
         return clone;
     }
 
-    public void setPosition(Point position) {
-        this.position = position;
-    }
-
     public void setPosition(int x, int y) {
         this.position = new Point(x, y);
-    }
-
-    public Point getPosition() {
-        return position;
     }
 
     public Side getSide() {

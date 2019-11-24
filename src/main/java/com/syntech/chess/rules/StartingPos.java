@@ -4,6 +4,7 @@ import com.syntech.chess.logic.pieces.EmptyCell;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.logic.pieces.chess.*;
 import com.syntech.chess.logic.pieces.forced.*;
+import com.syntech.chess.logic.pieces.fa_forced.*;
 import com.syntech.chess.logic.Side;
 
 public class StartingPos {
@@ -165,6 +166,33 @@ public class StartingPos {
                     new ForcedQueen(Side.BLACK),
                     new ForcedKing(Side.BLACK),
                     new ForcedRook(Side.BLACK)
+            }
+    };
+
+    public static final Piece[][] forcedChessFA = {
+            {
+                    new FAForcedRook(Side.WHITE),
+                    new FAForcedQueen(Side.WHITE),
+                    new FAForcedKing(Side.WHITE),
+                    new FAForcedRook(Side.WHITE)
+            },
+            {
+                    new FAForcedPawn(Side.WHITE),
+                    new FAForcedPawn(Side.WHITE),
+                    new FAForcedPawn(Side.WHITE),
+                    new FAForcedPawn(Side.WHITE)
+            },
+            {
+                    new FAForcedPawn(Side.BLACK),
+                    new FAForcedPawn(Side.BLACK),
+                    new FAForcedPawn(Side.BLACK),
+                    new FAForcedPawn(Side.BLACK)
+            },
+            {
+                    new FAForcedRook(Side.BLACK),
+                    new FAForcedQueen(Side.BLACK),
+                    new FAForcedKing(Side.BLACK),
+                    new FAForcedRook(Side.BLACK)
             }
     };
 }

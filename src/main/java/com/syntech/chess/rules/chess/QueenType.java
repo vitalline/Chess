@@ -21,8 +21,8 @@ public class QueenType implements MovementType {
     @Override
     public ArrayList<Point> getAvailableThreatsOn(Point position, Board board, Side side) {
         ArrayList<Point> moves = new ArrayList<>();
-        MovementRules.addOrthogonalThreating(position, board, side, moves);
-        MovementRules.addDiagonalThreating(position, board, side, moves);
+        MovementRules.addOrthogonalThreatening(position, board, side, moves);
+        MovementRules.addDiagonalThreatening(position, board, side, moves);
         return moves;
     }
 }

@@ -20,7 +20,7 @@ public class BishopType implements MovementType {
     @Override
     public ArrayList<Point> getAvailableThreatsOn(Point position, Board board, Side side) {
         ArrayList<Point> moves = new ArrayList<>();
-        MovementRules.addDiagonalThreating(position, board, side, moves);
+        MovementRules.addDiagonalThreatening(position, board, side, moves);
         return moves;
     }
 }

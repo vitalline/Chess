@@ -5,14 +5,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.ForcedPiece;
 import com.syntech.chess.rules.chess.KingType;
 
-import java.awt.*;
-
 public class ForcedKing extends ForcedPiece {
-
-    public ForcedKing(Side side, Point position) {
-        super(side, position);
-        movementType = new KingType(side);
-    }
 
     public ForcedKing(Side side) {
         super(side);

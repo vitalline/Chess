@@ -5,14 +5,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.ForcedPiece;
 import com.syntech.chess.rules.chess.RookType;
 
-import java.awt.*;
-
 public class ForcedRook extends ForcedPiece {
-
-    public ForcedRook(Side side, Point position) {
-        super(side, position);
-        movementType = new RookType();
-    }
 
     public ForcedRook(Side side) {
         super(side);
