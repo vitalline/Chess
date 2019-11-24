@@ -1,6 +1,5 @@
 package com.syntech.chess.logic.pieces.fa_forced;
 
-import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.FAForcedPiece;
 import com.syntech.chess.rules.XPRules;
@@ -13,18 +12,12 @@ public class FAForcedRook extends FAForcedPiece {
     public FAForcedRook(Side side) {
         super(side);
         movementType = new RookType();
-        maxXP = XPRules.ROOKLEVELUP;
+        maxXP = XPRules.ROOK_LEVEL_UP;
     }
 
     public FAForcedRook(Side side, int xp, Point initialPosition) {
         super(side, xp, initialPosition);
         movementType = new RookType();
-        maxXP = XPRules.ROOKLEVELUP;
+        maxXP = XPRules.ROOK_LEVEL_UP;
     }
-
-    @Override
-    public PieceType getType() {
-        return PieceType.ROOK;
-    }
-
 }

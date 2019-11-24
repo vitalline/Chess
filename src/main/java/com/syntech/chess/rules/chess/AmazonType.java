@@ -9,13 +9,14 @@ import com.syntech.chess.rules.MovementType;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class QueenType extends MovementType {
+public class AmazonType extends MovementType {
 
     @Override
     public ArrayList<Point> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Point> moves = new ArrayList<>();
         MovementRules.addOrthogonalMovement(position, board, moves);
         MovementRules.addDiagonalMovement(position, board, moves);
+        MovementRules.addLeapingMovement(position, board, 1, 2, moves);
         return moves;
     }
 
@@ -24,11 +25,12 @@ public class QueenType extends MovementType {
         ArrayList<Point> moves = new ArrayList<>();
         MovementRules.addOrthogonalThreatening(position, board, side, moves);
         MovementRules.addDiagonalThreatening(position, board, side, moves);
+        MovementRules.addLeapingThreatening(position, board, 1, 2, side, moves);
         return moves;
     }
 
     @Override
     public PieceType getType() {
-        return PieceType.QUEEN;
+        return PieceType.AMAZON;
     }
 }

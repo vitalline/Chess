@@ -1,9 +1,11 @@
 package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.logic.Board;
+import com.syntech.chess.logic.PieceBaseType;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
+import com.syntech.chess.rules.SpecialFirstMoveType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,17 +16,22 @@ public abstract class Piece implements Cloneable {
     protected final Side side;
     protected Point position;
     protected MovementType movementType;
+    protected PieceBaseType baseType;
 
     @Contract(pure = true)
     public Piece(Side side) {
         this.side = side;
         this.position = new Point(0, 0);
+        this.baseType = PieceBaseType.PIECE;
     }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         Piece clone = (Piece) super.clone();
         clone.position = new Point(position);
+        if (movementType != null) {
+            clone.movementType = (MovementType) movementType.clone();
+        }
         return clone;
     }
 
@@ -37,11 +44,19 @@ public abstract class Piece implements Cloneable {
     }
 
     public PieceType getType() {
-        return PieceType.NONE;
+        return movementType.getType();
+    }
+
+    public PieceBaseType getBaseType() {
+        return baseType;
     }
 
     public String getName() {
         return getSide().getName() + getType().getName();
+    }
+
+    public String getLabel() {
+        return getSide().getProperName() + ' ' + getType().getProperName();
     }
 
     public ArrayList<Point> getControlledCells(Board board) {
@@ -84,7 +99,13 @@ public abstract class Piece implements Cloneable {
     public void move(@NotNull Board board, int row, int col) {
         board.placePiece(new EmptyCell(), position.x, position.y);
         board.placePiece(this, row, col);
-        board.deselectPiece();
+        if (movementType instanceof SpecialFirstMoveType) {
+            ((SpecialFirstMoveType) movementType).move();
+        }
+    }
+
+    public boolean canBePromoted(Board board) {
+        return false;
     }
 
 }

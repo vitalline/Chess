@@ -2,6 +2,7 @@ package com.syntech.chess.rules;
 
 import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Side;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -159,6 +160,39 @@ public class MovementRules {
         }
         if (board.getSide(pos.x - y, pos.y - x) == side) {
             moves.add(new Point(pos.x - y, pos.y - x));
+        }
+    }
+
+    @Contract(pure = true)
+    public static int getPawnMoveDirection(Side side) {
+        return side == Side.WHITE ? 1 : -1;
+    }
+
+    public static void addPawnLikeMovement(@NotNull Point pos, @NotNull Board board, int moveDirection, boolean hasNotMoved, ArrayList<Point> moves) {
+        if (!board.isFree(pos.x + moveDirection, pos.y)) {
+            return;
+        }
+        moves.add(new Point(pos.x + moveDirection, pos.y));
+        if (hasNotMoved && board.isFree(pos.x + moveDirection * 2, pos.y)) {
+            moves.add(new Point(pos.x + moveDirection * 2, pos.y));
+        }
+    }
+
+    public static void addPawnLikeThreatening(@NotNull Point pos, @NotNull Board board, Side side, int moveDirection, ArrayList<Point> moves) {
+        if (board.getSide(pos.x + moveDirection, pos.y - 1) == side) {
+            moves.add(new Point(pos.x + moveDirection, pos.y - 1));
+        }
+        if (board.getSide(pos.x + moveDirection, pos.y + 1) == side) {
+            moves.add(new Point(pos.x + moveDirection, pos.y + 1));
+        }
+    }
+
+    public static void addPawnLikeControlledCells(@NotNull Point pos, @NotNull Board board, int moveDirection, ArrayList<Point> moves) {
+        if (board.isOnBoard(pos.x + moveDirection, pos.y - 1)) {
+            moves.add(new Point(pos.x + moveDirection, pos.y - 1));
+        }
+        if (board.isOnBoard(pos.x + moveDirection, pos.y + 1)) {
+            moves.add(new Point(pos.x + moveDirection, pos.y + 1));
         }
     }
 }

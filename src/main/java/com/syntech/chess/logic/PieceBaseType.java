@@ -3,21 +3,18 @@ package com.syntech.chess.logic;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public enum PieceType {
+public enum PieceBaseType {
     NONE("Cell"),
-    PAWN("Pawn"),
-    DOUBLE_PAWN("Pawn"),
-    KNIGHT("Knight"),
-    BISHOP("Bishop"),
-    ROOK("Rook"),
-    QUEEN("Queen"),
-    KING("King"),
-    AMAZON("Amazon");
+    PIECE("Piece"),
+    FORCED_PIECE("ForcedPiece"),
+    PROMOTABLE_PIECE("PromotablePiece"),
+    PROMOTABLE_FORCED_PIECE("PromotableForcedPiece"),
+    FA_FORCED_PIECE("FAForcedPiece");
 
     private String name;
 
     @Contract(pure = true)
-    PieceType(String name) {
+    PieceBaseType(String name) {
         this.name = name;
     }
 
@@ -26,16 +23,11 @@ public enum PieceType {
         return name;
     }
 
-    @Contract(pure = true)
-    public String getProperName() {
-        return name;
-    }
-
     @NotNull
     @Contract(pure = true)
     @Override
     public String toString() {
-        return "PieceType{" +
+        return "PieceBaseType{" +
                 "name='" + name + '\'' +
                 '}';
     }

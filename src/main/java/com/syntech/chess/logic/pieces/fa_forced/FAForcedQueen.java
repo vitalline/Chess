@@ -1,6 +1,5 @@
 package com.syntech.chess.logic.pieces.fa_forced;
 
-import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.FAForcedPiece;
 import com.syntech.chess.rules.XPRules;
@@ -13,18 +12,12 @@ public class FAForcedQueen extends FAForcedPiece {
     public FAForcedQueen(Side side) {
         super(side);
         movementType = new QueenType();
-        maxXP = XPRules.QUEENLEVELUP;
+        maxXP = XPRules.QUEEN_LEVEL_UP;
     }
 
     public FAForcedQueen(Side side, int xp, Point initialPosition) {
         super(side, xp, initialPosition);
         movementType = new QueenType();
-        maxXP = XPRules.QUEENLEVELUP;
+        maxXP = XPRules.QUEEN_LEVEL_UP;
     }
-
-    @Override
-    public PieceType getType() {
-        return PieceType.QUEEN;
-    }
-
 }

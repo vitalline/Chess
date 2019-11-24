@@ -9,12 +9,12 @@ public enum Color {
     NONE("empty"),
     WHITE("white"),
     BLACK("black"),
-    SELECTEDWHITE("selectedWhite"),
-    SELECTEDBLACK("selectedBlack"),
-    MOVEWHITE("moveWhite"),
-    MOVEBLACK("moveBlack"),
-    CAPTUREWHITE("moveWhite"),
-    CAPTUREBLACK("moveBlack");
+    SELECTED_WHITE("selectedWhite"),
+    SELECTED_BLACK("selectedBlack"),
+    MOVE_WHITE("moveWhite"),
+    MOVE_BLACK("moveBlack"),
+    CAPTURE_WHITE("moveWhite"),
+    CAPTURE_BLACK("moveBlack");
 
     private String name;
 
@@ -40,97 +40,93 @@ public enum Color {
     @Contract(pure = true)
     public Side toSide() {
         switch (this) {
-            case NONE:
-                return Side.NONE;
             case WHITE:
-            case SELECTEDWHITE:
-            case MOVEWHITE:
-            case CAPTUREWHITE:
+            case SELECTED_WHITE:
+            case MOVE_WHITE:
+            case CAPTURE_WHITE:
                 return Side.WHITE;
             case BLACK:
-            case SELECTEDBLACK:
-            case MOVEBLACK:
-            case CAPTUREBLACK:
+            case SELECTED_BLACK:
+            case MOVE_BLACK:
+            case CAPTURE_BLACK:
                 return Side.BLACK;
+            default:
+                return Side.NONE;
         }
-        return Side.NONE;
     }
 
     @NotNull
     @Contract(" -> new")
     public JImVec4 getColor() {
         switch (this) {
-            case NONE:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
             case WHITE:
                 return new JImVec4(0.8f, 0.8f, 0.8f, 1.0f);
             case BLACK:
                 return new JImVec4(0.2f, 0.2f, 0.2f, 1.0f);
-            case SELECTEDWHITE:
+            case SELECTED_WHITE:
                 return new JImVec4(0.9f, 0.9f, 0.7f, 1.0f);
-            case SELECTEDBLACK:
+            case SELECTED_BLACK:
                 return new JImVec4(0.3f, 0.3f, 0.1f, 1.0f);
-            case MOVEWHITE:
+            case MOVE_WHITE:
                 return new JImVec4(0.7f, 0.9f, 0.7f, 1.0f);
-            case MOVEBLACK:
+            case MOVE_BLACK:
                 return new JImVec4(0.1f, 0.3f, 0.1f, 1.0f);
-            case CAPTUREWHITE:
+            case CAPTURE_WHITE:
                 return new JImVec4(0.9f, 0.7f, 0.7f, 1.0f);
-            case CAPTUREBLACK:
+            case CAPTURE_BLACK:
                 return new JImVec4(0.3f, 0.1f, 0.1f, 1.0f);
+            default:
+                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
         }
-        return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
     @NotNull
     @Contract(" -> new")
     public JImVec4 getHoveredColor() {
         switch (this) {
-            case NONE:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
             case WHITE:
                 return new JImVec4(0.85f, 0.85f, 0.85f, 1.0f);
             case BLACK:
                 return new JImVec4(0.25f, 0.25f, 0.25f, 1.0f);
-            case SELECTEDWHITE:
+            case SELECTED_WHITE:
                 return new JImVec4(0.95f, 0.95f, 0.75f, 1.0f);
-            case SELECTEDBLACK:
+            case SELECTED_BLACK:
                 return new JImVec4(0.35f, 0.35f, 0.15f, 1.0f);
-            case MOVEWHITE:
+            case MOVE_WHITE:
                 return new JImVec4(0.75f, 0.95f, 0.75f, 1.0f);
-            case MOVEBLACK:
+            case MOVE_BLACK:
                 return new JImVec4(0.15f, 0.35f, 0.15f, 1.0f);
-            case CAPTUREWHITE:
+            case CAPTURE_WHITE:
                 return new JImVec4(0.95f, 0.75f, 0.75f, 1.0f);
-            case CAPTUREBLACK:
+            case CAPTURE_BLACK:
                 return new JImVec4(0.35f, 0.15f, 0.15f, 1.0f);
+            default:
+                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
         }
-        return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
     @NotNull
     @Contract(" -> new")
     public JImVec4 getActiveColor() {
         switch (this) {
-            case NONE:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
             case WHITE:
                 return new JImVec4(0.825f, 0.825f, 0.825f, 1.0f);
             case BLACK:
                 return new JImVec4(0.225f, 0.225f, 0.225f, 1.0f);
-            case SELECTEDWHITE:
+            case SELECTED_WHITE:
                 return new JImVec4(0.925f, 0.925f, 0.725f, 1.0f);
-            case SELECTEDBLACK:
+            case SELECTED_BLACK:
                 return new JImVec4(0.325f, 0.325f, 0.125f, 1.0f);
-            case MOVEWHITE:
+            case MOVE_WHITE:
                 return new JImVec4(0.725f, 0.925f, 0.725f, 1.0f);
-            case MOVEBLACK:
+            case MOVE_BLACK:
                 return new JImVec4(0.125f, 0.325f, 0.125f, 1.0f);
-            case CAPTUREWHITE:
+            case CAPTURE_WHITE:
                 return new JImVec4(0.925f, 0.725f, 0.725f, 1.0f);
-            case CAPTUREBLACK:
+            case CAPTURE_BLACK:
                 return new JImVec4(0.325f, 0.125f, 0.125f, 1.0f);
+            default:
+                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
         }
-        return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 }

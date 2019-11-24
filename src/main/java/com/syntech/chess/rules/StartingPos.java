@@ -1,198 +1,183 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.pieces.EmptyCell;
-import com.syntech.chess.logic.pieces.Piece;
-import com.syntech.chess.logic.pieces.chess.*;
-import com.syntech.chess.logic.pieces.forced.*;
-import com.syntech.chess.logic.pieces.fa_forced.*;
+import com.syntech.chess.logic.PieceBaseType;
+import com.syntech.chess.logic.PieceFactory;
+import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.pieces.Piece;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-public class StartingPos {
+public class StartingPos extends PieceFactory {
+    @NotNull
+    private static Piece chessPawn(Side side) {
+        return piece(PieceBaseType.PROMOTABLE_PIECE, PieceType.DOUBLE_PAWN, side, side == Side.WHITE ? 8 : 1, chessPawnPromotions(side));
+    }
+
+    @NotNull
+    private static Piece forcedChessPawn(Side side, Integer promotionRow) {
+        return piece(PieceBaseType.PROMOTABLE_FORCED_PIECE, PieceType.PAWN, side, promotionRow, forcedChessPawnPromotions(side));
+    }
+
+    @NotNull
+    private static Piece forcedChessPawn(Side side) {
+        return forcedChessPawn(side, side == Side.WHITE ? 4 : 1);
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    private static Piece[] chessPawnPromotions(Side side) {
+        return new Piece[]{
+                piece(PieceBaseType.PIECE, PieceType.KNIGHT, side),
+                piece(PieceBaseType.PIECE, PieceType.BISHOP, side),
+                piece(PieceBaseType.PIECE, PieceType.ROOK, side),
+                piece(PieceBaseType.PIECE, PieceType.QUEEN, side)
+        };
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    private static Piece[] forcedChessPawnPromotions(Side side) {
+        return new Piece[]{
+                piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, side),
+                piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, side)
+        };
+    }
+
     public static final Piece[][] chess = {
             {
-                    new Rook(Side.WHITE),
-                    new Knight(Side.WHITE),
-                    new Bishop(Side.WHITE),
-                    new Queen(Side.WHITE),
-                    new King(Side.WHITE),
-                    new Bishop(Side.WHITE),
-                    new Knight(Side.WHITE),
-                    new Rook(Side.WHITE)
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE),
-                    new Pawn(Side.WHITE)
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE),
+                    chessPawn(Side.WHITE)
             },
             {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell()
             },
             {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell()
             },
             {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell()
             },
             {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell(),
+                    cell()
             },
             {
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK),
-                    new Pawn(Side.BLACK)
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK),
+                    chessPawn(Side.BLACK)
             },
             {
-                    new Rook(Side.BLACK),
-                    new Knight(Side.BLACK),
-                    new Bishop(Side.BLACK),
-                    new Queen(Side.BLACK),
-                    new King(Side.BLACK),
-                    new Bishop(Side.BLACK),
-                    new Knight(Side.BLACK),
-                    new Rook(Side.BLACK)
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK)
             }
     };
 
     public static final Piece[][] forcedChess = {
             {
-                    new ForcedRook(Side.WHITE),
-                    new ForcedQueen(Side.WHITE),
-                    new ForcedKing(Side.WHITE),
-                    new ForcedRook(Side.WHITE)
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE)
+                    forcedChessPawn(Side.WHITE),
+                    forcedChessPawn(Side.WHITE),
+                    forcedChessPawn(Side.WHITE),
+                    forcedChessPawn(Side.WHITE)
             },
             {
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK)
+                    forcedChessPawn(Side.BLACK),
+                    forcedChessPawn(Side.BLACK),
+                    forcedChessPawn(Side.BLACK),
+                    forcedChessPawn(Side.BLACK)
             },
             {
-                    new ForcedRook(Side.BLACK),
-                    new ForcedQueen(Side.BLACK),
-                    new ForcedKing(Side.BLACK),
-                    new ForcedRook(Side.BLACK)
-            }
-    };
-
-    public static final Piece[][] forcedChess48 = {
-            {
-                    new ForcedRook(Side.WHITE),
-                    new ForcedQueen(Side.WHITE),
-                    new ForcedKing(Side.WHITE),
-                    new ForcedRook(Side.WHITE)
-            },
-            {
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE),
-                    new ForcedPawn(Side.WHITE)
-            },
-            {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
-            },
-            {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
-            },
-            {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
-            },
-            {
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell(),
-                    new EmptyCell()
-            },
-            {
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK),
-                    new ForcedPawn(Side.BLACK)
-            },
-            {
-                    new ForcedRook(Side.BLACK),
-                    new ForcedQueen(Side.BLACK),
-                    new ForcedKing(Side.BLACK),
-                    new ForcedRook(Side.BLACK)
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK)
             }
     };
 
     public static final Piece[][] forcedChessFA = {
             {
-                    new FAForcedRook(Side.WHITE),
-                    new FAForcedQueen(Side.WHITE),
-                    new FAForcedKing(Side.WHITE),
-                    new FAForcedRook(Side.WHITE)
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    new FAForcedPawn(Side.WHITE),
-                    new FAForcedPawn(Side.WHITE),
-                    new FAForcedPawn(Side.WHITE),
-                    new FAForcedPawn(Side.WHITE)
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
             },
             {
-                    new FAForcedPawn(Side.BLACK),
-                    new FAForcedPawn(Side.BLACK),
-                    new FAForcedPawn(Side.BLACK),
-                    new FAForcedPawn(Side.BLACK)
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
             },
             {
-                    new FAForcedRook(Side.BLACK),
-                    new FAForcedQueen(Side.BLACK),
-                    new FAForcedKing(Side.BLACK),
-                    new FAForcedRook(Side.BLACK)
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
             }
     };
 }

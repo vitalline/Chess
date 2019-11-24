@@ -1,6 +1,7 @@
 package com.syntech.chess.rules.chess;
 
 import com.syntech.chess.logic.Board;
+import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.Contract;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.Contract;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class KingType implements MovementType {
+public class KingType extends MovementType {
 
     private Side side;
 
@@ -60,5 +61,10 @@ public class KingType implements MovementType {
             }
         }
         return moves;
+    }
+
+    @Override
+    public PieceType getType() {
+        return PieceType.KING;
     }
 }

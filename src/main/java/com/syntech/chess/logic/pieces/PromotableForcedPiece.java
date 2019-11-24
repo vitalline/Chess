@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.ArrayList;
 
-public abstract class ForcedPiece extends Piece {
+public abstract class PromotableForcedPiece extends PromotablePiece {
 
-    public ForcedPiece(Side side) {
-        super(side);
-        baseType = PieceBaseType.FORCED_PIECE;
+    public PromotableForcedPiece(Side side, Integer promotionRow, Piece... pieces) {
+        super(side, promotionRow, pieces);
+        baseType = PieceBaseType.PROMOTABLE_FORCED_PIECE;
     }
 
     @Override
@@ -27,5 +27,4 @@ public abstract class ForcedPiece extends Piece {
         }
         return new ArrayList<>();
     }
-
 }

@@ -21,6 +21,11 @@ public enum Side {
         return name;
     }
 
+    @Contract(pure = true)
+    public String getProperName() {
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
+
     @NotNull
     @Contract(pure = true)
     @Override
@@ -33,26 +38,24 @@ public enum Side {
     @Contract(pure = true)
     public Color toColor() {
         switch (this) {
-            case NONE:
-                return Color.NONE;
             case WHITE:
                 return Color.WHITE;
             case BLACK:
                 return Color.BLACK;
+            default:
+                return Color.NONE;
         }
-        return Color.NONE;
     }
 
     @Contract(pure = true)
     public Side getOpponent() {
         switch (this) {
-            case NONE:
-                return Side.NONE;
             case WHITE:
                 return Side.BLACK;
             case BLACK:
                 return Side.WHITE;
+            default:
+                return Side.NONE;
         }
-        return Side.NONE;
     }
 }

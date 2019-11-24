@@ -1,6 +1,5 @@
 package com.syntech.chess.logic.pieces.chess;
 
-import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.chess.RookType;
@@ -11,10 +10,4 @@ public class Rook extends Piece {
         super(side);
         movementType = new RookType();
     }
-
-    @Override
-    public PieceType getType() {
-        return PieceType.ROOK;
-    }
-
 }
