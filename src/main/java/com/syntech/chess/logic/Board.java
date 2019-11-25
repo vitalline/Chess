@@ -129,7 +129,7 @@ public class Board {
         } else if (getTurnSide() == getSide(row, col)) {
             selectPiece(row, col);
         } else if (availableMoves.contains(new Point(row, col)) || availableCaptures.contains(new Point(row, col))) {
-            moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
+            moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col, getSelectedPiece().getSide().getOpponent());
         }
     }
 
@@ -143,23 +143,13 @@ public class Board {
         }
     }
 
-    private void moveAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol) {
+    private void moveAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol, Side side) {
         move(fromrow, fromcol, torow, tocol);
-        checkStatusConditions();
+        checkStatusConditions(side);
     }
 
-    private void checkStatusConditions() {
-        String statusWhite = getStatusConditions(Side.WHITE);
-        String statusBlack = getStatusConditions(Side.BLACK);
-        if (statusWhite != null) {
-            status = statusWhite;
-        }
-        if (statusBlack != null) {
-            status = statusBlack;
-        }
-        if (statusWhite == null && statusBlack == null) {
-            status = null;
-        }
+    private void checkStatusConditions(Side side) {
+        status = getStatusConditions(side);
         if (gameEnded) {
             displayResultPopup = true;
         }
