@@ -5,15 +5,23 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum Side {
-    NONE("empty"),
-    WHITE("white"),
-    BLACK("black");
+    NEUTRAL("neutral", ""),
+    WHITE("white", "White"),
+    BLACK("black", "Black");
 
     private String name;
+    private String properName;
 
     @Contract(pure = true)
     Side(String name) {
         this.name = name;
+        this.properName = name;
+    }
+
+    @Contract(pure = true)
+    Side(String name, String properName) {
+        this.name = name;
+        this.properName = properName;
     }
 
     @Contract(pure = true)
@@ -23,7 +31,7 @@ public enum Side {
 
     @Contract(pure = true)
     public String getProperName() {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        return properName;
     }
 
     @NotNull
@@ -55,7 +63,7 @@ public enum Side {
             case BLACK:
                 return Side.WHITE;
             default:
-                return Side.NONE;
+                return Side.NEUTRAL;
         }
     }
 }

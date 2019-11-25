@@ -1,9 +1,6 @@
 package com.syntech.chess.logic.pieces;
 
-import com.syntech.chess.logic.Board;
-import com.syntech.chess.logic.PieceBaseType;
-import com.syntech.chess.logic.PieceType;
-import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.*;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
 import org.jetbrains.annotations.Contract;
@@ -12,16 +9,17 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.ArrayList;
 
-public abstract class Piece implements Cloneable {
+public class Piece implements Cloneable {
     protected final Side side;
     protected Point position;
-    protected MovementType movementType;
-    protected PieceBaseType baseType;
+    private MovementType movementType;
+    PieceBaseType baseType;
 
     @Contract(pure = true)
-    public Piece(Side side) {
+    public Piece(Side side, MovementType movementType) {
         this.side = side;
         this.position = new Point(0, 0);
+        this.movementType = movementType;
         this.baseType = PieceBaseType.PIECE;
     }
 
@@ -29,9 +27,7 @@ public abstract class Piece implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         Piece clone = (Piece) super.clone();
         clone.position = new Point(position);
-        if (movementType != null) {
-            clone.movementType = (MovementType) movementType.clone();
-        }
+        clone.movementType = (MovementType) movementType.clone();
         return clone;
     }
 
@@ -56,7 +52,18 @@ public abstract class Piece implements Cloneable {
     }
 
     public String getLabel() {
-        return getSide().getProperName() + ' ' + getType().getProperName();
+        String baseType = getBaseType().getProperName();
+        String side = getSide().getProperName();
+        String type = getType().getProperName();
+        String label = "";
+        if (!baseType.equals("")) {
+            label += baseType + ' ';
+        }
+        if (!side.equals("")) {
+            label += side + ' ';
+        }
+        label += type;
+        return label;
     }
 
     public ArrayList<Point> getControlledCells(Board board) {
@@ -85,8 +92,7 @@ public abstract class Piece implements Cloneable {
         return excludeMovesThatLeaveKingInCheck(board, moves);
     }
 
-    @NotNull
-    protected ArrayList<Point> excludeMovesThatLeaveKingInCheck(Board board, @NotNull ArrayList<Point> moves) {
+    @NotNull ArrayList<Point> excludeMovesThatLeaveKingInCheck(Board board, @NotNull ArrayList<Point> moves) {
         ArrayList<Point> filteredMoves = new ArrayList<>();
         for (Point move : moves) {
             if (!board.getNextTurn(position.x, position.y, move.x, move.y).isInCheck(side)) {
@@ -97,7 +103,7 @@ public abstract class Piece implements Cloneable {
     }
 
     public void move(@NotNull Board board, int row, int col) {
-        board.placePiece(new EmptyCell(), position.x, position.y);
+        board.placePiece(PieceFactory.cell(), position);
         board.placePiece(this, row, col);
         if (movementType instanceof SpecialFirstMoveType) {
             ((SpecialFirstMoveType) movementType).move();

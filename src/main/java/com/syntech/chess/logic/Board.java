@@ -2,11 +2,9 @@ package com.syntech.chess.logic;
 
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
-import com.syntech.chess.logic.pieces.EmptyCell;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.logic.pieces.PromotablePiece;
 import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.NativeBool;
 import org.ice1000.jimgui.flag.JImWindowFlags;
@@ -29,6 +27,9 @@ public class Board {
 
     private Point selectedPiece = new Point(-1, -1);
     private static final Point pieceNone = new Point(-1, -1);
+
+    private ArrayList<Point> availableMoves = new ArrayList<>();
+    private ArrayList<Point> availableCaptures = new ArrayList<>();
 
     public Board(@NotNull Piece[][] board, boolean initialize) {
         height = board.length;
@@ -72,17 +73,23 @@ public class Board {
     }
 
     public void display(@NotNull JImGui imGui, String name, float size) {
+        float spacingX = imGui.getStyle().getItemSpacingX();
+        float spacingY = imGui.getStyle().getItemSpacingY();
+        imGui.getStyle().setItemSpacingX(0);
+        imGui.getStyle().setItemSpacingY(0);
         imGui.begin(name, new NativeBool(), JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
         imGui.pushStyleColor(JImStyleColors.WindowBg, com.syntech.chess.graphic.Color.NONE.getColor());
         for (int row = height - 1; row >= 0; row--) {
             for (int col = 0; col < width - 1; col++) {
                 displayCell(imGui, size, row, col);
-                JImGuiGen.sameLine(0, 4);
+                imGui.sameLine();
             }
             int col = width - 1;
             displayCell(imGui, size, row, col);
         }
         imGui.end();
+        imGui.getStyle().setItemSpacingX(spacingX);
+        imGui.getStyle().setItemSpacingY(spacingY);
         if (displayPromotionPopup) {
             imGui.openPopup("Promote");
         }
@@ -92,7 +99,7 @@ public class Board {
         if (imGui.beginPopup("Promote", JImWindowFlags.AlwaysAutoResize)) {
             for (Piece piece : ((PromotablePiece) getSelectedPiece()).getPromotionPieces()) {
                 if (CellGraphics.display(imGui, piece, size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
-                    placePiece(PieceFactory.piece(piece.getBaseType(), piece.getType(), piece.getSide()), selectedPiece.x, selectedPiece.y);
+                    placePiece(PieceFactory.piece(piece.getBaseType(), piece.getType(), piece.getSide()), selectedPiece);
                     displayPromotionPopup = false;
                     imGui.closeCurrentPopup();
                     advanceTurn();
@@ -121,8 +128,7 @@ public class Board {
             deselectPiece();
         } else if (getTurnSide() == getSide(row, col)) {
             selectPiece(row, col);
-        } else if (getSelectedPiece().getAvailableMoves(this).contains(new Point(row, col))
-                || getSelectedPiece().getAvailableCaptures(this).contains(new Point(row, col))) {
+        } else if (availableMoves.contains(new Point(row, col)) || availableCaptures.contains(new Point(row, col))) {
             moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
         }
     }
@@ -195,15 +201,21 @@ public class Board {
         }
     }
 
+    public void placePiece(Piece piece, @NotNull Point pos) {
+        placePiece(piece, pos.x, pos.y);
+    }
+
     private com.syntech.chess.graphic.Color getColor(int row, int col) {
         if (nothingIsSelected()) {
             return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : com.syntech.chess.graphic.Color.BLACK;
         } else if (isSelected(row, col)) {
             return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.SELECTED_WHITE : com.syntech.chess.graphic.Color.SELECTED_BLACK;
-        } else if (getSelectedPiece().getAvailableMoves(this).contains(new Point(row, col))) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.MOVE_WHITE : com.syntech.chess.graphic.Color.MOVE_BLACK;
-        } else if (getSelectedPiece().getAvailableCaptures(this).contains(new Point(row, col))) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.CAPTURE_WHITE : com.syntech.chess.graphic.Color.CAPTURE_BLACK;
+        } else {
+            if (availableMoves.contains(new Point(row, col))) {
+                return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.MOVE_WHITE : com.syntech.chess.graphic.Color.MOVE_BLACK;
+            } else if (availableCaptures.contains(new Point(row, col))) {
+                return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.CAPTURE_WHITE : com.syntech.chess.graphic.Color.CAPTURE_BLACK;
+            }
         }
         return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : Color.BLACK;
     }
@@ -271,7 +283,7 @@ public class Board {
     }
 
     public boolean isFree(int row, int col) {
-        return getPiece(row, col).getType() == PieceType.NONE && isOnBoard(row, col);
+        return getPiece(row, col).getType() == PieceType.EMPTY && isOnBoard(row, col);
     }
 
     public Side getSide(int row, int col) {
@@ -292,14 +304,14 @@ public class Board {
     }
 
     public boolean isEnemy(int row, int col, Side side) {
-        return !isFree(row, col) && (getSide(row, col) != side) && (getSide(row, col) != Side.NONE);
+        return !isFree(row, col) && (getSide(row, col) != side) && (getSide(row, col) != Side.NEUTRAL);
     }
 
     public Piece getPiece(int row, int col) {
         try {
             return board[row][col];
         } catch (ArrayIndexOutOfBoundsException ignore) {
-            return new EmptyCell();
+            return PieceFactory.cell();
         }
     }
 
@@ -311,12 +323,16 @@ public class Board {
         try {
             board[row][col].getType();
             selectedPiece = new Point(row, col);
+            availableMoves = getSelectedPiece().getAvailableMoves(this);
+            availableCaptures = getSelectedPiece().getAvailableCaptures(this);
         } catch (ArrayIndexOutOfBoundsException ignore) {
         }
     }
 
     private void deselectPiece() {
         selectedPiece = pieceNone;
+        availableMoves = new ArrayList<>();
+        availableCaptures = new ArrayList<>();
     }
 
     @Contract(pure = true)

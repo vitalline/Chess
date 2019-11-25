@@ -4,23 +4,36 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum PieceBaseType {
-    NONE("Cell"),
-    PIECE("Piece"),
-    FORCED_PIECE("ForcedPiece"),
-    PROMOTABLE_PIECE("PromotablePiece"),
-    PROMOTABLE_FORCED_PIECE("PromotableForcedPiece"),
-    FA_FORCED_PIECE("FAForcedPiece");
+    PIECE("Piece", ""),
+    FORCED_PIECE("ForcedPiece", "Forced"),
+    PROMOTABLE_PIECE("PromotablePiece", ""),
+    PROMOTABLE_FORCED_PIECE("PromotableForcedPiece", "Forced"),
+    FA_FORCED_PIECE("FAForcedPiece", "Forced"),
+    NEUTRAL_PIECE("NeutralPiece", "");
 
     private String name;
+    private String properName;
 
     @Contract(pure = true)
     PieceBaseType(String name) {
         this.name = name;
+        this.properName = name;
+    }
+
+    @Contract(pure = true)
+    PieceBaseType(String name, String properName) {
+        this.name = name;
+        this.properName = properName;
     }
 
     @Contract(pure = true)
     public String getName() {
         return name;
+    }
+
+    @Contract(pure = true)
+    public String getProperName() {
+        return properName;
     }
 
     @NotNull

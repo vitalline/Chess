@@ -1,30 +1,36 @@
 package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.graphic.CellGraphics;
-import com.syntech.chess.logic.Board;
-import com.syntech.chess.logic.PieceBaseType;
-import com.syntech.chess.logic.Side;
-import com.syntech.chess.logic.pieces.fa_forced.*;
-import com.syntech.chess.rules.XPRules;
+import com.syntech.chess.logic.*;
+import com.syntech.chess.rules.ForcedXPRules;
+import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public abstract class FAForcedPiece extends ForcedPiece {
-    protected int xp = 0, maxXP = 0;
+public class FAForcedPiece extends ForcedPiece {
+    private int xp = 0, maxXP;
     private Point initialPosition;
     private boolean checkHappened = false;
 
-    public FAForcedPiece(Side side) {
-        super(side);
+    public FAForcedPiece(Side side, MovementType movementType) {
+        super(side, movementType);
         baseType = PieceBaseType.FA_FORCED_PIECE;
+        this.maxXP = 0;
     }
 
-    public FAForcedPiece(Side side, int xp, Point initialPosition) {
-        super(side);
+    public FAForcedPiece(Side side, MovementType movementType, int maxXP) {
+        super(side, movementType);
+        baseType = PieceBaseType.FA_FORCED_PIECE;
+        this.maxXP = maxXP;
+    }
+
+    public FAForcedPiece(Side side, MovementType movementType, int xp, int maxXP, Point initialPosition) {
+        super(side, movementType);
         baseType = PieceBaseType.FA_FORCED_PIECE;
         this.xp = xp;
+        this.maxXP = maxXP;
         this.initialPosition = initialPosition;
     }
 
@@ -45,6 +51,9 @@ public abstract class FAForcedPiece extends ForcedPiece {
         if (!doesNotLevelDown()) {
             label += String.format("\nStarted on %s", Board.getCoordinates(initialPosition));
         }
+        if (ForcedXPRules.getPieceXPWorth(getType()) != 0) {
+            label += String.format("\nWorth %d XP", ForcedXPRules.getPieceXPWorth(getType()));
+        }
         return label;
     }
 
@@ -59,41 +68,25 @@ public abstract class FAForcedPiece extends ForcedPiece {
     @Override
     public void move(@NotNull Board board, int row, int col) {
         boolean xpChanged = false;
-        board.placePiece(new EmptyCell(), position.x, position.y);
+        board.placePiece(PieceFactory.cell(), position);
         if (board.getPiece(row, col) instanceof FAForcedPiece) {
-            switch (board.getType(row, col)) {
-                case PAWN:
-                    xp += XPRules.PAWN_CAPTURE_XP;
-                    break;
-                case KNIGHT:
-                    xp += XPRules.KNIGHT_CAPTURE_XP;
-                    break;
-                case BISHOP:
-                    xp += XPRules.BISHOP_CAPTURE_XP;
-                    break;
-                case ROOK:
-                    xp += XPRules.ROOK_CAPTURE_XP;
-                    break;
-                case QUEEN:
-                    xp += XPRules.QUEEN_CAPTURE_XP;
-                    break;
-                case AMAZON:
-                    xp += XPRules.AMAZON_CAPTURE_XP;
-                    break;
+            int captureXP = ForcedXPRules.getPieceXPWorth(board.getType(row, col));
+            if (captureXP != 0) {
+                xp += captureXP;
+                xpChanged = true;
             }
-            xpChanged = true;
             ((FAForcedPiece) board.getPiece(row, col)).respawn(board);
         }
         board.placePiece(this, row, col);
         if (board.isInCheck(side.getOpponent())) {
-            xp += XPRules.CHECK_XP;
+            xp += ForcedXPRules.getCheckXPWorth();
             checkHappened = true;
             xpChanged = true;
         } else {
             checkHappened = false;
         }
         if (!xpChanged) {
-            xp += XPRules.MOVE_XP;
+            xp += ForcedXPRules.getMoveXPWorth();
         }
         if (doesNotLevelUp()) {
             xp = 0;
@@ -106,53 +99,23 @@ public abstract class FAForcedPiece extends ForcedPiece {
 
     private void respawn(@NotNull Board board) {
         if (board.isFree(initialPosition.x, initialPosition.y)) {
-            int currentLevel = XPRules.LEVELS.indexOf(getType());
+            int currentLevel = ForcedXPRules.LEVELS.indexOf(getType());
             if (currentLevel > 0) {
-                switch (XPRules.LEVELS.get(currentLevel - 1)) {
-                    case PAWN:
-                        board.placePiece(new FAForcedPawn(side, 0, initialPosition), initialPosition.x, initialPosition.y);
-                        break;
-                    case KNIGHT:
-                        board.placePiece(new FAForcedKnight(side, 0, initialPosition), initialPosition.x, initialPosition.y);
-                        break;
-                    case BISHOP:
-                        board.placePiece(new FAForcedBishop(side, 0, initialPosition), initialPosition.x, initialPosition.y);
-                        break;
-                    case ROOK:
-                        board.placePiece(new FAForcedRook(side, 0, initialPosition), initialPosition.x, initialPosition.y);
-                        break;
-                    case QUEEN:
-                        board.placePiece(new FAForcedQueen(side, 0, initialPosition), initialPosition.x, initialPosition.y);
-                        break;
-                }
+                PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel - 1);
+                morph(board, newPieceType, 0, initialPosition);
             }
         }
     }
 
     private void levelUp(@NotNull Board board) {
-        int currentLevel = XPRules.LEVELS.indexOf(getType());
-        if (currentLevel < XPRules.LEVELS.size() - 1) {
+        int currentLevel = ForcedXPRules.LEVELS.indexOf(getType());
+        if (currentLevel < ForcedXPRules.LEVELS.size() - 1) {
             int diff = xp - maxXP;
-            switch (XPRules.LEVELS.get(currentLevel + 1)) {
-                case KNIGHT:
-                    board.placePiece(new FAForcedKnight(side, diff, initialPosition), position.x, position.y);
-                    break;
-                case BISHOP:
-                    board.placePiece(new FAForcedBishop(side, diff, initialPosition), position.x, position.y);
-                    break;
-                case ROOK:
-                    board.placePiece(new FAForcedRook(side, diff, initialPosition), position.x, position.y);
-                    break;
-                case QUEEN:
-                    board.placePiece(new FAForcedQueen(side, diff, initialPosition), position.x, position.y);
-                    break;
-                case AMAZON:
-                    board.placePiece(new FAForcedAmazon(side, diff, initialPosition), position.x, position.y);
-                    break;
-            }
+            PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel + 1);
+            morph(board, newPieceType, diff, position);
             FAForcedPiece newPiece = ((FAForcedPiece) board.getPiece(position.x, position.y));
             if (board.isInCheck(side.getOpponent()) && !checkHappened) {
-                newPiece.xp += XPRules.CHECK_XP;
+                newPiece.xp += ForcedXPRules.getCheckXPWorth();
                 newPiece.checkHappened = true;
             }
             if (checkHappened) {
@@ -167,13 +130,17 @@ public abstract class FAForcedPiece extends ForcedPiece {
         }
     }
 
-    @Contract(pure = true)
-    protected boolean doesNotLevelUp() {
-        return false;
+    private void morph(@NotNull Board board, PieceType newPieceType, int xp, Point position) {
+        board.placePiece(PieceFactory.piece(PieceBaseType.FA_FORCED_PIECE, newPieceType, side, xp, initialPosition), position);
     }
 
     @Contract(pure = true)
-    protected boolean doesNotLevelDown() {
-        return false;
+    private boolean doesNotLevelUp() {
+        return maxXP == 0;
+    }
+
+    @Contract(pure = true)
+    private boolean doesNotLevelDown() {
+        return ForcedXPRules.LEVELS.indexOf(getType()) <= 0;
     }
 }

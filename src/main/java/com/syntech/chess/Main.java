@@ -51,7 +51,7 @@ public class Main {
                     if (status == null) {
                         status = board.getTurnSide().getProperName() + "'s Turn";
                     }
-                    CellGraphics.display(imGui, Side.NONE, PieceType.NONE, status, size, board.getTurnSide().toColor(), 0);
+                    CellGraphics.display(imGui, Side.NEUTRAL, PieceType.EMPTY, status, size, board.getTurnSide().toColor(), 0);
                     imGui.end();
                 }
                 imGui.render();

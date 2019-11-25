@@ -24,7 +24,7 @@ public abstract class MovementType implements Cloneable {
     }
 
     public PieceType getType() {
-        return PieceType.NONE;
+        return PieceType.EMPTY;
     }
 
     public ArrayList<Point> getControlledCells(Point position, Board board) {

@@ -29,7 +29,7 @@ public class CellGraphics {
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
         names = new ArrayList<>();
-        loadTexture(Side.NONE, PieceType.NONE);
+        loadTexture(Side.NEUTRAL, PieceType.EMPTY);
         loadSet(Side.WHITE);
         loadSet(Side.BLACK);
         loadFASet(Side.WHITE);
@@ -51,7 +51,7 @@ public class CellGraphics {
         BufferedImage texture = ImageIO.read(textureInput);
         Graphics2D graphics = (Graphics2D) texture.getGraphics();
         for (int i = 0; i <= BARSTAGES; i++) {
-            String barTexturePath = String.format("textures/fa_forced/bar/%d.png", i);
+            String barTexturePath = String.format("textures/xp_bar/%d.png", i);
             InputStream barTextureInput = Main.class.getClassLoader().getResourceAsStream(barTexturePath);
             assert barTextureInput != null;
             BufferedImage barTexture = ImageIO.read(barTextureInput);
@@ -121,7 +121,7 @@ public class CellGraphics {
         return display(imGui, getName(side, type), label, size, color, id);
     }
 
-    public static boolean display(JImGui imGui, Side side, PieceType type, float size, Color color, int id) {
+    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, float size, Color color, int id) {
         String label = side.getProperName() + ' ' + type.getProperName();
         return display(imGui, side, type, label, size, color, id);
     }

@@ -51,7 +51,7 @@ public enum Color {
             case CAPTURE_BLACK:
                 return Side.BLACK;
             default:
-                return Side.NONE;
+                return Side.NEUTRAL;
         }
     }
 
