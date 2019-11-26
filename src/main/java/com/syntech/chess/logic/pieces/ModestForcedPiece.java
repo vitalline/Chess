@@ -4,22 +4,23 @@ import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceBaseType;
 import com.syntech.chess.logic.Side;
-import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class ForcedPiece extends Piece {
+public class ModestForcedPiece extends Piece {
 
-    public ForcedPiece(Side side, MovementType movementType) {
+    public ModestForcedPiece(Side side, MovementType movementType) {
         super(side, movementType);
-        baseType = PieceBaseType.FORCED_PIECE;
+        baseType = PieceBaseType.MODEST_FORCED_PIECE;
     }
 
     public ArrayList<Move> getAvailableCaptures(@NotNull Board board) {
         ArrayList<Move> moves = super.getAvailableCaptures(board);
-        Move.setPriority(moves, MovePriorities.FORCED_CAPTURE);
+        for (Move move : moves) {
+            move.setPriority(move.getCapturePriority(board));
+        }
         return moves;
     }
 }

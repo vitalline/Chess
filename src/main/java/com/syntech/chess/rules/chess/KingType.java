@@ -1,6 +1,7 @@
 package com.syntech.chess.rules.chess;
 
 import com.syntech.chess.logic.Board;
+import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
@@ -32,14 +33,14 @@ public class KingType extends MovementType {
     }
 
     @Override
-    public ArrayList<Point> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
-        ArrayList<Point> moves = new ArrayList<>();
+    public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (board.isFree(position.x + i, position.y + j)
                         && !board.getAllControlledCells(side.getOpponent()).contains(
                         new Point(position.x + i, position.y + j))) {
-                    moves.add(new Point(position.x + i, position.y + j));
+                    moves.add(new Move(position.x + i, position.y + j));
                 }
             }
         }
@@ -47,16 +48,16 @@ public class KingType extends MovementType {
     }
 
     @Override
-    public ArrayList<Point> getAvailableThreatsOn(Point position, Board board, Side side) {
-        ArrayList<Point> moves = new ArrayList<>();
+    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (board.getSide(position.x + i, position.y + j) == side && this.side == side) {
-                    moves.add(new Point(position.x + i, position.y + j));
+                    moves.add(new Move(position.x + i, position.y + j));
                 } else if (board.getSide(position.x + i, position.y + j) == side
                         && !board.getAllControlledCells(side).contains(
                         new Point(position.x + i, position.y + j))) {
-                    moves.add(new Point(position.x + i, position.y + j));
+                    moves.add(new Move(position.x + i, position.y + j));
                 }
             }
         }

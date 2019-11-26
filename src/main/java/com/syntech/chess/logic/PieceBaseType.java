@@ -6,9 +6,13 @@ import org.jetbrains.annotations.NotNull;
 public enum PieceBaseType {
     PIECE("Piece", ""),
     FORCED_PIECE("ForcedPiece", "Forced"),
+    MODEST_FORCED_PIECE("ModestForcedPiece", "Modest Forced"),
     PROMOTABLE_PIECE("PromotablePiece", ""),
     PROMOTABLE_FORCED_PIECE("PromotableForcedPiece", "Forced"),
+    PROMOTABLE_MODEST_FORCED_PIECE("PromotableModestForcedPiece", "Modest Forced"),
+    SHOOTING_PIECE("ShootingPiece", ""),
     FA_FORCED_PIECE("FAForcedPiece", "Forced"),
+    CLONING_FORCED_PIECE("CloningForcedPiece", "Cloning Forced"),
     NEUTRAL_PIECE("NeutralPiece", "");
 
     private String name;

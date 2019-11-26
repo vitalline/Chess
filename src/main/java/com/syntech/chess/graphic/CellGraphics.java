@@ -30,6 +30,7 @@ public class CellGraphics {
         textures = new ArrayList<>();
         names = new ArrayList<>();
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
+        loadTexture(Side.NEUTRAL, PieceType.WALL);
         loadSet(Side.WHITE);
         loadSet(Side.BLACK);
         loadFASet(Side.WHITE);
@@ -64,6 +65,7 @@ public class CellGraphics {
     }
 
     private static void loadSet(Side side) throws IOException {
+        loadTexture(side, PieceType.EMPTY);
         loadTexture(side, PieceType.PAWN);
         loadTexture(side, PieceType.KNIGHT);
         loadTexture(side, PieceType.BISHOP);
@@ -74,6 +76,7 @@ public class CellGraphics {
     }
 
     private static void loadFASet(Side side) throws IOException {
+        loadTextures(side, PieceType.EMPTY);
         loadTextures(side, PieceType.PAWN);
         loadTextures(side, PieceType.KNIGHT);
         loadTextures(side, PieceType.BISHOP);

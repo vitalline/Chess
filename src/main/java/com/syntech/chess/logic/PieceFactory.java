@@ -15,6 +15,12 @@ public class PieceFactory {
         return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, Side.NEUTRAL);
     }
 
+    @Contract(" -> new")
+    @NotNull
+    public static Piece wall() {
+        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.WALL, Side.NEUTRAL);
+    }
+
     @NotNull
     public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side) {
         return piece(baseType, type, side, 0, null, 0);
@@ -40,12 +46,20 @@ public class PieceFactory {
                 return new Piece(side, type.getMovementType(side));
             case FORCED_PIECE:
                 return new ForcedPiece(side, type.getMovementType(side));
+            case MODEST_FORCED_PIECE:
+                return new ModestForcedPiece(side, type.getMovementType(side));
             case PROMOTABLE_PIECE:
                 return new PromotablePiece(side, type.getMovementType(side), promotionRow, pieces);
             case PROMOTABLE_FORCED_PIECE:
                 return new PromotableForcedPiece(side, type.getMovementType(side), promotionRow, pieces);
+            case PROMOTABLE_MODEST_FORCED_PIECE:
+                return new PromotableModestForcedPiece(side, type.getMovementType(side), promotionRow, pieces);
+            case SHOOTING_PIECE:
+                return new ShootingPiece(side, type.getMovementType(side));
             case FA_FORCED_PIECE:
                 return new FAForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type), initialPosition);
+            case CLONING_FORCED_PIECE:
+                return new CloningForcedPiece(side, type.getMovementType(side));
             default:
                 return cell();
         }

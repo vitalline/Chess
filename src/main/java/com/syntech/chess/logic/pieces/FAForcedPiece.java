@@ -4,6 +4,7 @@ import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.logic.*;
 import com.syntech.chess.rules.ForcedXPRules;
 import com.syntech.chess.rules.MovementType;
+import com.syntech.chess.rules.SpecialFirstMoveType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,9 @@ public class FAForcedPiece extends ForcedPiece {
 
     @Override
     public void move(@NotNull Board board, int row, int col) {
+        if (movementType instanceof SpecialFirstMoveType) {
+            ((SpecialFirstMoveType) movementType).move();
+        }
         boolean xpChanged = false;
         board.placePiece(PieceFactory.cell(), position);
         if (board.getPiece(row, col) instanceof FAForcedPiece) {

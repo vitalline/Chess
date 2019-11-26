@@ -1,6 +1,7 @@
 package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.logic.*;
+import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
 import org.jetbrains.annotations.Contract;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class Piece implements Cloneable {
     protected final Side side;
     protected Point position;
-    private MovementType movementType;
+    protected MovementType movementType;
     PieceBaseType baseType;
 
     @Contract(pure = true)
@@ -70,32 +71,35 @@ public class Piece implements Cloneable {
         return movementType.getControlledCells(position, board);
     }
 
-    public ArrayList<Point> getAvailableMovesWithoutSpecialRules(Board board) {
+    public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
         return movementType.getAvailableMovesWithoutSpecialRules(position, board);
     }
 
-    public ArrayList<Point> getAvailableThreatsOn(Board board, Side side) {
+    public ArrayList<Move> getAvailableThreatsOn(Board board, Side side) {
         return movementType.getAvailableThreatsOn(position, board, side);
     }
 
-    public ArrayList<Point> getAvailableCapturesWithoutSpecialRules(Board board) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board) {
         return getAvailableThreatsOn(board, side.getOpponent());
     }
 
-    public ArrayList<Point> getAvailableMoves(Board board) {
-        ArrayList<Point> moves = getAvailableMovesWithoutSpecialRules(board);
-        return excludeMovesThatLeaveKingInCheck(board, moves);
+    public ArrayList<Move> getAvailableMoves(Board board) {
+        ArrayList<Move> moves = getAvailableMovesWithoutSpecialRules(board);
+        moves = excludeMovesThatLeaveKingInCheck(board, moves);
+        return MovePriorities.topPriorityMoves(moves);
     }
 
-    public ArrayList<Point> getAvailableCaptures(Board board) {
-        ArrayList<Point> moves = getAvailableCapturesWithoutSpecialRules(board);
-        return excludeMovesThatLeaveKingInCheck(board, moves);
+    public ArrayList<Move> getAvailableCaptures(Board board) {
+        ArrayList<Move> moves = getAvailableCapturesWithoutSpecialRules(board);
+        moves = excludeMovesThatLeaveKingInCheck(board, moves);
+        return MovePriorities.topPriorityMoves(moves);
     }
 
-    @NotNull ArrayList<Point> excludeMovesThatLeaveKingInCheck(Board board, @NotNull ArrayList<Point> moves) {
-        ArrayList<Point> filteredMoves = new ArrayList<>();
-        for (Point move : moves) {
-            if (!board.getNextTurn(position.x, position.y, move.x, move.y).isInCheck(side)) {
+    @NotNull
+    private ArrayList<Move> excludeMovesThatLeaveKingInCheck(Board board, @NotNull ArrayList<Move> moves) {
+        ArrayList<Move> filteredMoves = new ArrayList<>();
+        for (Move move : moves) {
+            if (!board.getNextTurn(position.x, position.y, move.getRow(), move.getCol()).isInCheck(side)) {
                 filteredMoves.add(move);
             }
         }

@@ -4,6 +4,8 @@ import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.logic.pieces.PromotablePiece;
+import com.syntech.chess.rules.MovePriorities;
+import com.syntech.chess.rules.MovementRules;
 import org.ice1000.jimgui.JImGui;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.NativeBool;
@@ -23,13 +25,16 @@ public class Board {
     private boolean displayPromotionPopup = false;
     private boolean displayResultPopup = false;
     private String status;
+    private Side statusSide = Side.WHITE;
+    private PieceType statusPiece = PieceType.PAWN;
     private boolean gameEnded;
 
     private Point selectedPiece = new Point(-1, -1);
     private static final Point pieceNone = new Point(-1, -1);
+    private Point enPassantPoint = new Point(-1, -1);
 
-    private ArrayList<Point> availableMoves = new ArrayList<>();
-    private ArrayList<Point> availableCaptures = new ArrayList<>();
+    private ArrayList<Move> availableMoves = new ArrayList<>();
+    private ArrayList<Move> availableCaptures = new ArrayList<>();
 
     public Board(@NotNull Piece[][] board, boolean initialize) {
         height = board.length;
@@ -39,7 +44,7 @@ public class Board {
             for (int col = 0; col < width; col++) {
                 try {
                     this.board[row][col] = (Piece) board[row][col].clone();
-                } catch (CloneNotSupportedException ignore) {
+                } catch (CloneNotSupportedException ignored) {
                     this.board[row][col] = board[row][col];
                 }
             }
@@ -61,7 +66,7 @@ public class Board {
             for (int col = 0; col < width; col++) {
                 try {
                     this.board[row][col] = (Piece) board[row][col].clone();
-                } catch (CloneNotSupportedException ignore) {
+                } catch (CloneNotSupportedException ignored) {
                     this.board[row][col] = board[row][col];
                 }
             }
@@ -75,21 +80,29 @@ public class Board {
     public void display(@NotNull JImGui imGui, String name, float size) {
         float spacingX = imGui.getStyle().getItemSpacingX();
         float spacingY = imGui.getStyle().getItemSpacingY();
+        float paddingX = imGui.getStyle().getFramePaddingX();
+        float paddingY = imGui.getStyle().getFramePaddingY();
         imGui.getStyle().setItemSpacingX(0);
         imGui.getStyle().setItemSpacingY(0);
+        imGui.getStyle().setFramePaddingX(0);
+        imGui.getStyle().setFramePaddingY(0);
         imGui.begin(name, new NativeBool(), JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
-        imGui.pushStyleColor(JImStyleColors.WindowBg, com.syntech.chess.graphic.Color.NONE.getColor());
+        displayLabelRow(imGui, size);
         for (int row = height - 1; row >= 0; row--) {
-            for (int col = 0; col < width - 1; col++) {
+            displayLabel(imGui, getRow(row), size / 2, size);
+            imGui.sameLine();
+            for (int col = 0; col < width; col++) {
                 displayCell(imGui, size, row, col);
                 imGui.sameLine();
             }
-            int col = width - 1;
-            displayCell(imGui, size, row, col);
+            displayLabel(imGui, getRow(row), size / 2, size);
         }
+        displayLabelRow(imGui, size);
         imGui.end();
         imGui.getStyle().setItemSpacingX(spacingX);
         imGui.getStyle().setItemSpacingY(spacingY);
+        imGui.getStyle().setFramePaddingX(paddingX);
+        imGui.getStyle().setFramePaddingY(paddingY);
         if (displayPromotionPopup) {
             imGui.openPopup("Promote");
         }
@@ -118,9 +131,27 @@ public class Board {
     }
 
     private void displayCell(JImGui imGui, float size, int row, int col) {
-        if (CellGraphics.display(imGui, board[row][col], size, getColor(row, col), col * width + row)) {
+        if (CellGraphics.display(imGui, board[row][col], size, getColor(row, col), col * height + row)) {
             analyzeMove(row, col);
         }
+    }
+
+    private void displayLabel(@NotNull JImGui imGui, String label, float x, float y) {
+        imGui.pushStyleColor(JImStyleColors.Button, Color.NONE.getColor());
+        imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.NONE.getColor());
+        imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.NONE.getColor());
+        imGui.button(label, x, y);
+        imGui.popStyleColor(3);
+    }
+
+    private void displayLabelRow(JImGui imGui, float size) {
+        displayLabel(imGui, "", size / 2, size / 2);
+        imGui.sameLine();
+        for (int col = 0; col < width; col++) {
+            displayLabel(imGui, "" + getColumn(col), size, size / 2);
+            imGui.sameLine();
+        }
+        displayLabel(imGui, "", size / 2, size / 2);
     }
 
     private void analyzeMove(int row, int col) {
@@ -128,13 +159,28 @@ public class Board {
             deselectPiece();
         } else if (getTurnSide() == getSide(row, col)) {
             selectPiece(row, col);
-        } else if (availableMoves.contains(new Point(row, col)) || availableCaptures.contains(new Point(row, col))) {
+        } else if (Move.contains(availableMoves, row, col) || Move.contains(availableCaptures, row, col)) {
             moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col, getSelectedPiece().getSide().getOpponent());
         }
     }
 
     private void move(int fromrow, int fromcol, int torow, int tocol) {
-        getPiece(fromrow, fromcol).move(this, torow, tocol);
+        Piece piece = getPiece(fromrow, fromcol);
+        Piece enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
+        if (enPassantPoint.x == torow && enPassantPoint.y == tocol
+                && (piece.getType() == PieceType.PAWN || piece.getType() == PieceType.DOUBLE_PAWN)
+                && fromcol != tocol) {
+            placePiece(PieceFactory.cell(), torow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), tocol);
+        }
+        if (enPassantPiece.getType() == PieceType.EMPTY && enPassantPiece.getSide() == piece.getSide()) {
+            placePiece(PieceFactory.cell(), enPassantPoint);
+            enPassantPoint = pieceNone;
+        }
+        if (piece.getType() == PieceType.DOUBLE_PAWN && torow - fromrow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
+            enPassantPoint = new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol);
+            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), enPassantPoint);
+        }
+        piece.move(this, torow, tocol);
         selectedPiece = new Point(torow, tocol);
         if (getSelectedPiece().canBePromoted(this)) {
             displayPromotionPopup = true;
@@ -157,8 +203,20 @@ public class Board {
 
     @NotNull
     @Contract(pure = true)
+    private static String getRow(int row) {
+        return String.valueOf(row + 1);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    private static String getColumn(int col) {
+        return String.valueOf((char) (col + 'a'));
+    }
+
+    @NotNull
+    @Contract(pure = true)
     public static String getCoordinates(@NotNull Point position) {
-        return (char) (position.y + 'a') + String.valueOf(position.x + 1);
+        return getColumn(position.y) + getRow(position.x);
     }
 
     @Nullable
@@ -166,14 +224,22 @@ public class Board {
         if (getAllAvailableMoves(side).size() == 0 && getAllAvailableCaptures(side).size() == 0) {
             gameEnded = true;
             if (isInCheck(side)) {
+                statusSide = side.getOpponent();
+                statusPiece = PieceType.QUEEN;
                 return String.format("Checkmate! %s wins!", side.getOpponent().getProperName());
             } else {
+                statusSide = side.getOpponent();
+                statusPiece = PieceType.KING;
                 return String.format("%s has stalemated %s!", side.getOpponent().getProperName(), side.getProperName());
             }
         } else {
             if (isInCheck(side)) {
+                statusSide = side;
+                statusPiece = PieceType.KING;
                 return String.format("%s is in check!", side.getProperName());
             } else {
+                statusSide = side;
+                statusPiece = PieceType.PAWN;
                 return null;
             }
         }
@@ -183,11 +249,19 @@ public class Board {
         return status;
     }
 
+    public PieceType getStatusPiece() {
+        return statusPiece;
+    }
+
+    public Side getStatusSide() {
+        return statusSide;
+    }
+
     public void placePiece(Piece piece, int row, int col) {
         try {
             board[row][col] = piece;
             board[row][col].setPosition(row, col);
-        } catch (ArrayIndexOutOfBoundsException ignore) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
 
@@ -200,19 +274,17 @@ public class Board {
             return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : com.syntech.chess.graphic.Color.BLACK;
         } else if (isSelected(row, col)) {
             return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.SELECTED_WHITE : com.syntech.chess.graphic.Color.SELECTED_BLACK;
-        } else {
-            if (availableMoves.contains(new Point(row, col))) {
-                return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.MOVE_WHITE : com.syntech.chess.graphic.Color.MOVE_BLACK;
-            } else if (availableCaptures.contains(new Point(row, col))) {
-                return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.CAPTURE_WHITE : com.syntech.chess.graphic.Color.CAPTURE_BLACK;
-            }
+        } else if (Move.contains(availableMoves, row, col)) {
+            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.MOVE_WHITE : com.syntech.chess.graphic.Color.MOVE_BLACK;
+        } else if (Move.contains(availableCaptures, row, col)) {
+            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.CAPTURE_WHITE : com.syntech.chess.graphic.Color.CAPTURE_BLACK;
         }
         return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : Color.BLACK;
     }
 
     @NotNull
-    private ArrayList<Point> getAllAvailableMovesWithoutSpecialRules(Side side) {
-        ArrayList<Point> moves = new ArrayList<>();
+    private ArrayList<Move> getAllAvailableMovesWithoutSpecialRules(Side side) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
@@ -224,8 +296,8 @@ public class Board {
     }
 
     @NotNull
-    private ArrayList<Point> getAllAvailableCapturesWithoutSpecialRules(Side side) {
-        ArrayList<Point> moves = new ArrayList<>();
+    private ArrayList<Move> getAllAvailableCapturesWithoutSpecialRules(Side side) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
@@ -236,8 +308,8 @@ public class Board {
         return moves;
     }
 
-    public ArrayList<Point> getAllAvailableMoves(Side side) {
-        ArrayList<Point> moves = new ArrayList<>();
+    public ArrayList<Move> getAllAvailableMoves(Side side) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
@@ -245,11 +317,11 @@ public class Board {
                 }
             }
         }
-        return moves;
+        return MovePriorities.topPriorityMoves(moves);
     }
 
-    public ArrayList<Point> getAllAvailableCaptures(Side side) {
-        ArrayList<Point> moves = new ArrayList<>();
+    public ArrayList<Move> getAllAvailableCaptures(Side side) {
+        ArrayList<Move> moves = new ArrayList<>();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
@@ -257,7 +329,7 @@ public class Board {
                 }
             }
         }
-        return moves;
+        return MovePriorities.topPriorityMoves(moves);
     }
 
     public ArrayList<Point> getAllControlledCells(Side side) {
@@ -287,20 +359,16 @@ public class Board {
     public boolean isOnBoard(int row, int col) {
         try {
             board[row][col].getType();
-        } catch (ArrayIndexOutOfBoundsException ignore) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {
             return false;
         }
         return true;
     }
 
-    public boolean isEnemy(int row, int col, Side side) {
-        return !isFree(row, col) && (getSide(row, col) != side) && (getSide(row, col) != Side.NEUTRAL);
-    }
-
     public Piece getPiece(int row, int col) {
         try {
             return board[row][col];
-        } catch (ArrayIndexOutOfBoundsException ignore) {
+        } catch (ArrayIndexOutOfBoundsException ignored) {
             return PieceFactory.cell();
         }
     }
@@ -315,7 +383,18 @@ public class Board {
             selectedPiece = new Point(row, col);
             availableMoves = getSelectedPiece().getAvailableMoves(this);
             availableCaptures = getSelectedPiece().getAvailableCaptures(this);
-        } catch (ArrayIndexOutOfBoundsException ignore) {
+            ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
+            ArrayList<Move> allAvailableCaptures = getAllAvailableCaptures(getSide(row, col));
+            int topPriority = Math.max(MovePriorities.getTopPriority(allAvailableMoves), MovePriorities.getTopPriority(allAvailableCaptures));
+            if (MovePriorities.getTopPriority(availableMoves) < topPriority) {
+                availableMoves = new ArrayList<>();
+            }
+            if (MovePriorities.getTopPriority(availableCaptures) < topPriority) {
+                availableCaptures = new ArrayList<>();
+            }
+            availableMoves = MovePriorities.topPriorityMoves(availableMoves);
+            availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
+        } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
 
@@ -350,9 +429,9 @@ public class Board {
     }
 
     public boolean isInCheck(@NotNull Side side) {
-        ArrayList<Point> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
-        for (Point capture : captures) {
-            if (getType(capture.x, capture.y) == PieceType.KING) {
+        ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
+        for (Move capture : captures) {
+            if (getType(capture.getRow(), capture.getCol()) == PieceType.KING) {
                 return true;
             }
         }
