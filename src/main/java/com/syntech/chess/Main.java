@@ -85,6 +85,10 @@ public class Main {
                         status = board.getTurnSide().getProperName() + "'s Turn";
                     }
                     CellGraphics.display(imGui, board.getStatusSide(), board.getStatusPiece(), status, size, board.getTurnSide().toColor(), -1);
+                    imGui.sameLine();
+                    imGui.pushTextWrapPos(size * 5);
+                    imGui.textWrapped(status);
+                    imGui.popTextWrapPos();
                     imGui.end();
                 }
                 imGui.popStyleColor();
