@@ -7,16 +7,15 @@ public enum PieceBaseType {
     PIECE("Piece", ""),
     FORCED_PIECE("ForcedPiece", "Forced"),
     MODEST_FORCED_PIECE("ModestForcedPiece", "Modest Forced"),
-    PROMOTABLE_PIECE("PromotablePiece", ""),
-    PROMOTABLE_FORCED_PIECE("PromotableForcedPiece", "Forced"),
-    PROMOTABLE_MODEST_FORCED_PIECE("PromotableModestForcedPiece", "Modest Forced"),
     SHOOTING_PIECE("ShootingPiece", ""),
-    FA_FORCED_PIECE("FAForcedPiece", "Forced"),
+    LEVELLING_FORCED_PIECE("LevellingForcedPiece", "Forced"),
+    LEVELLING_UP_FORCED_PIECE("LevellingUpForcedPiece", "Forced"),
+    LEVELLING_DOWN_FORCED_PIECE("LevellingDownForcedPiece", "Forced"),
     CLONING_FORCED_PIECE("CloningForcedPiece", "Cloning Forced"),
     NEUTRAL_PIECE("NeutralPiece", "");
 
-    private String name;
-    private String properName;
+    private final String name;
+    private final String properName;
 
     @Contract(pure = true)
     PieceBaseType(String name) {

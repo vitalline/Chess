@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CloningForcedPiece extends ForcedPiece {
     public CloningForcedPiece(Side side, MovementType movementType) {
-        super(side, movementType);
+        super(side, movementType, null);
     }
 
     public void move(@NotNull Board board, int row, int col) {

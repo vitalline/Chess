@@ -22,8 +22,8 @@ public enum PieceType {
     KING("King"),
     AMAZON("Amazon");
 
-    private String name;
-    private String properName;
+    private final String name;
+    private final String properName;
 
     @Contract(pure = true)
     PieceType(String name) {

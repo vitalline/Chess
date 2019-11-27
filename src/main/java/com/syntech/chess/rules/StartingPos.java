@@ -11,47 +11,34 @@ import org.jetbrains.annotations.NotNull;
 public class StartingPos extends PieceFactory {
     @NotNull
     private static Piece chessPawn(Side side) {
-        return piece(PieceBaseType.PROMOTABLE_PIECE, PieceType.DOUBLE_PAWN, side, side == Side.WHITE ? 8 : 1, chessPawnPromotions(side));
+        return piece(PieceBaseType.PIECE, PieceType.DOUBLE_PAWN, side, side == Side.WHITE ? 8 : 1, chessPawnPromotions());
     }
 
     @NotNull
-    private static Piece forcedChessPawn(Side side, Integer promotionRow) {
-        return piece(PieceBaseType.PROMOTABLE_FORCED_PIECE, PieceType.PAWN, side, promotionRow, forcedChessPawnPromotions(side));
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, Integer promotionRow, PieceType... promotions) {
+        return piece(baseType, PieceType.PAWN, side, promotionRow, promotions);
     }
 
     @NotNull
-    private static Piece forcedChessPawn(Side side) {
-        return forcedChessPawn(side, side == Side.WHITE ? 4 : 1);
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, Integer promotionRow) {
+        return forcedChessPawn(baseType, side, promotionRow, forcedChessPawnPromotions());
     }
 
     @NotNull
-    private static Piece modestForcedChessPawn(Side side, Integer promotionRow) {
-        return piece(PieceBaseType.PROMOTABLE_MODEST_FORCED_PIECE, PieceType.PAWN, side, promotionRow, forcedChessPawnPromotions(side));
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, PieceType... promotions) {
+        return forcedChessPawn(baseType, side, side == Side.WHITE ? 4 : 1, promotions);
     }
 
+    @Contract(value = " -> new", pure = true)
     @NotNull
-    private static Piece modestForcedChessPawn(Side side) {
-        return modestForcedChessPawn(side, side == Side.WHITE ? 4 : 1);
+    private static PieceType[] chessPawnPromotions() {
+        return new PieceType[]{PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN};
     }
 
+    @Contract(value = " -> new", pure = true)
     @NotNull
-    @Contract("_ -> new")
-    private static Piece[] chessPawnPromotions(Side side) {
-        return new Piece[]{
-                piece(PieceBaseType.PIECE, PieceType.KNIGHT, side),
-                piece(PieceBaseType.PIECE, PieceType.BISHOP, side),
-                piece(PieceBaseType.PIECE, PieceType.ROOK, side),
-                piece(PieceBaseType.PIECE, PieceType.QUEEN, side)
-        };
-    }
-
-    @NotNull
-    @Contract("_ -> new")
-    private static Piece[] forcedChessPawnPromotions(Side side) {
-        return new Piece[]{
-                piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, side),
-                piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, side)
-        };
+    private static PieceType[] forcedChessPawnPromotions() {
+        return new PieceType[]{PieceType.ROOK, PieceType.QUEEN};
     }
 
     public static final Piece[][] chess = {
@@ -145,16 +132,16 @@ public class StartingPos extends PieceFactory {
                     piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    forcedChessPawn(Side.WHITE),
-                    forcedChessPawn(Side.WHITE),
-                    forcedChessPawn(Side.WHITE),
-                    forcedChessPawn(Side.WHITE)
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE)
             },
             {
-                    forcedChessPawn(Side.BLACK),
-                    forcedChessPawn(Side.BLACK),
-                    forcedChessPawn(Side.BLACK),
-                    forcedChessPawn(Side.BLACK)
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK)
             },
             {
                     piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK),
@@ -172,16 +159,16 @@ public class StartingPos extends PieceFactory {
                     piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    modestForcedChessPawn(Side.WHITE),
-                    modestForcedChessPawn(Side.WHITE),
-                    modestForcedChessPawn(Side.WHITE),
-                    modestForcedChessPawn(Side.WHITE)
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE)
             },
             {
-                    modestForcedChessPawn(Side.BLACK),
-                    modestForcedChessPawn(Side.BLACK),
-                    modestForcedChessPawn(Side.BLACK),
-                    modestForcedChessPawn(Side.BLACK)
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK)
             },
             {
                     piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
@@ -252,20 +239,20 @@ public class StartingPos extends PieceFactory {
             {
                     cell(),
                     wall(),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
                     wall(),
                     cell()
             },
             {
                     cell(),
                     wall(),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
                     wall(),
                     cell()
             },
@@ -335,20 +322,20 @@ public class StartingPos extends PieceFactory {
             {
                     cell(),
                     wall(),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
                     wall(),
                     cell()
             },
             {
                     cell(),
                     wall(),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
                     wall(),
                     cell()
             },
@@ -418,20 +405,20 @@ public class StartingPos extends PieceFactory {
             {
                     cell(),
                     wall(),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
                     wall(),
                     cell()
             },
             {
                     cell(),
                     wall(),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
                     wall(),
                     cell()
             },
@@ -501,20 +488,20 @@ public class StartingPos extends PieceFactory {
             {
                     cell(),
                     wall(),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
-                    modestForcedChessPawn(Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE, 6),
                     wall(),
                     cell()
             },
             {
                     cell(),
                     wall(),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
-                    modestForcedChessPawn(Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK, 3),
                     wall(),
                     cell()
             },
@@ -584,20 +571,20 @@ public class StartingPos extends PieceFactory {
             {
                     wall(),
                     wall(),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
-                    forcedChessPawn(Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE, 6),
                     wall(),
                     wall()
             },
             {
                     wall(),
                     wall(),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
-                    forcedChessPawn(Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK, 3),
                     wall(),
                     wall()
             },
@@ -633,30 +620,84 @@ public class StartingPos extends PieceFactory {
             }
     };
 
-    public static final Piece[][] forcedChessFA = {
+    public static final Piece[][] involutionForcedChess = {
             {
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.KING, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
             },
             {
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions())
             },
             {
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
+                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions())
             },
             {
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.KING, Side.BLACK),
-                    piece(PieceBaseType.FA_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+            }
+    };
+
+    public static final Piece[][] mmoRPGForcedChess = {
+            {
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+            }
+    };
+
+    public static final Piece[][] involutionMMORPGForcedChess = {
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
             }
     };
 

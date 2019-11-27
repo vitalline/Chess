@@ -20,9 +20,10 @@ public class Main {
     public static void main(String... args) throws IOException {
         JniLoader.load();
         final int size = 50;
-        try (JImGui imGui = new JImGui(800, 600, "Chess")) {
+        try (JImGui imGui = new JImGui(900, 720, "Chess")) {
             CellGraphics.initialize();
             Board board = null;
+            String gameType = null;
             File fontFile = new File("PureProg 12.ttf");
             if (!fontFile.exists()) {
                 String fontPath = "fonts/PureProg 12.ttf";
@@ -41,54 +42,71 @@ public class Main {
                 imGui.pushStyleColor(JImStyleColors.Button, Color.BUTTON.getColor());
                 imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.BUTTON.getHoveredColor());
                 imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.BUTTON.getActiveColor());
-                imGui.begin("Menu", new NativeBool(), JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
-                if (imGui.button("Chess")) {
+                imGui.begin("Menu", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+                if (imGui.button("Regular Chess")) {
                     board = new Board(StartingPos.chess, true);
+                    gameType = "Chess";
                 }
                 if (imGui.button("Forced Chess")) {
                     board = new Board(StartingPos.forcedChess, true);
+                    gameType = "Forced Chess";
                 }
                 if (imGui.button("Modest Forced Chess")) {
                     board = new Board(StartingPos.modestForcedChess, true);
+                    gameType = "Modest Forced Chess";
                 }
                 if (imGui.button("Force Major Chess")) {
                     board = new Board(StartingPos.forceMajorChess, true);
+                    gameType = "Force Major Chess";
                 }
-                if (imGui.button("Sniper Chess")) {
+                if (imGui.button("Sniper Forced Chess")) {
                     board = new Board(StartingPos.sniperChess, true);
+                    gameType = "Sniper Forced Chess";
                 }
-                if (imGui.button("Modest Sniper Chess")) {
+                if (imGui.button("Modest Sniper Frc. Ch.")) {
                     board = new Board(StartingPos.modestSniperChess, true);
+                    gameType = "Modest Sniper Forced Chess";
                 }
-                if (imGui.button("Reserve Chess")) {
+                if (imGui.button("Reserve Forced Chess")) {
                     board = new Board(StartingPos.reserveChess, true);
+                    gameType = "Reserve Forced Chess";
                 }
-                if (imGui.button("Modest Reserve Chess")) {
+                if (imGui.button("Modest Reserve Frc. Ch.")) {
                     board = new Board(StartingPos.modestReserveChess, true);
+                    gameType = "Modest Reserve Forced Chess";
                 }
-                if (imGui.button("Sniper Reserve Chess")) {
+                if (imGui.button("Sniper-Reserve Frc. Ch.")) {
                     board = new Board(StartingPos.sniperReserveChess, true);
+                    gameType = "Sniper-Reserve Forced Chess";
                 }
-                if (imGui.button("FA Forced Chess")) {
-                    board = new Board(StartingPos.forcedChessFA, true);
+                if (imGui.button("Involution Forced Chess")) {
+                    board = new Board(StartingPos.involutionForcedChess, true);
+                    gameType = "Involution Forced Chess";
+                }
+                if (imGui.button("MMORPG Forced Chess")) {
+                    board = new Board(StartingPos.mmoRPGForcedChess, true);
+                    gameType = "MMORPG Forced Chess";
+                }
+                if (imGui.button("Inv.-MMORPG Forced Chess")) {
+                    board = new Board(StartingPos.involutionMMORPGForcedChess, true);
+                    gameType = "Involution-MMORPG Forced Chess";
                 }
                 if (imGui.button("Cloning Forced Chess")) {
                     board = new Board(StartingPos.cloningForcedChess, true);
+                    gameType = "Cloning Forced Chess";
                 }
                 imGui.end();
                 imGui.popStyleColor(3);
                 if (board != null) {
                     board.display(imGui, "Board", size);
-                    imGui.begin("Turn Indicator", new NativeBool(), JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+                    imGui.begin("Turn Indicator", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
                     String status = board.getStatusString();
                     if (status == null) {
                         status = board.getTurnSide().getProperName() + "'s Turn";
                     }
                     CellGraphics.display(imGui, board.getStatusSide(), board.getStatusPiece(), status, size, board.getTurnSide().toColor(), -1);
                     imGui.sameLine();
-                    imGui.pushTextWrapPos(size * 5);
-                    imGui.textWrapped(status);
-                    imGui.popTextWrapPos();
+                    imGui.text(status + "\nGame: " + gameType);
                     imGui.end();
                 }
                 imGui.popStyleColor();

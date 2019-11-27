@@ -9,8 +9,8 @@ public enum Side {
     WHITE("white", "White"),
     BLACK("black", "Black");
 
-    private String name;
-    private String properName;
+    private final String name;
+    private final String properName;
 
     @Contract(pure = true)
     Side(String name) {

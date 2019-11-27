@@ -3,7 +3,6 @@ package com.syntech.chess.logic;
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.pieces.Piece;
-import com.syntech.chess.logic.pieces.PromotablePiece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
 import org.ice1000.jimgui.JImGui;
@@ -86,7 +85,7 @@ public class Board {
         imGui.getStyle().setItemSpacingY(0);
         imGui.getStyle().setFramePaddingX(0);
         imGui.getStyle().setFramePaddingY(0);
-        imGui.begin(name, new NativeBool(), JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+        imGui.begin(name, new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
         displayLabelRow(imGui, size);
         for (int row = height - 1; row >= 0; row--) {
             displayLabel(imGui, getRow(row), size / 2, size);
@@ -110,12 +109,14 @@ public class Board {
             imGui.openPopup("Result");
         }
         if (imGui.beginPopup("Promote", JImWindowFlags.AlwaysAutoResize)) {
-            for (Piece piece : ((PromotablePiece) getSelectedPiece()).getPromotionPieces()) {
-                if (CellGraphics.display(imGui, piece, size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
-                    placePiece(PieceFactory.piece(piece.getBaseType(), piece.getType(), piece.getSide()), selectedPiece);
+            for (PieceType pieceType : getSelectedPiece().getPromotionTypes()) {
+                if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
+                    getSelectedPiece().promoteTo(pieceType);
                     displayPromotionPopup = false;
                     imGui.closeCurrentPopup();
                     advanceTurn();
+                    checkStatusConditions();
+                    break;
                 }
             }
             imGui.endPopup();
@@ -160,7 +161,7 @@ public class Board {
         } else if (getTurnSide() == getSide(row, col)) {
             selectPiece(row, col);
         } else if (Move.contains(availableMoves, row, col) || Move.contains(availableCaptures, row, col)) {
-            moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col, getSelectedPiece().getSide().getOpponent());
+            moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
         }
     }
 
@@ -182,20 +183,22 @@ public class Board {
         }
         piece.move(this, torow, tocol);
         selectedPiece = new Point(torow, tocol);
-        if (getSelectedPiece().canBePromoted(this)) {
+        if (getSelectedPiece().canBePromoted()) {
             displayPromotionPopup = true;
         } else {
             advanceTurn();
         }
     }
 
-    private void moveAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol, Side side) {
+    private void moveAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol) {
         move(fromrow, fromcol, torow, tocol);
-        checkStatusConditions(side);
+        if (!displayPromotionPopup) {
+            checkStatusConditions();
+        }
     }
 
-    private void checkStatusConditions(Side side) {
-        status = getStatusConditions(side);
+    private void checkStatusConditions() {
+        status = getStatusConditions(turnIndicator);
         if (gameEnded) {
             displayResultPopup = true;
         }

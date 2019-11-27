@@ -14,13 +14,20 @@ public class Piece implements Cloneable {
     protected final Side side;
     protected Point position;
     protected MovementType movementType;
+    private PromotionInfo promotionInfo;
     PieceBaseType baseType;
 
     @Contract(pure = true)
     public Piece(Side side, MovementType movementType) {
+        this(side, movementType, null);
+    }
+
+    @Contract(pure = true)
+    public Piece(Side side, MovementType movementType, PromotionInfo promotionInfo) {
         this.side = side;
         this.position = new Point(0, 0);
         this.movementType = movementType;
+        this.promotionInfo = promotionInfo;
         this.baseType = PieceBaseType.PIECE;
     }
 
@@ -29,6 +36,9 @@ public class Piece implements Cloneable {
         Piece clone = (Piece) super.clone();
         clone.position = new Point(position);
         clone.movementType = (MovementType) movementType.clone();
+        if (promotionInfo != null) {
+            clone.promotionInfo = (PromotionInfo) promotionInfo.clone();
+        }
         return clone;
     }
 
@@ -114,8 +124,16 @@ public class Piece implements Cloneable {
         }
     }
 
-    public boolean canBePromoted(Board board) {
-        return false;
+    public boolean canBePromoted() {
+        return promotionInfo != null && promotionInfo.canBePromoted(position.x);
     }
 
+    public PieceType[] getPromotionTypes() {
+        return promotionInfo != null ? promotionInfo.getPromotionTypes() : new PieceType[0];
+    }
+
+    public void promoteTo(@NotNull PieceType type) {
+        this.movementType = type.getMovementType(side);
+        this.promotionInfo = null;
+    }
 }

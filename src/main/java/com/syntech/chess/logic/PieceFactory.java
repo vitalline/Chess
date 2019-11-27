@@ -32,32 +32,35 @@ public class PieceFactory {
     }
 
     @NotNull
-    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, int promotionRow, Piece... pieces) {
-        return piece(baseType, type, side, 0, null, promotionRow, pieces);
+    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, int promotionRow, PieceType... types) {
+        return piece(baseType, type, side, 0, null, promotionRow, types);
     }
 
-    @Contract("_, _, _, _, _, _, _ -> new")
     @NotNull
-    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, int xp, Point initialPosition, int promotionRow, Piece... pieces) {
+    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, int xp, Point initialPosition, int promotionRow, PieceType... types) {
+        return piece(baseType, type, side, new PromotionInfo(promotionRow, types), xp, initialPosition);
+    }
+
+    @Contract("_, _, _, _, _, _ -> new")
+    @NotNull
+    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, PromotionInfo promotionInfo, int xp, Point initialPosition) {
         switch (baseType) {
             case NEUTRAL_PIECE:
                 return new NeutralPiece(side, type.getMovementType(side));
             case PIECE:
-                return new Piece(side, type.getMovementType(side));
+                return new Piece(side, type.getMovementType(side), promotionInfo);
             case FORCED_PIECE:
-                return new ForcedPiece(side, type.getMovementType(side));
+                return new ForcedPiece(side, type.getMovementType(side), promotionInfo);
             case MODEST_FORCED_PIECE:
-                return new ModestForcedPiece(side, type.getMovementType(side));
-            case PROMOTABLE_PIECE:
-                return new PromotablePiece(side, type.getMovementType(side), promotionRow, pieces);
-            case PROMOTABLE_FORCED_PIECE:
-                return new PromotableForcedPiece(side, type.getMovementType(side), promotionRow, pieces);
-            case PROMOTABLE_MODEST_FORCED_PIECE:
-                return new PromotableModestForcedPiece(side, type.getMovementType(side), promotionRow, pieces);
+                return new ModestForcedPiece(side, type.getMovementType(side), promotionInfo);
             case SHOOTING_PIECE:
                 return new ShootingPiece(side, type.getMovementType(side));
-            case FA_FORCED_PIECE:
-                return new FAForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type), initialPosition);
+            case LEVELLING_FORCED_PIECE:
+                return new LevellingForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type), initialPosition);
+            case LEVELLING_UP_FORCED_PIECE:
+                return new LevellingUpForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type));
+            case LEVELLING_DOWN_FORCED_PIECE:
+                return new LevellingDownForcedPiece(side, type.getMovementType(side), promotionInfo, initialPosition);
             case CLONING_FORCED_PIECE:
                 return new CloningForcedPiece(side, type.getMovementType(side));
             default:
