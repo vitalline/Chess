@@ -24,7 +24,7 @@ public abstract class SpecialFirstMoveType extends MovementType {
         }
     }
 
-    protected boolean hasNotMoved() {
+    public boolean hasNotMoved() {
         return hasNotMoved;
     }
 

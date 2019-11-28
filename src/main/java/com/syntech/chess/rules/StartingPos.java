@@ -43,14 +43,14 @@ public class StartingPos extends PieceFactory {
 
     public static final Piece[][] chess = {
             {
-                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.WHITE),
                     piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.WHITE),
                     piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.WHITE),
                     piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.WHITE),
-                    piece(PieceBaseType.PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_KING, Side.WHITE),
                     piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.WHITE),
                     piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.WHITE),
-                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE)
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.WHITE)
             },
             {
                     chessPawn(Side.WHITE),
@@ -113,14 +113,14 @@ public class StartingPos extends PieceFactory {
                     chessPawn(Side.BLACK)
             },
             {
-                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.BLACK),
-                    piece(PieceBaseType.PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_KING, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.BLACK),
-                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK)
+                    piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
             }
     };
 

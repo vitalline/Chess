@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Move {
     private final Point endPosition;
@@ -21,6 +22,20 @@ public class Move {
     public Move(int row, int col, int priority) {
         this.endPosition = new Point(row, col);
         this.priority = priority;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return priority == move.priority &&
+                Objects.equals(endPosition, move.endPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(endPosition, priority);
     }
 
     public Point getEndPosition() {

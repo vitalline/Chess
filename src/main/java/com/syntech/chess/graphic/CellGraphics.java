@@ -24,7 +24,7 @@ public class CellGraphics {
     private static ArrayList<JImTextureID> textures;
     private static ArrayList<String> names;
 
-    public static final int BARSTAGES = 48;
+    public static final int XP_BAR_STAGES = 48;
 
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
@@ -33,8 +33,8 @@ public class CellGraphics {
         loadTexture(Side.NEUTRAL, PieceType.WALL);
         loadSet(Side.WHITE);
         loadSet(Side.BLACK);
-        loadFASet(Side.WHITE);
-        loadFASet(Side.BLACK);
+        loadXPSet(Side.WHITE);
+        loadXPSet(Side.BLACK);
     }
 
     private static void loadTexture(Side side, PieceType type) throws IOException {
@@ -51,7 +51,7 @@ public class CellGraphics {
         assert textureInput != null;
         BufferedImage texture = ImageIO.read(textureInput);
         Graphics2D graphics = (Graphics2D) texture.getGraphics();
-        for (int i = 0; i <= BARSTAGES; i++) {
+        for (int i = 0; i <= XP_BAR_STAGES; i++) {
             String barTexturePath = String.format("textures/xp_bar/%d.png", i);
             InputStream barTextureInput = Main.class.getClassLoader().getResourceAsStream(barTexturePath);
             assert barTextureInput != null;
@@ -75,7 +75,7 @@ public class CellGraphics {
         loadTexture(side, PieceType.KING);
     }
 
-    private static void loadFASet(Side side) throws IOException {
+    private static void loadXPSet(Side side) throws IOException {
         loadTextures(side, PieceType.EMPTY);
         loadTextures(side, PieceType.PAWN);
         loadTextures(side, PieceType.KNIGHT);

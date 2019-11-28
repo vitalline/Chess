@@ -18,8 +18,10 @@ public enum PieceType {
     BISHOP("Bishop"),
     SNIPER("Bishop", "Sniper"),
     ROOK("Rook"),
+    CASTLING_ROOK("Rook"),
     QUEEN("Queen"),
     KING("King"),
+    CASTLING_KING("King"),
     AMAZON("Amazon");
 
     private final String name;
@@ -65,10 +67,14 @@ public enum PieceType {
                 return new SniperType();
             case ROOK:
                 return new RookType();
+            case CASTLING_ROOK:
+                return new CastlingRookType();
             case QUEEN:
                 return new QueenType();
             case KING:
                 return new KingType(side);
+            case CASTLING_KING:
+                return new CastlingKingType(side);
             case AMAZON:
                 return new AmazonType();
             default:

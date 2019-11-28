@@ -48,7 +48,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (doesNotLevelUp()) {
             return super.getName();
         }
-        return String.format("%s%s%d", getSide().getName(), getType().getName(), CellGraphics.BARSTAGES * xp / maxXP);
+        return String.format("%s%s%d", getSide().getName(), getType().getName(), CellGraphics.XP_BAR_STAGES * xp / maxXP);
     }
 
     @Override

@@ -181,6 +181,12 @@ public class Board {
             enPassantPoint = new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol);
             placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), enPassantPoint);
         }
+        if (piece.getType() == PieceType.KING && tocol - fromcol == 2) {
+            getPiece(fromrow, fromcol + 3).move(this, fromrow, fromcol + 1);
+        }
+        if (piece.getType() == PieceType.KING && tocol - fromcol == -2) {
+            getPiece(fromrow, fromcol - 4).move(this, fromrow, fromcol - 1);
+        }
         piece.move(this, torow, tocol);
         selectedPiece = new Point(torow, tocol);
         if (getSelectedPiece().canBePromoted()) {

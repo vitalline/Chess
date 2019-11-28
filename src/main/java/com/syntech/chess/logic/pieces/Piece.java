@@ -58,6 +58,10 @@ public class Piece implements Cloneable {
         return baseType;
     }
 
+    public MovementType getMovementType() {
+        return movementType;
+    }
+
     public String getName() {
         return getSide().getName() + getType().getName();
     }
