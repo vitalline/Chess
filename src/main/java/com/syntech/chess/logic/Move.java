@@ -1,7 +1,6 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.rules.MovePriorities;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -10,18 +9,20 @@ import java.util.Objects;
 
 public class Move {
     private final Point endPosition;
-    private int priority;
+    private int priority, power;
 
-    @Contract(pure = true)
     public Move(int row, int col) {
-        this.endPosition = new Point(row, col);
-        this.priority = MovePriorities.NORMAL_MOVE;
+        this(row, col, 0);
     }
 
-    @Contract(pure = true)
     public Move(int row, int col, int priority) {
+        this(row, col, priority, 0);
+    }
+
+    public Move(int row, int col, int priority, int power) {
         this.endPosition = new Point(row, col);
         this.priority = priority;
+        this.power = power;
     }
 
     @Override
@@ -29,13 +30,13 @@ public class Move {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Move move = (Move) o;
-        return priority == move.priority &&
+        return priority == move.priority && power == move.power &&
                 Objects.equals(endPosition, move.endPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(endPosition, priority);
+        return Objects.hash(endPosition, power, priority);
     }
 
     public Point getEndPosition() {
@@ -54,8 +55,16 @@ public class Move {
         return priority;
     }
 
+    public int getPower() {
+        return power;
+    }
+
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
     }
 
     @NotNull
@@ -76,9 +85,24 @@ public class Move {
         return false;
     }
 
+    public static boolean containsWithPowerAtLeast(int power, @NotNull ArrayList<Move> moves, int row, int col) {
+        for (Move move : moves) {
+            if (move.getRow() == row && move.getCol() == col && move.getPower() >= power) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void setPriority(ArrayList<Move> moves, int priority) {
         for (Move move : moves) {
             move.setPriority(priority);
+        }
+    }
+
+    public static void setPower(ArrayList<Move> moves, int power) {
+        for (Move move : moves) {
+            move.setPower(power);
         }
     }
 

@@ -89,6 +89,14 @@ public class Main {
                     board = new Board(StartingPos.involutionMMORPGForcedChess, true);
                     gameType = "Involution-MMORPG Forced Chess";
                 }
+                if (imGui.button("Resist. MMORPG Frc. Ch.")) {
+                    board = new Board(StartingPos.resistanceMMORPGForcedChess, true);
+                    gameType = "Resistance MMORPG Forced Chess";
+                }
+                if (imGui.button("Res.-Pow. MMORPG Frc. Ch.")) {
+                    board = new Board(StartingPos.resistancePowerMMORPGForcedChess, true);
+                    gameType = "Resistance-Power MMORPG Forced Chess";
+                }
                 if (imGui.button("Cloning Forced Chess")) {
                     board = new Board(StartingPos.cloningForcedChess, true);
                     gameType = "Cloning Forced Chess";

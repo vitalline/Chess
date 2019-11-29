@@ -18,6 +18,7 @@ public class ForcedPiece extends Piece {
         baseType = PieceBaseType.FORCED_PIECE;
     }
 
+    @Override
     public ArrayList<Move> getAvailableCaptures(@NotNull Board board) {
         ArrayList<Move> moves = super.getAvailableCaptures(board);
         Move.setPriority(moves, MovePriorities.FORCED_CAPTURE);

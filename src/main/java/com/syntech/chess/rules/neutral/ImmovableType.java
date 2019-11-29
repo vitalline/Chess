@@ -5,7 +5,6 @@ import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -15,7 +14,6 @@ public class ImmovableType extends MovementType {
 
     private PieceType type;
 
-    @Contract(pure = true)
     public ImmovableType(PieceType type) {
         this.type = type;
     }

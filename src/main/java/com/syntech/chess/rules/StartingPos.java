@@ -1,41 +1,46 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.PieceBaseType;
-import com.syntech.chess.logic.PieceFactory;
-import com.syntech.chess.logic.PieceType;
-import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.*;
 import com.syntech.chess.logic.pieces.Piece;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class StartingPos extends PieceFactory {
     @NotNull
     private static Piece chessPawn(Side side) {
-        return piece(PieceBaseType.PIECE, PieceType.DOUBLE_PAWN, side, side == Side.WHITE ? 8 : 1, chessPawnPromotions());
+        return piece(PieceBaseType.PIECE, PieceType.DOUBLE_PAWN, side, new PromotionInfo(side == Side.WHITE ? 8 : 1, chessPawnPromotions()));
     }
 
     @NotNull
-    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, Integer promotionRow, PieceType... promotions) {
-        return piece(baseType, PieceType.PAWN, side, promotionRow, promotions);
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side,
+                                         int promotionRow, PieceType[] promotions, LevellingData levellingData) {
+        return piece(baseType, PieceType.PAWN, side, new PromotionInfo(promotionRow, promotions), levellingData);
     }
 
     @NotNull
-    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, Integer promotionRow) {
-        return forcedChessPawn(baseType, side, promotionRow, forcedChessPawnPromotions());
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, int promotionRow) {
+        return forcedChessPawn(baseType, side, promotionRow, forcedChessPawnPromotions(), null);
     }
 
     @NotNull
-    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, PieceType... promotions) {
-        return forcedChessPawn(baseType, side, side == Side.WHITE ? 4 : 1, promotions);
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, PieceType[] promotions, LevellingData levellingData) {
+        return forcedChessPawn(baseType, side, side == Side.WHITE ? 4 : 1, promotions, levellingData);
     }
 
-    @Contract(value = " -> new", pure = true)
+    @NotNull
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side, PieceType[] promotions) {
+        return forcedChessPawn(baseType, side, promotions, LevellingData.NONE);
+    }
+
+    @NotNull
+    private static Piece forcedChessPawn(PieceBaseType baseType, Side side) {
+        return forcedChessPawn(baseType, side, forcedChessPawnPromotions());
+    }
+
     @NotNull
     private static PieceType[] chessPawnPromotions() {
         return new PieceType[]{PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN};
     }
 
-    @Contract(value = " -> new", pure = true)
     @NotNull
     private static PieceType[] forcedChessPawnPromotions() {
         return new PieceType[]{PieceType.ROOK, PieceType.QUEEN};
@@ -622,82 +627,136 @@ public class StartingPos extends PieceFactory {
 
     public static final Piece[][] involutionForcedChess = {
             {
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.KING, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.DOWN)
             },
             {
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.WHITE, chessPawnPromotions())
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.WHITE, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.WHITE, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.WHITE, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.WHITE, chessPawnPromotions(), LevellingData.DOWN)
             },
             {
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions()),
-                    forcedChessPawn(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, Side.BLACK, chessPawnPromotions())
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.BLACK, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.BLACK, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.BLACK, chessPawnPromotions(), LevellingData.DOWN),
+                    forcedChessPawn(PieceBaseType.LEVELLING_FORCED_PIECE, Side.BLACK, chessPawnPromotions(), LevellingData.DOWN)
             },
             {
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.KING, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_DOWN_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.DOWN)
             }
     };
 
     public static final Piece[][] mmoRPGForcedChess = {
             {
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.KING, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP)
             },
             {
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP)
             },
             {
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP)
             },
             {
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.KING, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_UP_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP)
             }
     };
 
     public static final Piece[][] involutionMMORPGForcedChess = {
             {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_DOWN)
             },
             {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_DOWN)
             },
             {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_DOWN)
             },
             {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK)
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP_DOWN),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_DOWN)
+            }
+    };
+
+    public static final Piece[][] resistanceMMORPGForcedChess = {
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_RES)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP_RES),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_RES)
+            }
+    };
+
+    public static final Piece[][] resistancePowerMMORPGForcedChess = {
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP_RES_POW)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.WHITE, LevellingData.UP_RES_POW)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, LevellingData.UP_RES_POW)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP_RES_POW),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP_RES_POW)
             }
     };
 

@@ -4,7 +4,6 @@ import com.syntech.chess.logic.*;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -17,12 +16,10 @@ public class Piece implements Cloneable {
     private PromotionInfo promotionInfo;
     PieceBaseType baseType;
 
-    @Contract(pure = true)
     public Piece(Side side, MovementType movementType) {
         this(side, movementType, null);
     }
 
-    @Contract(pure = true)
     public Piece(Side side, MovementType movementType, PromotionInfo promotionInfo) {
         this.side = side;
         this.position = new Point(0, 0);
@@ -81,10 +78,6 @@ public class Piece implements Cloneable {
         return label;
     }
 
-    public ArrayList<Point> getControlledCells(Board board) {
-        return movementType.getControlledCells(position, board);
-    }
-
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
         return movementType.getAvailableMovesWithoutSpecialRules(position, board);
     }
@@ -99,25 +92,14 @@ public class Piece implements Cloneable {
 
     public ArrayList<Move> getAvailableMoves(Board board) {
         ArrayList<Move> moves = getAvailableMovesWithoutSpecialRules(board);
-        moves = excludeMovesThatLeaveKingInCheck(board, moves);
+        moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
         return MovePriorities.topPriorityMoves(moves);
     }
 
     public ArrayList<Move> getAvailableCaptures(Board board) {
         ArrayList<Move> moves = getAvailableCapturesWithoutSpecialRules(board);
-        moves = excludeMovesThatLeaveKingInCheck(board, moves);
+        moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
         return MovePriorities.topPriorityMoves(moves);
-    }
-
-    @NotNull
-    private ArrayList<Move> excludeMovesThatLeaveKingInCheck(Board board, @NotNull ArrayList<Move> moves) {
-        ArrayList<Move> filteredMoves = new ArrayList<>();
-        for (Move move : moves) {
-            if (!board.getNextTurn(position.x, position.y, move.getRow(), move.getCol()).isInCheck(side)) {
-                filteredMoves.add(move);
-            }
-        }
-        return filteredMoves;
     }
 
     public void move(@NotNull Board board, int row, int col) {

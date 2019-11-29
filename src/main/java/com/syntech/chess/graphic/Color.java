@@ -2,7 +2,6 @@ package com.syntech.chess.graphic;
 
 import com.syntech.chess.logic.Side;
 import org.ice1000.jimgui.JImVec4;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum Color {
@@ -19,7 +18,6 @@ public enum Color {
     CAPTURE_WHITE,
     CAPTURE_BLACK;
 
-    @Contract(pure = true)
     public Side toSide() {
         switch (this) {
             case WHITE:
@@ -38,7 +36,6 @@ public enum Color {
     }
 
     @NotNull
-    @Contract(" -> new")
     public JImVec4 getColor() {
         switch (this) {
             case WHITE:
@@ -69,7 +66,6 @@ public enum Color {
     }
 
     @NotNull
-    @Contract(" -> new")
     public JImVec4 getHoveredColor() {
         switch (this) {
             case WHITE:
@@ -96,7 +92,6 @@ public enum Color {
     }
 
     @NotNull
-    @Contract(" -> new")
     public JImVec4 getActiveColor() {
         switch (this) {
             case WHITE:

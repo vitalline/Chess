@@ -45,7 +45,6 @@ public final class MovePriorities {
     public static int getCapturePriority(PieceType type) {
         switch (type) {
             case PAWN:
-            case DOUBLE_PAWN:
                 return FORCED_PAWN_CAPTURE;
             case KNIGHT:
                 return FORCED_KNIGHT_CAPTURE;

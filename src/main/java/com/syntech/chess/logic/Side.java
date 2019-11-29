@@ -1,7 +1,6 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.graphic.Color;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum Side {
@@ -12,30 +11,25 @@ public enum Side {
     private final String name;
     private final String properName;
 
-    @Contract(pure = true)
     Side(String name) {
         this.name = name;
         this.properName = name;
     }
 
-    @Contract(pure = true)
     Side(String name, String properName) {
         this.name = name;
         this.properName = properName;
     }
 
-    @Contract(pure = true)
     public String getName() {
         return name;
     }
 
-    @Contract(pure = true)
     public String getProperName() {
         return properName;
     }
 
     @NotNull
-    @Contract(pure = true)
     @Override
     public String toString() {
         return "Side{" +
@@ -43,7 +37,6 @@ public enum Side {
                 '}';
     }
 
-    @Contract(pure = true)
     public Color toColor() {
         switch (this) {
             case WHITE:
@@ -55,7 +48,6 @@ public enum Side {
         }
     }
 
-    @Contract(pure = true)
     public Side getOpponent() {
         switch (this) {
             case WHITE:

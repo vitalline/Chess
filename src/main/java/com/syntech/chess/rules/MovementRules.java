@@ -3,7 +3,6 @@ package com.syntech.chess.rules;
 import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.Side;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -164,7 +163,6 @@ public class MovementRules {
         }
     }
 
-    @Contract(pure = true)
     public static int getPawnMoveDirection(Side side) {
         return side == Side.WHITE ? 1 : -1;
     }
@@ -188,21 +186,19 @@ public class MovementRules {
         }
     }
 
-    public static void addPawnLikeControlledCells(@NotNull Point position, @NotNull Board board, int moveDirection, ArrayList<Point> moves) {
+    public static void addPawnLikeControlledCells(@NotNull Point position, @NotNull Board board, int moveDirection, ArrayList<Move> moves) {
         if (board.isOnBoard(position.x + moveDirection, position.y - 1)) {
-            moves.add(new Point(position.x + moveDirection, position.y - 1));
+            moves.add(new Move(position.x + moveDirection, position.y - 1));
         }
         if (board.isOnBoard(position.x + moveDirection, position.y + 1)) {
-            moves.add(new Point(position.x + moveDirection, position.y + 1));
+            moves.add(new Move(position.x + moveDirection, position.y + 1));
         }
     }
 
     public static void addKingLikeMovement(@NotNull Point position, @NotNull Board board, Side side, ArrayList<Move> moves) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if (board.isFree(position.x + i, position.y + j)
-                        && !board.getAllControlledCells(side.getOpponent()).contains(
-                        new Point(position.x + i, position.y + j))) {
+                if (board.isFree(position.x + i, position.y + j)) {
                     moves.add(new Move(position.x + i, position.y + j));
                 }
             }
@@ -212,22 +208,18 @@ public class MovementRules {
     public static void addKingLikeThreatening(@NotNull Point position, @NotNull Board board, Side side, Side kingSide, ArrayList<Move> moves) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if (board.getSide(position.x + i, position.y + j) == side && kingSide == side) {
-                    moves.add(new Move(position.x + i, position.y + j));
-                } else if (board.getSide(position.x + i, position.y + j) == side
-                        && !board.getAllControlledCells(side).contains(
-                        new Point(position.x + i, position.y + j))) {
+                if (board.getSide(position.x + i, position.y + j) == side) {
                     moves.add(new Move(position.x + i, position.y + j));
                 }
             }
         }
     }
 
-    public static void addKingLikeControlledCells(@NotNull Point position, @NotNull Board board, ArrayList<Point> moves) {
+    public static void addKingLikeControlledCells(@NotNull Point position, @NotNull Board board, ArrayList<Move> moves) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (board.isOnBoard(position.x + i, position.y + j)) {
-                    moves.add(new Point(position.x + i, position.y + j));
+                    moves.add(new Move(position.x + i, position.y + j));
                 }
             }
         }

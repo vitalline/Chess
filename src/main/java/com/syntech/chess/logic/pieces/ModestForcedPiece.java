@@ -17,6 +17,7 @@ public class ModestForcedPiece extends Piece {
         baseType = PieceBaseType.MODEST_FORCED_PIECE;
     }
 
+    @Override
     public ArrayList<Move> getAvailableCaptures(@NotNull Board board) {
         ArrayList<Move> moves = super.getAvailableCaptures(board);
         for (Move move : moves) {

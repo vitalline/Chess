@@ -5,13 +5,13 @@ import com.syntech.chess.rules.chess.*;
 import com.syntech.chess.rules.neutral.ImmovableType;
 import com.syntech.chess.rules.variants.AmazonType;
 import com.syntech.chess.rules.variants.SniperType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PieceType {
+    NONE("none"),
     EMPTY("Cell", "Empty Cell"),
-    WALL("Wall", "Wall"),
+    WALL("Wall"),
     PAWN("Pawn"),
     DOUBLE_PAWN("Pawn"),
     KNIGHT("Knight"),
@@ -27,24 +27,20 @@ public enum PieceType {
     private final String name;
     private final String properName;
 
-    @Contract(pure = true)
     PieceType(String name) {
         this.name = name;
         this.properName = name;
     }
 
-    @Contract(pure = true)
     PieceType(String name, String properName) {
         this.name = name;
         this.properName = properName;
     }
 
-    @Contract(pure = true)
     public String getName() {
         return name;
     }
 
-    @Contract(pure = true)
     public String getProperName() {
         return properName;
     }
@@ -83,11 +79,11 @@ public enum PieceType {
     }
 
     @NotNull
-    @Contract(pure = true)
     @Override
     public String toString() {
         return "PieceType{" +
                 "name='" + name + '\'' +
+                ", properName='" + properName + '\'' +
                 '}';
     }
 }

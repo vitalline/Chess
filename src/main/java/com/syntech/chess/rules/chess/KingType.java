@@ -6,7 +6,6 @@ import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementRules;
 import com.syntech.chess.rules.MovementType;
-import org.jetbrains.annotations.Contract;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,16 +14,8 @@ public class KingType extends MovementType {
 
     private Side side;
 
-    @Contract(pure = true)
     public KingType(Side side) {
         this.side = side;
-    }
-
-    @Override
-    public ArrayList<Point> getControlledCells(Point position, Board board) {
-        ArrayList<Point> moves = new ArrayList<>();
-        MovementRules.addKingLikeControlledCells(position, board, moves);
-        return moves;
     }
 
     @Override

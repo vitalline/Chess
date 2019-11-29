@@ -5,11 +5,11 @@ import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
+import com.syntech.chess.rules.chess.DoublePawnType;
 import org.ice1000.jimgui.JImGui;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.NativeBool;
 import org.ice1000.jimgui.flag.JImWindowFlags;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -169,7 +169,7 @@ public class Board {
         Piece piece = getPiece(fromrow, fromcol);
         Piece enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
         if (enPassantPoint.x == torow && enPassantPoint.y == tocol
-                && (piece.getType() == PieceType.PAWN || piece.getType() == PieceType.DOUBLE_PAWN)
+                && (piece.getType() == PieceType.PAWN || piece.getMovementType() instanceof DoublePawnType)
                 && fromcol != tocol) {
             placePiece(PieceFactory.cell(), torow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), tocol);
         }
@@ -177,7 +177,7 @@ public class Board {
             placePiece(PieceFactory.cell(), enPassantPoint);
             enPassantPoint = pieceNone;
         }
-        if (piece.getType() == PieceType.DOUBLE_PAWN && torow - fromrow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
+        if (piece.getMovementType() instanceof DoublePawnType && torow - fromrow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
             enPassantPoint = new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol);
             placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), enPassantPoint);
         }
@@ -211,19 +211,16 @@ public class Board {
     }
 
     @NotNull
-    @Contract(pure = true)
     private static String getRow(int row) {
         return String.valueOf(row + 1);
     }
 
     @NotNull
-    @Contract(pure = true)
     private static String getColumn(int col) {
         return String.valueOf((char) (col + 'a'));
     }
 
     @NotNull
-    @Contract(pure = true)
     public static String getCoordinates(@NotNull Point position) {
         return getColumn(position.y) + getRow(position.x);
     }
@@ -341,18 +338,6 @@ public class Board {
         return MovePriorities.topPriorityMoves(moves);
     }
 
-    public ArrayList<Point> getAllControlledCells(Side side) {
-        ArrayList<Point> pieces = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (getSide(row, col) == side) {
-                    pieces.addAll(board[row][col].getControlledCells(this));
-                }
-            }
-        }
-        return pieces;
-    }
-
     public boolean isFree(int row, int col) {
         return getPiece(row, col).getType() == PieceType.EMPTY && isOnBoard(row, col);
     }
@@ -413,7 +398,6 @@ public class Board {
         availableCaptures = new ArrayList<>();
     }
 
-    @Contract(pure = true)
     private boolean nothingIsSelected() {
         return selectedPiece.equals(pieceNone);
     }
@@ -431,7 +415,7 @@ public class Board {
         turnIndicator = turnIndicator.getOpponent();
     }
 
-    public Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
+    private Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
         Board nextTurn = new Board(board);
         nextTurn.move(fromrow, fromcol, torow, tocol);
         return nextTurn;
@@ -445,5 +429,16 @@ public class Board {
             }
         }
         return false;
+    }
+
+    @NotNull
+    public ArrayList<Move> excludeMovesThatLeaveKingInCheck(@NotNull Point position, Side side, @NotNull ArrayList<Move> moves) {
+        ArrayList<Move> filteredMoves = new ArrayList<>();
+        for (Move move : moves) {
+            if (!getNextTurn(position.x, position.y, move.getRow(), move.getCol()).isInCheck(side)) {
+                filteredMoves.add(move);
+            }
+        }
+        return filteredMoves;
     }
 }
