@@ -4,10 +4,7 @@ import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.Board;
 import com.syntech.chess.rules.StartingPos;
-import org.ice1000.jimgui.JImFont;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImStyleColors;
-import org.ice1000.jimgui.NativeBool;
+import org.ice1000.jimgui.*;
 import org.ice1000.jimgui.flag.JImWindowFlags;
 import org.ice1000.jimgui.util.JniLoader;
 
@@ -31,7 +28,8 @@ public class Main {
                 assert fontInput != null;
                 Files.copy(fontInput, fontFile.getAbsoluteFile().toPath());
             }
-            JImFont font = imGui.getIO().getFonts().addFontFromFile("PureProg 12.ttf", (float) size / 2);
+            NativeShort glyphRange = imGui.getIO().getFonts().getGlyphRangesForCyrillic();
+            JImFont font = imGui.getIO().getFonts().addFontFromFile("PureProg 12.ttf", (float) size / 2, glyphRange);
             font.setDisplayOffsetX((float) size / 25);
             font.setDisplayOffsetY((float) -size / 25);
             imGui.setBackground(Color.BACKGROUND.getColor());

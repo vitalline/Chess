@@ -19,7 +19,7 @@ public class LevellingDownForcedPiece extends LevellingForcedPiece {
     }
 
     public LevellingDownForcedPiece(Side side, MovementType movementType, PromotionInfo promotionInfo, Point initialPosition) {
-        super(side, movementType, promotionInfo, 0, 0, initialPosition);
+        super(side, movementType, promotionInfo, 0, initialPosition);
         baseType = PieceBaseType.LEVELLING_DOWN_FORCED_PIECE;
     }
 

@@ -1,7 +1,6 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.logic.pieces.*;
-import com.syntech.chess.rules.ForcedXPRules;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,9 +55,9 @@ public class PieceFactory {
             case SHOOTING_PIECE:
                 return new ShootingPiece(side, type.getMovementType(side));
             case LEVELLING_FORCED_PIECE:
-                return new LevellingForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type), initialPosition);
+                return new LevellingForcedPiece(side, type.getMovementType(side), xp, initialPosition);
             case LEVELLING_UP_FORCED_PIECE:
-                return new LevellingUpForcedPiece(side, type.getMovementType(side), xp, ForcedXPRules.getMaxXP(type));
+                return new LevellingUpForcedPiece(side, type.getMovementType(side), xp);
             case LEVELLING_DOWN_FORCED_PIECE:
                 return new LevellingDownForcedPiece(side, type.getMovementType(side), promotionInfo, initialPosition);
             case CLONING_FORCED_PIECE:

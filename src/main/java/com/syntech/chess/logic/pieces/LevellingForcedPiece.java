@@ -12,28 +12,39 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public class LevellingForcedPiece extends ForcedPiece {
-    protected int xp, maxXP;
+    private int xp;
     protected Point initialPosition;
     private boolean checkHappened = false;
 
     public LevellingForcedPiece(Side side, MovementType movementType) {
-        this(side, movementType, 0);
+        this(side, movementType, 0, null);
     }
 
-    public LevellingForcedPiece(Side side, MovementType movementType, int maxXP) {
-        this(side, movementType, 0, maxXP, null);
+    public LevellingForcedPiece(Side side, MovementType movementType, int xp, Point initialPosition) {
+        this(side, movementType, null, xp, initialPosition);
     }
 
-    public LevellingForcedPiece(Side side, MovementType movementType, int xp, int maxXP, Point initialPosition) {
-        this(side, movementType, null, xp, maxXP, initialPosition);
-    }
-
-    protected LevellingForcedPiece(Side side, MovementType movementType, PromotionInfo promotionInfo, int xp, int maxXP, Point initialPosition) {
+    public LevellingForcedPiece(Side side, MovementType movementType, PromotionInfo promotionInfo, int xp, Point initialPosition) {
         super(side, movementType, promotionInfo);
         baseType = PieceBaseType.LEVELLING_FORCED_PIECE;
-        this.xp = xp;
-        this.maxXP = maxXP;
+        this.xp = xp == 0 ? getMinXP() : xp;
         this.initialPosition = initialPosition;
+    }
+
+    private int getMinXP() {
+        return ForcedXPRules.getPreviousLevelXP(getType());
+    }
+
+    private int getMaxXP() {
+        return ForcedXPRules.getNextLevelXP(getType());
+    }
+
+    private int getCurrentXP() {
+        return xp - getMinXP();
+    }
+
+    private int getXPDifference() {
+        return getMaxXP() - getMinXP();
     }
 
     @Override
@@ -48,14 +59,15 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (doesNotLevelUp()) {
             return super.getName();
         }
-        return String.format("%s%s%d", getSide().getName(), getType().getName(), CellGraphics.XP_BAR_STAGES * xp / maxXP);
+        return String.format("%s%s%d", getSide().getName(), getType().getName(),
+                CellGraphics.XP_BAR_STAGES * getCurrentXP() / getXPDifference());
     }
 
     @Override
     public String getLabel() {
         String label = super.getLabel();
         if (!doesNotLevelUp()) {
-            label += String.format("\n[ XP: %d/%d ]", xp, maxXP);
+            label += String.format("\n[ XP: %d/%d ]", getCurrentXP(), getXPDifference());
         }
         if (!doesNotLevelDown()) {
             label += String.format("\nStarted on %s", Board.getCoordinates(initialPosition));
@@ -101,9 +113,9 @@ public class LevellingForcedPiece extends ForcedPiece {
             xp += ForcedXPRules.getMoveXPWorth();
         }
         if (doesNotLevelUp()) {
-            xp = 0;
+            xp = getMinXP();
         } else {
-            if (xp >= maxXP) {
+            if (xp >= getMaxXP()) {
                 levelUp(board);
             }
         }
@@ -122,9 +134,8 @@ public class LevellingForcedPiece extends ForcedPiece {
     protected void levelUp(@NotNull Board board) {
         int currentLevel = ForcedXPRules.LEVELS.indexOf(getType());
         if (currentLevel < ForcedXPRules.LEVELS.size() - 1) {
-            int diff = xp - maxXP;
             PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel + 1);
-            morph(board, newPieceType, getPromotionInfo(newPieceType), diff, position);
+            morph(board, newPieceType, getPromotionInfo(newPieceType), xp, position);
             LevellingForcedPiece newPiece = ((LevellingForcedPiece) board.getPiece(position.x, position.y));
             if (board.isInCheck(side.getOpponent()) && !checkHappened) {
                 newPiece.xp += ForcedXPRules.getCheckXPWorth();
@@ -134,7 +145,7 @@ public class LevellingForcedPiece extends ForcedPiece {
                 newPiece.checkHappened = true;
             }
             if (!newPiece.doesNotLevelUp()) {
-                if (newPiece.xp >= newPiece.maxXP) {
+                if (newPiece.xp >= newPiece.getMaxXP()) {
                     newPiece.levelUp(board);
                 }
             }
@@ -154,7 +165,8 @@ public class LevellingForcedPiece extends ForcedPiece {
 
     @Contract(pure = true)
     protected boolean doesNotLevelUp() {
-        return maxXP == 0;
+        return ForcedXPRules.LEVELS.indexOf(getType()) == -1
+                || ForcedXPRules.LEVELS.indexOf(getType()) == ForcedXPRules.LEVELS.size() - 1;
     }
 
     @Contract(pure = true)

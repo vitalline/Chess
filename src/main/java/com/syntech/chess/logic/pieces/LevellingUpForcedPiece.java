@@ -13,12 +13,8 @@ public class LevellingUpForcedPiece extends LevellingForcedPiece {
         this(side, movementType, 0);
     }
 
-    public LevellingUpForcedPiece(Side side, MovementType movementType, int maxXP) {
-        this(side, movementType, 0, maxXP);
-    }
-
-    public LevellingUpForcedPiece(Side side, MovementType movementType, int xp, int maxXP) {
-        super(side, movementType, xp, maxXP, null);
+    public LevellingUpForcedPiece(Side side, MovementType movementType, int xp) {
+        super(side, movementType, xp, null);
         baseType = PieceBaseType.LEVELLING_UP_FORCED_PIECE;
     }
 
