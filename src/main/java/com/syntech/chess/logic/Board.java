@@ -30,7 +30,8 @@ public class Board {
 
     private Point selectedPiece = new Point(-1, -1);
     private static final Point pieceNone = new Point(-1, -1);
-    private Point enPassantPoint = new Point(-1, -1);
+    private Point enPassantPointWhite = new Point(-1, -1);
+    private Point enPassantPointBlack = new Point(-1, -1);
 
     private ArrayList<Move> availableMoves = new ArrayList<>();
     private ArrayList<Move> availableCaptures = new ArrayList<>();
@@ -158,7 +159,7 @@ public class Board {
     private void analyzeMove(int row, int col) {
         if (isSelected(row, col)) {
             deselectPiece();
-        } else if (getTurnSide() == getSide(row, col)) {
+        } else if (getTurnSide() == getSide(row, col) && getType(row, col) != PieceType.EMPTY) {
             selectPiece(row, col);
         } else if (Move.contains(availableMoves, row, col) || Move.contains(availableCaptures, row, col)) {
             moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
@@ -167,19 +168,21 @@ public class Board {
 
     private void move(int fromrow, int fromcol, int torow, int tocol) {
         Piece piece = getPiece(fromrow, fromcol);
+        Point enPassantPoint = getEnPassantPoint(getTurnSide().getOpponent());
         Piece enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
         if (enPassantPoint.x == torow && enPassantPoint.y == tocol
-                && (piece.getType() == PieceType.PAWN || piece.getMovementType() instanceof DoublePawnType)
+                && (piece.getType() == PieceType.PAWN)
                 && fromcol != tocol) {
             placePiece(PieceFactory.cell(), torow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), tocol);
         }
-        if (enPassantPiece.getType() == PieceType.EMPTY && enPassantPiece.getSide() == piece.getSide()) {
+        enPassantPoint = getEnPassantPoint(getTurnSide());
+        if (enPassantPiece.getType() == PieceType.EMPTY) {
             placePiece(PieceFactory.cell(), enPassantPoint);
-            enPassantPoint = pieceNone;
         }
+        setEnPassantPoint(getTurnSide(), pieceNone);
         if (piece.getMovementType() instanceof DoublePawnType && torow - fromrow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
-            enPassantPoint = new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol);
-            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), enPassantPoint);
+            setEnPassantPoint(getTurnSide(), new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol));
+            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()));
         }
         if (piece.getType() == PieceType.KING && tocol - fromcol == 2) {
             getPiece(fromrow, fromcol + 3).move(this, fromrow, fromcol + 1);
@@ -248,6 +251,19 @@ public class Board {
                 statusPiece = PieceType.PAWN;
                 return null;
             }
+        }
+    }
+
+    private Point getEnPassantPoint(Side side) {
+        return side == Side.WHITE ? enPassantPointWhite : side == Side.BLACK ? enPassantPointBlack : pieceNone;
+    }
+
+    private void setEnPassantPoint(Side side, Point point) {
+        if (side == Side.WHITE) {
+            enPassantPointWhite = point;
+        }
+        if (side == Side.BLACK) {
+            enPassantPointBlack = point;
         }
     }
 
