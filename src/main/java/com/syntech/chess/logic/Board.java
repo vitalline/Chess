@@ -6,7 +6,9 @@ import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
 import com.syntech.chess.rules.chess.DoublePawnType;
+import com.syntech.chess.text.Translation;
 import org.ice1000.jimgui.JImGui;
+import org.ice1000.jimgui.JImGuiGen;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.NativeBool;
 import org.ice1000.jimgui.flag.JImWindowFlags;
@@ -16,39 +18,28 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements Cloneable {
+    private static final Point pieceNone = new Point(-1, -1);
+    protected int width, height;
+    protected ArrayList<Move> availableMoves = new ArrayList<>();
+    protected ArrayList<Move> availableCaptures = new ArrayList<>();
+    private Board previousBoard = null;
     private Piece[][] board;
-    private int width, height;
+    private float windowWidth, windowHeight;
     private Side turnIndicator = Side.WHITE;
-
     private boolean displayPromotionPopup = false;
     private boolean displayResultPopup = false;
     private String status;
     private Side statusSide = Side.WHITE;
     private PieceType statusPiece = PieceType.PAWN;
     private boolean gameEnded;
-
+    private Translation translation;
     private Point selectedPiece = new Point(-1, -1);
-    private static final Point pieceNone = new Point(-1, -1);
     private Point enPassantPointWhite = new Point(-1, -1);
     private Point enPassantPointBlack = new Point(-1, -1);
 
-    private ArrayList<Move> availableMoves = new ArrayList<>();
-    private ArrayList<Move> availableCaptures = new ArrayList<>();
-
-    public Board(@NotNull Piece[][] board, boolean initialize) {
-        height = board.length;
-        width = board[0].length;
-        this.board = new Piece[height][width];
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                try {
-                    this.board[row][col] = (Piece) board[row][col].clone();
-                } catch (CloneNotSupportedException ignored) {
-                    this.board[row][col] = board[row][col];
-                }
-            }
-        }
+    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize) {
+        this(board, translation);
         if (initialize) {
             for (int row = 0; row < height; row++) {
                 for (int col = 0; col < width; col++) {
@@ -58,7 +49,8 @@ public class Board {
         }
     }
 
-    public Board(@NotNull Piece[][] board) {
+    public Board(@NotNull Piece[][] board, Translation translation) {
+        this.translation = translation;
         height = board.length;
         width = board[0].length;
         this.board = new Piece[height][width];
@@ -73,8 +65,43 @@ public class Board {
         }
     }
 
+    @NotNull
+    private static String getRow(int row) {
+        return String.valueOf(row + 1);
+    }
+
+    @NotNull
+    private static String getColumn(int col) {
+        return String.valueOf((char) (col + 'a'));
+    }
+
+    @NotNull
+    public static String getCoordinates(@NotNull Point position) {
+        return getColumn(position.y) + getRow(position.x);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Board clone = (Board) super.clone();
+        Board copy = new Board(board, translation);
+        clone.board = copy.board;
+        clone.previousBoard = previousBoard;
+        clone.enPassantPointWhite = new Point(enPassantPointWhite);
+        clone.enPassantPointBlack = new Point(enPassantPointBlack);
+        return clone;
+    }
+
     public Piece[][] getBoard() {
         return board;
+    }
+
+    protected Translation getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
+        status = getStatusConditions(turnIndicator);
     }
 
     public void display(@NotNull JImGui imGui, String name, float size) {
@@ -98,7 +125,9 @@ public class Board {
             displayLabel(imGui, getRow(row), size / 2, size);
         }
         displayLabelRow(imGui, size);
-        imGui.end();
+        windowWidth = JImGuiGen.getWindowWidth();
+        windowHeight = JImGuiGen.getWindowHeight();
+        JImGuiGen.end();
         imGui.getStyle().setItemSpacingX(spacingX);
         imGui.getStyle().setItemSpacingY(spacingY);
         imGui.getStyle().setFramePaddingX(paddingX);
@@ -111,29 +140,30 @@ public class Board {
         }
         if (imGui.beginPopup("Promote", JImWindowFlags.AlwaysAutoResize)) {
             for (PieceType pieceType : getSelectedPiece().getPromotionTypes()) {
-                if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
+                if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
+                        size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
                     displayPromotionPopup = false;
-                    imGui.closeCurrentPopup();
+                    JImGuiGen.closeCurrentPopup();
                     advanceTurn();
                     checkStatusConditions();
                     break;
                 }
             }
-            imGui.endPopup();
+            JImGuiGen.endPopup();
         }
         if (imGui.beginPopup("Result", JImWindowFlags.AlwaysAutoResize)) {
             imGui.text(status);
             if (imGui.button("OK")) {
                 displayResultPopup = false;
-                imGui.closeCurrentPopup();
+                JImGuiGen.closeCurrentPopup();
             }
-            imGui.endPopup();
+            JImGuiGen.endPopup();
         }
     }
 
     private void displayCell(JImGui imGui, float size, int row, int col) {
-        if (CellGraphics.display(imGui, board[row][col], size, getColor(row, col), col * height + row)) {
+        if (CellGraphics.display(imGui, getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
             analyzeMove(row, col);
         }
     }
@@ -143,7 +173,7 @@ public class Board {
         imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.NONE.getColor());
         imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.NONE.getColor());
         imGui.button(label, x, y);
-        imGui.popStyleColor(3);
+        JImGuiGen.popStyleColor(3);
     }
 
     private void displayLabelRow(JImGui imGui, float size) {
@@ -156,6 +186,14 @@ public class Board {
         displayLabel(imGui, "", size / 2, size / 2);
     }
 
+    public float getWindowWidth() {
+        return windowWidth;
+    }
+
+    public float getWindowHeight() {
+        return windowHeight;
+    }
+
     private void analyzeMove(int row, int col) {
         if (isSelected(row, col)) {
             deselectPiece();
@@ -166,7 +204,12 @@ public class Board {
         }
     }
 
-    private void move(int fromrow, int fromcol, int torow, int tocol) {
+    protected void move(int fromrow, int fromcol, int torow, int tocol) {
+        try {
+            previousBoard = (Board) clone();
+        } catch (CloneNotSupportedException ignore) {
+            previousBoard = null;
+        }
         Piece piece = getPiece(fromrow, fromcol);
         Point enPassantPoint = getEnPassantPoint(getTurnSide().getOpponent());
         Piece enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
@@ -213,21 +256,6 @@ public class Board {
         }
     }
 
-    @NotNull
-    private static String getRow(int row) {
-        return String.valueOf(row + 1);
-    }
-
-    @NotNull
-    private static String getColumn(int col) {
-        return String.valueOf((char) (col + 'a'));
-    }
-
-    @NotNull
-    public static String getCoordinates(@NotNull Point position) {
-        return getColumn(position.y) + getRow(position.x);
-    }
-
     @Nullable
     private String getStatusConditions(Side side) {
         if (getAllAvailableMoves(side).size() == 0 && getAllAvailableCaptures(side).size() == 0) {
@@ -235,17 +263,19 @@ public class Board {
             if (isInCheck(side)) {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.QUEEN;
-                return String.format("Checkmate! %s wins!", side.getOpponent().getProperName());
+                return String.format(translation.get("status_checkmate"), side.getOpponent().getProperName(translation));
             } else {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.KING;
-                return String.format("%s has stalemated %s!", side.getOpponent().getProperName(), side.getProperName());
+                return String.format(translation.get("status_stalemate"),
+                        side.getOpponent().getProperName(translation),
+                        side.getProperName(translation));
             }
         } else {
             if (isInCheck(side)) {
                 statusSide = side;
                 statusPiece = PieceType.KING;
-                return String.format("%s is in check!", side.getProperName());
+                return String.format(translation.get("status_check"), side.getProperName(translation));
             } else {
                 statusSide = side;
                 statusPiece = PieceType.PAWN;
@@ -282,7 +312,7 @@ public class Board {
     public void placePiece(Piece piece, int row, int col) {
         try {
             board[row][col] = piece;
-            board[row][col].setPosition(row, col);
+            getPiece(row, col).setPosition(row, col);
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
@@ -310,7 +340,7 @@ public class Board {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
-                    moves.addAll(board[row][col].getAvailableMovesWithoutSpecialRules(this));
+                    moves.addAll(getPiece(row, col).getAvailableMovesWithoutSpecialRules(this));
                 }
             }
         }
@@ -323,7 +353,7 @@ public class Board {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
-                    moves.addAll(board[row][col].getAvailableCapturesWithoutSpecialRules(this));
+                    moves.addAll(getPiece(row, col).getAvailableCapturesWithoutSpecialRules(this));
                 }
             }
         }
@@ -335,7 +365,7 @@ public class Board {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
-                    moves.addAll(board[row][col].getAvailableMoves(this));
+                    moves.addAll(getPiece(row, col).getAvailableMoves(this));
                 }
             }
         }
@@ -347,7 +377,7 @@ public class Board {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 if (getSide(row, col) == side) {
-                    moves.addAll(board[row][col].getAvailableCaptures(this));
+                    moves.addAll(getPiece(row, col).getAvailableCaptures(this));
                 }
             }
         }
@@ -366,13 +396,8 @@ public class Board {
         return getPiece(row, col).getType();
     }
 
-    public boolean isOnBoard(int row, int col) {
-        try {
-            board[row][col].getType();
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-            return false;
-        }
-        return true;
+    protected boolean isOnBoard(int row, int col) {
+        return row >= 0 && col >= 0 && row < height && col < width;
     }
 
     public Piece getPiece(int row, int col) {
@@ -383,13 +408,17 @@ public class Board {
         }
     }
 
+    private String getLabel(int row, int col) {
+        return getPiece(row, col).getLabel(translation);
+    }
+
     private Piece getSelectedPiece() {
         return getPiece(selectedPiece.x, selectedPiece.y);
     }
 
-    private void selectPiece(int row, int col) {
+    protected void selectPiece(int row, int col) {
         try {
-            board[row][col].getType();
+            getPiece(row, col).getType();
             selectedPiece = new Point(row, col);
             availableMoves = getSelectedPiece().getAvailableMoves(this);
             availableCaptures = getSelectedPiece().getAvailableCaptures(this);
@@ -431,8 +460,8 @@ public class Board {
         turnIndicator = turnIndicator.getOpponent();
     }
 
-    private Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
-        Board nextTurn = new Board(board);
+    protected Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
+        Board nextTurn = new Board(board, translation);
         nextTurn.move(fromrow, fromcol, torow, tocol);
         return nextTurn;
     }
@@ -456,5 +485,9 @@ public class Board {
             }
         }
         return filteredMoves;
+    }
+
+    public Board getPreviousBoard() {
+        return previousBoard;
     }
 }

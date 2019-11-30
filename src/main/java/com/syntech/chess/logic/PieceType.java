@@ -4,45 +4,47 @@ import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.chess.*;
 import com.syntech.chess.rules.neutral.ImmovableType;
 import com.syntech.chess.rules.variants.AmazonType;
+import com.syntech.chess.rules.variants.PegasusType;
 import com.syntech.chess.rules.variants.SniperType;
-import org.jetbrains.annotations.NotNull;
+import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.Nullable;
 
 public enum PieceType {
-    NONE("none"),
-    EMPTY("Cell", "Empty Cell"),
-    WALL("Wall"),
-    PAWN("Pawn"),
-    DOUBLE_PAWN("Pawn"),
-    KNIGHT("Knight"),
-    BISHOP("Bishop"),
-    SNIPER("Bishop", "Sniper"),
-    ROOK("Rook"),
-    CASTLING_ROOK("Rook"),
-    QUEEN("Queen"),
-    KING("King"),
-    CASTLING_KING("King"),
-    AMAZON("Amazon");
+    NONE("none", "piece_none"),
+    EMPTY("Cell", "piece_empty"),
+    WALL("Wall", "piece_wall"),
+    PAWN("Pawn", "piece_pawn"),
+    DOUBLE_PAWN("Pawn", "piece_pawn"),
+    KNIGHT("Knight", "piece_knight"),
+    PEGASUS("Knight", "piece_pegasus"),
+    BISHOP("Bishop", "piece_bishop"),
+    SNIPER("Bishop", "piece_sniper"),
+    ROOK("Rook", "piece_rook"),
+    CASTLING_ROOK("Rook", "piece_rook"),
+    QUEEN("Queen", "piece_queen"),
+    KING("King", "piece_king"),
+    CASTLING_KING("King", "piece_king"),
+    AMAZON("Amazon", "piece_amazon");
 
-    private final String name;
-    private final String properName;
+    private final String textureID;
+    private final String translationString;
 
-    PieceType(String name) {
-        this.name = name;
-        this.properName = name;
+    PieceType(String textureID) {
+        this.textureID = textureID;
+        this.translationString = textureID.toLowerCase();
     }
 
-    PieceType(String name, String properName) {
-        this.name = name;
-        this.properName = properName;
+    PieceType(String textureID, String translationString) {
+        this.textureID = textureID;
+        this.translationString = translationString;
     }
 
-    public String getName() {
-        return name;
+    public String getTextureID() {
+        return textureID;
     }
 
-    public String getProperName() {
-        return properName;
+    public String getProperName(Translation translation) {
+        return translation.get(translationString);
     }
 
     @Nullable
@@ -57,6 +59,8 @@ public enum PieceType {
                 return new DoublePawnType(side);
             case KNIGHT:
                 return new KnightType();
+            case PEGASUS:
+                return new PegasusType();
             case BISHOP:
                 return new BishopType();
             case SNIPER:
@@ -76,14 +80,5 @@ public enum PieceType {
             default:
                 return null;
         }
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "PieceType{" +
-                "name='" + name + '\'' +
-                ", properName='" + properName + '\'' +
-                '}';
     }
 }

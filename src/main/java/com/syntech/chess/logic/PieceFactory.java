@@ -65,7 +65,7 @@ public class PieceFactory {
 
     @NotNull
     public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, PromotionInfo promotionInfo) {
-        return piece(baseType, type, side, promotionInfo, null);
+        return piece(baseType, type, side, promotionInfo, LevellingData.NONE);
     }
 
     @NotNull
@@ -95,6 +95,8 @@ public class PieceFactory {
                 return new ModestForcedPiece(side, type.getMovementType(side), promotionInfo);
             case SHOOTING_PIECE:
                 return new ShootingPiece(side, type.getMovementType(side));
+            case INVINCIBLE_FORCED_PIECE:
+                return new InvincibleForcedPiece(side, type.getMovementType(side));
             case LEVELLING_FORCED_PIECE:
                 return new LevellingForcedPiece(side, type.getMovementType(side), levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition);
             case CLONING_FORCED_PIECE:

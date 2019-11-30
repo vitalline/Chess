@@ -1,40 +1,32 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.graphic.Color;
-import org.jetbrains.annotations.NotNull;
+import com.syntech.chess.text.Translation;
 
 public enum Side {
     NEUTRAL("neutral", ""),
-    WHITE("white", "White"),
-    BLACK("black", "Black");
+    WHITE("white", "side_white"),
+    BLACK("black", "side_black");
 
-    private final String name;
-    private final String properName;
+    private final String textureID;
+    private final String translationString;
 
-    Side(String name) {
-        this.name = name;
-        this.properName = name;
+    Side(String textureID) {
+        this.textureID = textureID;
+        this.translationString = textureID;
     }
 
-    Side(String name, String properName) {
-        this.name = name;
-        this.properName = properName;
+    Side(String textureID, String translationString) {
+        this.textureID = textureID;
+        this.translationString = translationString;
     }
 
-    public String getName() {
-        return name;
+    public String getTextureID() {
+        return textureID;
     }
 
-    public String getProperName() {
-        return properName;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Side{" +
-                "name='" + name + '\'' +
-                '}';
+    public String getProperName(Translation translation) {
+        return translation.get(translationString);
     }
 
     public Color toColor() {

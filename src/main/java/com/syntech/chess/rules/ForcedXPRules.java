@@ -1,6 +1,7 @@
 package com.syntech.chess.rules;
 
 import com.syntech.chess.logic.PieceType;
+import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public final class ForcedXPRules {
     }
 
     @NotNull
-    public static String getResistedPieceList(int level) {
+    public static String getResistedPieceList(int level, Translation translation) {
         ArrayList<PieceType> resistedPieces = getResistedPieces(level);
         if (resistedPieces.isEmpty()) {
             resistedPieces.add(PieceType.NONE);
@@ -82,13 +83,17 @@ public final class ForcedXPRules {
         StringBuilder sb = new StringBuilder();
         for (PieceType s : resistedPieces) {
             sb.append("\n\t");
-            sb.append(s.getProperName());
+            sb.append(s.getProperName(translation));
         }
         return sb.toString();
     }
 
     public static int getMaxResistanceLevel() {
         return RESISTANCE_LEVEL_XP.length;
+    }
+
+    public static int getInvincibleResistanceLevel() {
+        return RESISTANCE_LEVEL_XP.length + 1;
     }
 
     public static int getPowerLevelXP(int level) {
@@ -99,14 +104,14 @@ public final class ForcedXPRules {
         }
     }
 
-    public static String getPowerLabel(int level) {
+    public static String getPowerLabel(int level, Translation translation) {
         PieceType type;
         try {
             type = RESISTED_PIECES.get(level - 1);
         } catch (IndexOutOfBoundsException ignored) {
             type = level <= 0 ? PieceType.NONE : PieceType.AMAZON;
         }
-        StringBuilder label = new StringBuilder(type.getName());
+        StringBuilder label = new StringBuilder(type.getProperName(translation));
         for (int i = level; i > RESISTED_PIECES.size(); i--) {
             label.append('+');
         }
@@ -114,7 +119,7 @@ public final class ForcedXPRules {
     }
 
     public static int getMaxPowerLevel() {
-        return POWER_LEVEL_XP.length;
+        return POWER_LEVEL_XP.length + 1;
     }
 
     public static int getPieceXPWorth(@NotNull PieceType type) {

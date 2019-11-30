@@ -6,6 +6,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
 import org.apache.commons.io.IOUtils;
 import org.ice1000.jimgui.JImGui;
+import org.ice1000.jimgui.JImGuiGen;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.JImTextureID;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,9 @@ public class CellGraphics {
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
         names = new ArrayList<>();
+        loadTexture("cross", "ui");
+        loadTexture("left", "ui");
+        loadTexture("right", "ui");
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
         loadTexture(Side.NEUTRAL, PieceType.WALL);
         loadSet(Side.WHITE);
@@ -38,11 +42,15 @@ public class CellGraphics {
     }
 
     private static void loadTexture(Side side, PieceType type) throws IOException {
-        String texturePath = String.format("textures/chess/%s.png", getName(side, type));
+        loadTexture(getName(side, type), "chess");
+    }
+
+    private static void loadTexture(String name, String folder) throws IOException {
+        String texturePath = String.format("textures/%s/%s.png", folder, name);
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
         assert textureInput != null;
         textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(textureInput)));
-        names.add(getName(side, type));
+        names.add(name);
     }
 
     private static void loadTextures(Side side, PieceType type) throws IOException {
@@ -95,42 +103,33 @@ public class CellGraphics {
         return null;
     }
 
-    private static JImTextureID getTexture(Side side, PieceType type) {
-        return getTexture(getName(side, type));
-    }
-
     @NotNull
     private static String getName(@NotNull Side side, @NotNull PieceType type) {
-        return side.getName() + type.getName();
+        return side.getTextureID() + type.getTextureID();
     }
 
     public static boolean display(@NotNull JImGui imGui, String name, String label, float size, @NotNull Color color, int id) {
         imGui.pushStyleColor(JImStyleColors.Button, color.getColor());
         imGui.pushStyleColor(JImStyleColors.ButtonHovered, color.getHoveredColor());
         imGui.pushStyleColor(JImStyleColors.ButtonActive, color.getActiveColor());
-        imGui.pushID(id);
+        JImGui.pushID(id);
         boolean result = imGui.imageButton(Objects.requireNonNull(getTexture(name)), size, size);
         if (imGui.isItemHovered()) {
-            imGui.beginTooltip();
+            JImGuiGen.beginTooltip();
             imGui.text(label);
-            imGui.endTooltip();
+            JImGuiGen.endTooltip();
         }
-        imGui.popID();
-        imGui.popStyleColor(3);
+        JImGuiGen.popID();
+        JImGuiGen.popStyleColor(3);
         return result;
     }
 
-    public static boolean display(JImGui imGui, Side side, PieceType type, String label, float size, Color color, int id) {
+    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, String label, float size, Color color, int id) {
         return display(imGui, getName(side, type), label, size, color, id);
     }
 
-    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, float size, Color color, int id) {
-        String label = side.getProperName() + ' ' + type.getProperName();
-        return display(imGui, side, type, label, size, color, id);
-    }
 
-
-    public static boolean display(JImGui imGui, @NotNull Piece piece, float size, Color color, int id) {
-        return display(imGui, piece.getName(), piece.getLabel(), size, color, id);
+    public static boolean display(JImGui imGui, @NotNull Piece piece, String label, float size, Color color, int id) {
+        return display(imGui, piece.getTextureID(), label, size, color, id);
     }
 }

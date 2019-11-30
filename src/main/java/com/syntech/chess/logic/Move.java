@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Move {
-    private final Point endPosition;
+    private Point endPosition;
     private int priority, power;
 
     public Move(int row, int col) {
@@ -49,6 +49,18 @@ public class Move {
 
     public int getCol() {
         return endPosition.y;
+    }
+
+    public void setEndPosition(Point endPosition) {
+        this.endPosition = endPosition;
+    }
+
+    public void setRow(int row) {
+        endPosition.x = row;
+    }
+
+    public void setCol(int col) {
+        endPosition.y = col;
     }
 
     public int getPriority() {

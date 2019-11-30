@@ -3,6 +3,7 @@ package com.syntech.chess.logic.pieces;
 import com.syntech.chess.logic.PieceBaseType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
+import com.syntech.chess.text.Translation;
 
 public class NeutralPiece extends Piece {
 
@@ -12,8 +13,8 @@ public class NeutralPiece extends Piece {
     }
 
     @Override
-    public String getLabel() {
-        return getType().getProperName();
+    public String getLabel(Translation translation) {
+        return getType().getProperName(translation);
     }
 
 }

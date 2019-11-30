@@ -4,6 +4,7 @@ import com.syntech.chess.logic.*;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
+import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -51,7 +52,7 @@ public class Piece implements Cloneable {
         return movementType.getType();
     }
 
-    public PieceBaseType getBaseType() {
+    private PieceBaseType getBaseType() {
         return baseType;
     }
 
@@ -59,22 +60,15 @@ public class Piece implements Cloneable {
         return movementType;
     }
 
-    public String getName() {
-        return getSide().getName() + getType().getName();
+    public String getTextureID() {
+        return getSide().getTextureID() + getType().getTextureID();
     }
 
-    public String getLabel() {
-        String baseType = getBaseType().getProperName();
-        String side = getSide().getProperName();
-        String type = getType().getProperName();
-        String label = "";
-        if (!baseType.equals("")) {
-            label += baseType + ' ';
-        }
-        if (!side.equals("")) {
-            label += side + ' ';
-        }
-        label += type;
+    public String getLabel(Translation translation) {
+        String baseType = getBaseType().getProperName(translation);
+        String side = getSide().getProperName(translation);
+        String type = getType().getProperName(translation);
+        String label = String.format(translation.get("label_name"), baseType, side, type).trim().replaceAll(" {2}", " ");
         return label;
     }
 

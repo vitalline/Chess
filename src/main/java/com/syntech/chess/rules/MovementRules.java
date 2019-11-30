@@ -186,15 +186,6 @@ public class MovementRules {
         }
     }
 
-    public static void addPawnLikeControlledCells(@NotNull Point position, @NotNull Board board, int moveDirection, ArrayList<Move> moves) {
-        if (board.isOnBoard(position.x + moveDirection, position.y - 1)) {
-            moves.add(new Move(position.x + moveDirection, position.y - 1));
-        }
-        if (board.isOnBoard(position.x + moveDirection, position.y + 1)) {
-            moves.add(new Move(position.x + moveDirection, position.y + 1));
-        }
-    }
-
     public static void addKingLikeMovement(@NotNull Point position, @NotNull Board board, Side side, ArrayList<Move> moves) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -215,13 +206,4 @@ public class MovementRules {
         }
     }
 
-    public static void addKingLikeControlledCells(@NotNull Point position, @NotNull Board board, ArrayList<Move> moves) {
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (board.isOnBoard(position.x + i, position.y + j)) {
-                    moves.add(new Move(position.x + i, position.y + j));
-                }
-            }
-        }
-    }
 }
