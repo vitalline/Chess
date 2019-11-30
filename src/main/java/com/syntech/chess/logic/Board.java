@@ -37,6 +37,7 @@ public class Board implements Cloneable {
     private Point selectedPiece = new Point(-1, -1);
     private Point enPassantPointWhite = new Point(-1, -1);
     private Point enPassantPointBlack = new Point(-1, -1);
+    private ArrayList<String> moveLog = new ArrayList<>();
 
     public Board(@NotNull Piece[][] board, Translation translation, boolean initialize) {
         this(board, translation);
@@ -88,6 +89,7 @@ public class Board implements Cloneable {
         clone.previousBoard = previousBoard;
         clone.enPassantPointWhite = new Point(enPassantPointWhite);
         clone.enPassantPointBlack = new Point(enPassantPointBlack);
+        clone.moveLog = new ArrayList<>(moveLog);
         return clone;
     }
 
@@ -143,6 +145,7 @@ public class Board implements Cloneable {
                 if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
                         size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
+                    appendToLog(pieceType.getShortNameTag());
                     displayPromotionPopup = false;
                     JImGuiGen.closeCurrentPopup();
                     advanceTurn();
@@ -186,6 +189,32 @@ public class Board implements Cloneable {
         displayLabel(imGui, "", size / 2, size / 2);
     }
 
+    public void displayLog(@NotNull JImGui imGui, int width, int height, int posX, int posY) {
+        imGui.setWindowSize("Turn Info", width, height);
+        imGui.setWindowPos("Turn Info", posX, posY);
+        imGui.begin("Turn Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.NoResize);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < moveLog.size(); i++) {
+            if (i % 2 == 0) {
+                sb.append(i / 2 + 1);
+                sb.append(". ");
+            }
+            String[] move = moveLog.get(i).split("\\|");
+            for (String s : move) {
+                sb.append(translation.get(s));
+            }
+            if (i % 10 == 9) {
+                sb.append("\n");
+            } else if (i % 2 == 1) {
+                sb.append('\t');
+            } else {
+                sb.append(' ');
+            }
+        }
+        imGui.text(sb.toString());
+        JImGuiGen.end();
+    }
+
     public float getWindowWidth() {
         return windowWidth;
     }
@@ -200,7 +229,7 @@ public class Board implements Cloneable {
         } else if (getTurnSide() == getSide(row, col) && getType(row, col) != PieceType.EMPTY) {
             selectPiece(row, col);
         } else if (Move.contains(availableMoves, row, col) || Move.contains(availableCaptures, row, col)) {
-            moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
+            moveLogAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
         }
     }
 
@@ -242,15 +271,45 @@ public class Board implements Cloneable {
         }
     }
 
-    private void moveAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol) {
+    private void moveLogAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol) {
+        String move = getMove(fromrow, fromcol, torow, tocol);
         move(fromrow, fromcol, torow, tocol);
+        moveLog.add(move);
         if (!displayPromotionPopup) {
             checkStatusConditions();
         }
     }
 
+    @NotNull
+    private String getMove(int fromrow, int fromcol, int torow, int tocol) {
+        if (getType(fromrow, fromcol) == PieceType.KING) {
+            if (tocol - fromcol == 2) {
+                return "O-O";
+            }
+            if (fromcol - tocol == 2) {
+                return "O-O-O";
+            }
+        }
+        String move = getType(fromrow, fromcol).getShortNameTag();
+        move += getCoordinates(new Point(fromrow, fromcol));
+        move += getSide(fromrow, fromcol).getOpponent() == getSide(torow, tocol) ? "|log_capture|" : "|log_move|";
+        move += getCoordinates(new Point(torow, tocol));
+        return move;
+    }
+
+    private void appendToLog(String str) {
+        moveLog.set(moveLog.size() - 1, moveLog.get(moveLog.size() - 1) + str);
+    }
+
     private void checkStatusConditions() {
         status = getStatusConditions(turnIndicator);
+        if (isInCheck(getTurnSide())) {
+            if (gameEnded) {
+                appendToLog("|log_checkmate|");
+            } else {
+                appendToLog("|log_check|");
+            }
+        }
         if (gameEnded) {
             displayResultPopup = true;
         }

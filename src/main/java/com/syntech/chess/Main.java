@@ -22,12 +22,13 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         JniLoaderEx.loadGlfw();
-        final int width = 1280, height = 720, cellSize = 50, margin = 10;
+        final int width = 1280, height = 800, cellSize = 50, margin = 10;
         try (JImGui imGui = new JImGui(width, height, "Chess")) {
             CellGraphics.initialize();
             Board board = null;
             String gameType = null;
             int menuPage = 0;
+            boolean showLog = false;
             File fontFile = new File("PureProg 12.ttf");
             if (!fontFile.exists()) {
                 String fontPath = "fonts/PureProg 12.ttf";
@@ -239,7 +240,19 @@ public class Main {
                         if (CellGraphics.display(imGui, "cross", translation.get("action_close"), cellSize, Color.CAPTURE_WHITE, -1)) {
                             board = null;
                         }
-
+                    }
+                    imGui.sameLine();
+                    if (showLog) {
+                        if (board != null) {
+                            board.displayLog(imGui, width - 2 * margin, 170, margin, height - 170 - margin);
+                        }
+                        if (CellGraphics.display(imGui, "info", translation.get("action_close_log"), cellSize, Color.MOVE_WHITE, -1)) {
+                            showLog = false;
+                        }
+                    } else {
+                        if (CellGraphics.display(imGui, "info", translation.get("action_open_log"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                            showLog = true;
+                        }
                     }
                     JImGuiGen.end();
                 }

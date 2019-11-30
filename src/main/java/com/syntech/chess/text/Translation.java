@@ -88,6 +88,20 @@ public enum Translation {
             "piece_king",
             "piece_amazon",
 
+            "log_pawn",
+            "log_knight",
+            "log_pegasus",
+            "log_bishop",
+            "log_sniper",
+            "log_rook",
+            "log_queen",
+            "log_king",
+            "log_amazon",
+            "log_move",
+            "log_capture",
+            "log_check",
+            "log_checkmate",
+
             "label_name",
             "label_xp",
             "label_next_level",
@@ -109,7 +123,9 @@ public enum Translation {
             "action_undo",
             "action_close",
             "action_next",
-            "action_previous"
+            "action_previous",
+            "action_open_log",
+            "action_close_log"
     ),
 
     EN_US(
@@ -196,6 +212,20 @@ public enum Translation {
             "King",
             "Amazon",
 
+            "",
+            "N",
+            "P",
+            "B",
+            "S",
+            "R",
+            "Q",
+            "K",
+            "A",
+            "-",
+            "×",
+            "+",
+            "#",
+
             "%s %s %s",
             "[ XP: %d/%d ]",
             "Next level: %s",
@@ -217,7 +247,9 @@ public enum Translation {
             "Undo last move",
             "Remove board",
             "Next page",
-            "Previous page"
+            "Previous page",
+            "Show moves",
+            "Hide moves"
     ),
 
     RU_RU(
@@ -304,6 +336,20 @@ public enum Translation {
             "Король",
             "Магараджа",
 
+            "",
+            "К",
+            "П",
+            "С",
+            "С",
+            "Л",
+            "Ф",
+            "Кр",
+            "М",
+            "-",
+            ":",
+            "+",
+            "x",
+
             "%s %3$s %2$s",
             "[ ОП: %d/%d ]",
             "След. уровень: %s",
@@ -325,7 +371,9 @@ public enum Translation {
             "Вернуть ход",
             "Убрать доску",
             "Следующая страница",
-            "Предыдущая страница"
+            "Предыдущая страница",
+            "Показать ходы",
+            "Скрыть ходы"
     );
 
     private final ArrayList<String> translationStrings;

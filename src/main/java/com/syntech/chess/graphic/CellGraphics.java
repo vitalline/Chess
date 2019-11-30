@@ -31,6 +31,7 @@ public class CellGraphics {
         textures = new ArrayList<>();
         names = new ArrayList<>();
         loadTexture("cross", "ui");
+        loadTexture("info", "ui");
         loadTexture("left", "ui");
         loadTexture("right", "ui");
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
