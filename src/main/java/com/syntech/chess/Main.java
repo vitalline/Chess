@@ -9,7 +9,7 @@ import com.syntech.chess.rules.StartingPositions;
 import com.syntech.chess.text.Translation;
 import org.ice1000.jimgui.*;
 import org.ice1000.jimgui.flag.JImWindowFlags;
-import org.ice1000.jimgui.util.JniLoader;
+import org.ice1000.jimgui.util.JniLoaderEx;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,8 @@ public class Main {
     private static Translation translation = Translation.EN_US;
 
     public static void main(String... args) throws IOException {
-        JniLoader.load();
-        final int width = 1300, height = 720, cellSize = 50, margin = 10;
+        JniLoaderEx.loadGlfw();
+        final int width = 1280, height = 720, cellSize = 50, margin = 10;
         try (JImGui imGui = new JImGui(width, height, "Chess")) {
             CellGraphics.initialize();
             Board board = null;
@@ -42,13 +42,13 @@ public class Main {
             font.setDisplayOffsetY((float) -cellSize / 25);
             imGui.setBackground(Color.BACKGROUND.getColor());
             imGui.initBeforeMainLoop();
-            imGui.setWindowPos("Menu", margin, margin);
             while (!imGui.windowShouldClose()) {
                 imGui.initNewFrame();
                 imGui.pushStyleColor(JImStyleColors.WindowBg, Color.BORDER.getColor());
                 imGui.pushStyleColor(JImStyleColors.Button, Color.BUTTON.getColor());
                 imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.BUTTON.getHoveredColor());
                 imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.BUTTON.getActiveColor());
+                imGui.setWindowPos("Menu", margin, margin);
                 imGui.begin("Menu", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
                 switch (menuPage) {
                     case 0:
@@ -214,7 +214,7 @@ public class Main {
                         }
                     }
                 }
-                imGui.setWindowPos("Language", width - JImGuiGen.getWindowWidth() - margin * 2.7f, margin);
+                imGui.setWindowPos("Language", width - JImGuiGen.getWindowWidth() - margin, margin);
                 JImGuiGen.end();
                 JImGuiGen.popStyleColor(3);
                 if (board != null) {

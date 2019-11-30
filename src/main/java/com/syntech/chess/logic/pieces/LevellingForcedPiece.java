@@ -105,7 +105,8 @@ public class LevellingForcedPiece extends ForcedPiece {
         }
         if (ForcedXPRules.getPieceXPWorth(getType()) != 0
                 && levellingData != LevellingData.NONE
-                && levellingData != LevellingData.DOWN) {
+                && levellingData != LevellingData.DOWN
+                && levellingData != LevellingData.FORCE_DOWN) {
             label += '\n' + String.format(translation.get("label_worth_xp"), ForcedXPRules.getPieceXPWorth(getType()));
         }
         return label;
