@@ -47,13 +47,14 @@ public enum PieceType {
         return translation.get(translationString);
     }
 
-    public String getShortNameTag() {
-        return '|' + translationString.replace("piece", "log") + '|';
+    public String getShortNameTag(Translation translation) {
+        return translation.get(translationString.replace("piece", "log"));
     }
 
     @Nullable
     public MovementType getMovementType(Side side) {
         switch (this) {
+            case NONE:
             case EMPTY:
             case WALL:
                 return new ImmovableType(this);

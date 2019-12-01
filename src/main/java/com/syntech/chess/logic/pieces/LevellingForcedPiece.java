@@ -100,7 +100,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             label += '\n' + String.format(translation.get("label_power_level"), ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
         }
         if (canLevelDown()) {
-            label += '\n' + String.format(translation.get("label_started_on"), Board.getCoordinates(initialPosition));
+            label += '\n' + String.format(translation.get("label_started_on"), Move.getCoordinates(initialPosition));
             label += '\n' + String.format(translation.get("label_will_respawn_as"), ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
         }
         if (ForcedXPRules.getPieceXPWorth(getType()) != 0
@@ -131,7 +131,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(board);
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            Piece piece = board.getPiece(move.getRow(), move.getCol());
+            Piece piece = board.getPiece(move.getEndRow(), move.getEndCol());
             if (piece instanceof LevellingForcedPiece) {
                 if (getPowerLevel() > ((LevellingForcedPiece) piece).getResistanceLevel()) {
                     filteredMoves.add(move);

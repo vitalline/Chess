@@ -21,26 +21,26 @@ public class CastlingKingType extends SpecialFirstMoveType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeMovement(position, board, side, moves);
+        MovementRules.addKingLikeMovement(position, board, moves);
         moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
         if (hasNotMoved()
-                && moves.contains(new Move(position.x, position.y + 1))
+                && Move.contains(moves, position.x, position.y + 1)
                 && !board.isInCheck(side)
                 && board.isFree(position.x, position.y + 2)
                 && board.getPiece(position.x, position.y + 3).getMovementType() instanceof CastlingRookType
                 && ((SpecialFirstMoveType) board.getPiece(position.x, position.y + 3).getMovementType()).hasNotMoved()
         ) {
-            moves.add(new Move(position.x, position.y + 2));
+            moves.add(new Move(getType(), position, position.x, position.y + 2));
         }
         if (hasNotMoved()
-                && moves.contains(new Move(position.x, position.y - 1))
+                && Move.contains(moves, position.x, position.y - 1)
                 && !board.isInCheck(side)
                 && board.isFree(position.x, position.y - 2)
                 && board.isFree(position.x, position.y - 3)
                 && board.getPiece(position.x, position.y - 4).getMovementType() instanceof CastlingRookType
                 && ((SpecialFirstMoveType) board.getPiece(position.x, position.y - 4).getMovementType()).hasNotMoved()
         ) {
-            moves.add(new Move(position.x, position.y - 2));
+            moves.add(new Move(getType(), position, position.x, position.y - 2));
         }
         return moves;
     }
@@ -48,7 +48,7 @@ public class CastlingKingType extends SpecialFirstMoveType {
     @Override
     public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeThreatening(position, board, side, this.side, moves);
+        MovementRules.addKingLikeThreatening(position, board, side, moves);
         return moves;
     }
 

@@ -18,9 +18,13 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
+//TODO: add the ability to import PGN files
+
 public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
     protected int width, height;
+    protected ArrayList<Point> pieces = new ArrayList<>();
+    protected ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
     protected ArrayList<Move> availableCaptures = new ArrayList<>();
     private Board previousBoard = null;
@@ -37,20 +41,10 @@ public class Board implements Cloneable {
     private Point selectedPiece = new Point(-1, -1);
     private Point enPassantPointWhite = new Point(-1, -1);
     private Point enPassantPointBlack = new Point(-1, -1);
-    private ArrayList<String> moveLog = new ArrayList<>();
+    private int turn = 0;
+    private ArrayList<Move> moveLog = new ArrayList<>();
 
-    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize) {
-        this(board, translation);
-        if (initialize) {
-            for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) {
-                    this.board[row][col].setPosition(row, col);
-                }
-            }
-        }
-    }
-
-    public Board(@NotNull Piece[][] board, Translation translation) {
+    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
         this.translation = translation;
         height = board.length;
         width = board[0].length;
@@ -64,22 +58,22 @@ public class Board implements Cloneable {
                 }
             }
         }
+        if (initialize) {
+            for (int row = 0; row < height; row++) {
+                for (int col = 0; col < width; col++) {
+                    this.board[row][col].setPosition(row, col);
+                }
+            }
+        }
+        if (update) {
+            updatePieces();
+        }
     }
 
-    @NotNull
-    private static String getRow(int row) {
-        return String.valueOf(row + 1);
+    public Board(@NotNull Piece[][] board, Translation translation) {
+        this(board, translation, false, false);
     }
 
-    @NotNull
-    private static String getColumn(int col) {
-        return String.valueOf((char) (col + 'a'));
-    }
-
-    @NotNull
-    public static String getCoordinates(@NotNull Point position) {
-        return getColumn(position.y) + getRow(position.x);
-    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -107,54 +101,62 @@ public class Board implements Cloneable {
     }
 
     public void display(@NotNull JImGui imGui, String name, float size) {
+
         float spacingX = imGui.getStyle().getItemSpacingX();
         float spacingY = imGui.getStyle().getItemSpacingY();
         float paddingX = imGui.getStyle().getFramePaddingX();
         float paddingY = imGui.getStyle().getFramePaddingY();
+
         imGui.getStyle().setItemSpacingX(0);
         imGui.getStyle().setItemSpacingY(0);
         imGui.getStyle().setFramePaddingX(0);
         imGui.getStyle().setFramePaddingY(0);
+
         imGui.begin(name, new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
         displayLabelRow(imGui, size);
         for (int row = height - 1; row >= 0; row--) {
-            displayLabel(imGui, getRow(row), size / 2, size);
+            displayLabel(imGui, Move.getRow(row), size / 2, size);
             imGui.sameLine();
             for (int col = 0; col < width; col++) {
                 displayCell(imGui, size, row, col);
                 imGui.sameLine();
             }
-            displayLabel(imGui, getRow(row), size / 2, size);
+            displayLabel(imGui, Move.getRow(row), size / 2, size);
         }
         displayLabelRow(imGui, size);
         windowWidth = JImGuiGen.getWindowWidth();
         windowHeight = JImGuiGen.getWindowHeight();
         JImGuiGen.end();
+
         imGui.getStyle().setItemSpacingX(spacingX);
         imGui.getStyle().setItemSpacingY(spacingY);
         imGui.getStyle().setFramePaddingX(paddingX);
         imGui.getStyle().setFramePaddingY(paddingY);
+
         if (displayPromotionPopup) {
             imGui.openPopup("Promote");
         }
+
         if (displayResultPopup) {
             imGui.openPopup("Result");
         }
+
         if (imGui.beginPopup("Promote", JImWindowFlags.AlwaysAutoResize)) {
             for (PieceType pieceType : getSelectedPiece().getPromotionTypes()) {
                 if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
                         size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
-                    appendToLog(pieceType.getShortNameTag());
                     displayPromotionPopup = false;
                     JImGuiGen.closeCurrentPopup();
                     advanceTurn();
+                    getLastMove().setPromotion(pieceType);
                     checkStatusConditions();
                     break;
                 }
             }
             JImGuiGen.endPopup();
         }
+
         if (imGui.beginPopup("Result", JImWindowFlags.AlwaysAutoResize)) {
             imGui.text(status);
             if (imGui.button("OK")) {
@@ -167,7 +169,7 @@ public class Board implements Cloneable {
 
     private void displayCell(JImGui imGui, float size, int row, int col) {
         if (CellGraphics.display(imGui, getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
-            analyzeMove(row, col);
+            analyzeInput(row, col);
         }
     }
 
@@ -183,7 +185,7 @@ public class Board implements Cloneable {
         displayLabel(imGui, "", size / 2, size / 2);
         imGui.sameLine();
         for (int col = 0; col < width; col++) {
-            displayLabel(imGui, "" + getColumn(col), size, size / 2);
+            displayLabel(imGui, "" + Move.getColumn(col), size, size / 2);
             imGui.sameLine();
         }
         displayLabel(imGui, "", size / 2, size / 2);
@@ -194,16 +196,13 @@ public class Board implements Cloneable {
         imGui.setWindowPos("Turn Info", posX, posY);
         imGui.begin("Turn Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.NoResize);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < moveLog.size(); i++) {
+        for (int i = 0; i < turn; i++) {
             if (i % 2 == 0) {
                 sb.append(i / 2 + 1);
                 sb.append(". ");
             }
-            String[] move = moveLog.get(i).split("\\|");
-            for (String s : move) {
-                sb.append(translation.get(s));
-            }
-            if (i % 10 == 9) {
+            sb.append(moveLog.get(i).toNotation(translation));
+            if (i % 12 == 11) {
                 sb.append("\n");
             } else if (i % 2 == 1) {
                 sb.append('\t');
@@ -223,47 +222,51 @@ public class Board implements Cloneable {
         return windowHeight;
     }
 
-    private void analyzeMove(int row, int col) {
+    private void analyzeInput(int row, int col) {
         if (isSelected(row, col)) {
             deselectPiece();
-        } else if (getTurnSide() == getSide(row, col) && getType(row, col) != PieceType.EMPTY) {
-            selectPiece(row, col);
-        } else if (Move.contains(availableMoves, row, col) || Move.contains(availableCaptures, row, col)) {
-            moveLogAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
+        } else {
+            if (selectedPieceIsValid()
+                    && (Move.contains(availableMoves, row, col)
+                    || Move.contains(availableCaptures, row, col))) {
+                moveLogAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
+            } else {
+                selectPiece(row, col);
+            }
         }
     }
 
-    protected void move(int fromrow, int fromcol, int torow, int tocol) {
+    protected void move(int startRow, int startCol, int endRow, int endCol) {
         try {
             previousBoard = (Board) clone();
         } catch (CloneNotSupportedException ignore) {
             previousBoard = null;
         }
-        Piece piece = getPiece(fromrow, fromcol);
+        Piece piece = getPiece(startRow, startCol);
         Point enPassantPoint = getEnPassantPoint(getTurnSide().getOpponent());
         Piece enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
-        if (enPassantPoint.x == torow && enPassantPoint.y == tocol
+        if (enPassantPoint.x == endRow && enPassantPoint.y == endCol
                 && (piece.getType() == PieceType.PAWN)
-                && fromcol != tocol) {
-            placePiece(PieceFactory.cell(), torow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), tocol);
+                && startCol != endCol) {
+            placePiece(PieceFactory.cell(), endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
         }
         enPassantPoint = getEnPassantPoint(getTurnSide());
         if (enPassantPiece.getType() == PieceType.EMPTY) {
             placePiece(PieceFactory.cell(), enPassantPoint);
         }
         setEnPassantPoint(getTurnSide(), pieceNone);
-        if (piece.getMovementType() instanceof DoublePawnType && torow - fromrow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
-            setEnPassantPoint(getTurnSide(), new Point(torow - MovementRules.getPawnMoveDirection(piece.getSide()), tocol));
+        if (piece.getMovementType() instanceof DoublePawnType && endRow - startRow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
+            setEnPassantPoint(getTurnSide(), new Point(endRow - MovementRules.getPawnMoveDirection(piece.getSide()), endCol));
             placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()));
         }
-        if (piece.getType() == PieceType.KING && tocol - fromcol == 2) {
-            getPiece(fromrow, fromcol + 3).move(this, fromrow, fromcol + 1);
+        if (piece.getType() == PieceType.KING && endCol - startCol == 2) {
+            getPiece(startRow, startCol + 3).move(this, startRow, startCol + 1);
         }
-        if (piece.getType() == PieceType.KING && tocol - fromcol == -2) {
-            getPiece(fromrow, fromcol - 4).move(this, fromrow, fromcol - 1);
+        if (piece.getType() == PieceType.KING && endCol - startCol == -2) {
+            getPiece(startRow, startCol - 4).move(this, startRow, startCol - 1);
         }
-        piece.move(this, torow, tocol);
-        selectedPiece = new Point(torow, tocol);
+        piece.move(this, endRow, endCol);
+        selectedPiece = new Point(endRow, endCol);
         if (getSelectedPiece().canBePromoted()) {
             displayPromotionPopup = true;
         } else {
@@ -271,46 +274,32 @@ public class Board implements Cloneable {
         }
     }
 
-    private void moveLogAndCheckStatusConditions(int fromrow, int fromcol, int torow, int tocol) {
-        String move = getMove(fromrow, fromcol, torow, tocol);
-        move(fromrow, fromcol, torow, tocol);
-        moveLog.add(move);
+    private void moveLogAndCheckStatusConditions(int startRow, int startCol, int endRow, int endCol) {
+        Move move = new Move(getType(startRow, startCol), startRow, startCol, endRow, endCol);
+        move.setData(this);
+        if (moveLog.size() > turn) {
+            moveLog.set(turn, move);
+        } else {
+            moveLog.add(turn, move);
+        }
+        move(startRow, startCol, endRow, endCol);
         if (!displayPromotionPopup) {
             checkStatusConditions();
         }
     }
 
-    @NotNull
-    private String getMove(int fromrow, int fromcol, int torow, int tocol) {
-        if (getType(fromrow, fromcol) == PieceType.KING) {
-            if (tocol - fromcol == 2) {
-                return "O-O";
-            }
-            if (fromcol - tocol == 2) {
-                return "O-O-O";
-            }
-        }
-        String move = getType(fromrow, fromcol).getShortNameTag();
-        move += getCoordinates(new Point(fromrow, fromcol));
-        move += getSide(fromrow, fromcol).getOpponent() == getSide(torow, tocol) ? "|log_capture|" : "|log_move|";
-        move += getCoordinates(new Point(torow, tocol));
-        return move;
-    }
-
-    private void appendToLog(String str) {
-        moveLog.set(moveLog.size() - 1, moveLog.get(moveLog.size() - 1) + str);
+    private Move getLastMove() {
+        return moveLog.get(turn - 1);
     }
 
     private void checkStatusConditions() {
+        updatePieces();
         status = getStatusConditions(turnIndicator);
         if (isInCheck(getTurnSide())) {
-            if (gameEnded) {
-                appendToLog("|log_checkmate|");
-            } else {
-                appendToLog("|log_check|");
-            }
+            getLastMove().setCheckFlag();
         }
         if (gameEnded) {
+            getLastMove().setGameEndFlag();
             displayResultPopup = true;
         }
     }
@@ -380,27 +369,52 @@ public class Board implements Cloneable {
         placePiece(piece, pos.x, pos.y);
     }
 
-    private com.syntech.chess.graphic.Color getColor(int row, int col) {
+    private Color getColor(int row, int col) {
         if (nothingIsSelected()) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : com.syntech.chess.graphic.Color.BLACK;
+            return (width - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+        } else if (!selectedPieceIsValid() && movablePieces.contains(new Point(row, col))) {
+            return (width - col + row) % 2 != 0 ? Color.MOVABLE_WHITE : Color.MOVABLE_BLACK;
         } else if (isSelected(row, col)) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.SELECTED_WHITE : com.syntech.chess.graphic.Color.SELECTED_BLACK;
+            return (width - col + row) % 2 != 0 ? Color.SELECTED_WHITE : Color.SELECTED_BLACK;
         } else if (Move.contains(availableMoves, row, col)) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.MOVE_WHITE : com.syntech.chess.graphic.Color.MOVE_BLACK;
+            return (width - col + row) % 2 != 0 ? Color.MOVE_WHITE : Color.MOVE_BLACK;
         } else if (Move.contains(availableCaptures, row, col)) {
-            return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.CAPTURE_WHITE : com.syntech.chess.graphic.Color.CAPTURE_BLACK;
+            return (width - col + row) % 2 != 0 ? Color.CAPTURE_WHITE : Color.CAPTURE_BLACK;
         }
-        return (width - col + row) % 2 != 0 ? com.syntech.chess.graphic.Color.WHITE : Color.BLACK;
+        return (width - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+    }
+
+    private ArrayList<Point> getPieces() {
+        ArrayList<Point> pieces = new ArrayList<>();
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                pieces.add(new Point(row, col));
+            }
+        }
+        return pieces;
+    }
+
+    private ArrayList<Point> getMovablePieces() {
+        ArrayList<Point> pieces = new ArrayList<>();
+        for (Point p : this.pieces) {
+            if (getSide(p.x, p.y) == getTurnSide()) {
+                ArrayList<Move> moves = new ArrayList<>();
+                moves.addAll(getAvailableMoves(p.x, p.y));
+                moves.addAll(getAvailableCaptures(p.x, p.y));
+                if (!moves.isEmpty()) {
+                    pieces.add(p);
+                }
+            }
+        }
+        return pieces;
     }
 
     @NotNull
     private ArrayList<Move> getAllAvailableMovesWithoutSpecialRules(Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (getSide(row, col) == side) {
-                    moves.addAll(getPiece(row, col).getAvailableMovesWithoutSpecialRules(this));
-                }
+        for (Point p : this.pieces) {
+            if (getSide(p.x, p.y) == side) {
+                moves.addAll(getPiece(p.x, p.y).getAvailableMovesWithoutSpecialRules(this));
             }
         }
         return moves;
@@ -409,11 +423,9 @@ public class Board implements Cloneable {
     @NotNull
     private ArrayList<Move> getAllAvailableCapturesWithoutSpecialRules(Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (getSide(row, col) == side) {
-                    moves.addAll(getPiece(row, col).getAvailableCapturesWithoutSpecialRules(this));
-                }
+        for (Point p : this.pieces) {
+            if (getSide(p.x, p.y) == side) {
+                moves.addAll(getPiece(p.x, p.y).getAvailableCapturesWithoutSpecialRules(this));
             }
         }
         return moves;
@@ -421,11 +433,9 @@ public class Board implements Cloneable {
 
     public ArrayList<Move> getAllAvailableMoves(Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (getSide(row, col) == side) {
-                    moves.addAll(getPiece(row, col).getAvailableMoves(this));
-                }
+        for (Point p : this.pieces) {
+            if (getSide(p.x, p.y) == side) {
+                moves.addAll(getPiece(p.x, p.y).getAvailableMoves(this));
             }
         }
         return MovePriorities.topPriorityMoves(moves);
@@ -433,18 +443,16 @@ public class Board implements Cloneable {
 
     public ArrayList<Move> getAllAvailableCaptures(Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (getSide(row, col) == side) {
-                    moves.addAll(getPiece(row, col).getAvailableCaptures(this));
-                }
+        for (Point p : this.pieces) {
+            if (getSide(p.x, p.y) == side) {
+                moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
             }
         }
         return MovePriorities.topPriorityMoves(moves);
     }
 
     public boolean isFree(int row, int col) {
-        return getPiece(row, col).getType() == PieceType.EMPTY && isOnBoard(row, col);
+        return getPiece(row, col).getType() == PieceType.EMPTY;
     }
 
     public Side getSide(int row, int col) {
@@ -455,15 +463,11 @@ public class Board implements Cloneable {
         return getPiece(row, col).getType();
     }
 
-    protected boolean isOnBoard(int row, int col) {
-        return row >= 0 && col >= 0 && row < height && col < width;
-    }
-
     public Piece getPiece(int row, int col) {
         try {
             return board[row][col];
         } catch (ArrayIndexOutOfBoundsException ignored) {
-            return PieceFactory.cell();
+            return PieceFactory.none();
         }
     }
 
@@ -476,24 +480,38 @@ public class Board implements Cloneable {
     }
 
     protected void selectPiece(int row, int col) {
-        try {
-            getPiece(row, col).getType();
-            selectedPiece = new Point(row, col);
-            availableMoves = getSelectedPiece().getAvailableMoves(this);
-            availableCaptures = getSelectedPiece().getAvailableCaptures(this);
-            ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
-            ArrayList<Move> allAvailableCaptures = getAllAvailableCaptures(getSide(row, col));
-            int topPriority = Math.max(MovePriorities.getTopPriority(allAvailableMoves), MovePriorities.getTopPriority(allAvailableCaptures));
-            if (MovePriorities.getTopPriority(availableMoves) < topPriority) {
-                availableMoves = new ArrayList<>();
-            }
-            if (MovePriorities.getTopPriority(availableCaptures) < topPriority) {
-                availableCaptures = new ArrayList<>();
-            }
-            availableMoves = MovePriorities.topPriorityMoves(availableMoves);
-            availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
-        } catch (ArrayIndexOutOfBoundsException ignored) {
+        getPiece(row, col).getType();
+        selectedPiece = new Point(row, col);
+        availableMoves = getAvailableMoves(row, col);
+        availableCaptures = getAvailableCaptures(row, col);
+    }
+
+    public ArrayList<Move> getAvailableMoves(int row, int col) {
+        if (getSide(row, col) == getTurnSide()) {
+            ArrayList<Move> availableMoves = getPiece(row, col).getAvailableMoves(this);
+            availableMoves = topPriorityMoves(availableMoves, row, col);
+            return availableMoves;
         }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<Move> getAvailableCaptures(int row, int col) {
+        if (getSide(row, col) == getTurnSide()) {
+            ArrayList<Move> availableCaptures = getPiece(row, col).getAvailableCaptures(this);
+            availableCaptures = topPriorityMoves(availableCaptures, row, col);
+            return availableCaptures;
+        }
+        return new ArrayList<>();
+    }
+
+    private ArrayList<Move> topPriorityMoves(ArrayList<Move> moves, int row, int col) {
+        ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
+        ArrayList<Move> allAvailableCaptures = getAllAvailableCaptures(getSide(row, col));
+        int topPriority = Math.max(MovePriorities.getTopPriority(allAvailableMoves), MovePriorities.getTopPriority(allAvailableCaptures));
+        if (MovePriorities.getTopPriority(moves) < topPriority) {
+            moves = new ArrayList<>();
+        }
+        return MovePriorities.topPriorityMoves(moves);
     }
 
     private void deselectPiece() {
@@ -506,8 +524,12 @@ public class Board implements Cloneable {
         return selectedPiece.equals(pieceNone);
     }
 
+    private boolean selectedPieceIsValid() {
+        return movablePieces.contains(selectedPiece);
+    }
+
     private boolean isSelected(int row, int col) {
-        return selectedPiece.equals(new Point(row, col));
+        return selectedPiece.equals(new Point(row, col)) && selectedPieceIsValid();
     }
 
     public Side getTurnSide() {
@@ -516,19 +538,26 @@ public class Board implements Cloneable {
 
     private void advanceTurn() {
         deselectPiece();
+        ++turn;
         turnIndicator = turnIndicator.getOpponent();
     }
 
-    protected Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
+    private void updatePieces() {
+        pieces = getPieces();
+        movablePieces = getMovablePieces();
+    }
+
+    protected Board getNextTurn(int startRow, int startCol, int endRow, int endCol) {
         Board nextTurn = new Board(board, translation);
-        nextTurn.move(fromrow, fromcol, torow, tocol);
+        nextTurn.move(startRow, startCol, endRow, endCol);
+        nextTurn.pieces = nextTurn.getPieces();
         return nextTurn;
     }
 
     public boolean isInCheck(@NotNull Side side) {
         ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
         for (Move capture : captures) {
-            if (getType(capture.getRow(), capture.getCol()) == PieceType.KING) {
+            if (getType(capture.getEndRow(), capture.getEndCol()) == PieceType.KING) {
                 return true;
             }
         }
@@ -539,7 +568,7 @@ public class Board implements Cloneable {
     public ArrayList<Move> excludeMovesThatLeaveKingInCheck(@NotNull Point position, Side side, @NotNull ArrayList<Move> moves) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (!getNextTurn(position.x, position.y, move.getRow(), move.getCol()).isInCheck(side)) {
+            if (!getNextTurn(position.x, position.y, move.getEndRow(), move.getEndCol()).isInCheck(side)) {
                 filteredMoves.add(move);
             }
         }

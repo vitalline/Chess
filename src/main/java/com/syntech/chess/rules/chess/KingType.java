@@ -21,14 +21,14 @@ public class KingType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeMovement(position, board, side, moves);
+        MovementRules.addKingLikeMovement(position, board, moves);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeThreatening(position, board, side, this.side, moves);
+        MovementRules.addKingLikeThreatening(position, board, side, moves);
         return moves;
     }
 

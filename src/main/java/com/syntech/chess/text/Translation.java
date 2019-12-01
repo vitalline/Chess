@@ -97,10 +97,6 @@ public enum Translation {
             "log_queen",
             "log_king",
             "log_amazon",
-            "log_move",
-            "log_capture",
-            "log_check",
-            "log_checkmate",
 
             "label_name",
             "label_xp",
@@ -221,10 +217,6 @@ public enum Translation {
             "Q",
             "K",
             "A",
-            "-",
-            "×",
-            "+",
-            "#",
 
             "%s %s %s",
             "[ XP: %d/%d ]",
@@ -345,10 +337,6 @@ public enum Translation {
             "Ф",
             "Кр",
             "М",
-            "-",
-            ":",
-            "+",
-            "x",
 
             "%s %3$s %2$s",
             "[ ОП: %d/%d ]",
@@ -390,13 +378,13 @@ public enum Translation {
         }
     }
 
-    public String get(String str) {
+    public final String get(String str) {
         try {
             String rawTranslation = translationStrings.get(NONE.translationStrings.indexOf(str));
             String padding = new String(new char[getRaw("status_game").replace("%s", "").length()]).replace("\0", " ");
             return rawTranslation.replace("\n", "\n" + padding);
         } catch (IndexOutOfBoundsException ignored) {
-            return str;
+            return str.equals("") ? "" : '[' + str + ']';
         }
     }
 }

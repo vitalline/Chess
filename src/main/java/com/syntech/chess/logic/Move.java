@@ -1,66 +1,106 @@
 package com.syntech.chess.logic;
 
-import com.syntech.chess.rules.MovePriorities;
+import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Move {
+    private PieceType piece;
+    private boolean addRow = false;
+    private boolean addCol = false;
+    private Point startPosition;
     private Point endPosition;
-    private int priority, power;
+    private boolean isCapture = false;
+    private PieceType promotion = PieceType.NONE;
+    private boolean isCheck = false;
+    private boolean isGameEnd = false;
+    private int priority = 0;
+    private int power = 0;
 
-    public Move(int row, int col) {
-        this(row, col, 0);
+    public Move(PieceType piece, int startRow, int startCol, int endRow, int endCol) {
+        this(piece, new Point(startRow, startCol), endRow, endCol);
     }
 
-    public Move(int row, int col, int priority) {
-        this(row, col, priority, 0);
+    public Move(PieceType piece, Point startPosition, int endRow, int endCol) {
+        this(piece, startPosition, new Point(endRow, endCol));
     }
 
-    public Move(int row, int col, int priority, int power) {
-        this.endPosition = new Point(row, col);
-        this.priority = priority;
-        this.power = power;
+    public Move(PieceType piece, Point startPosition, Point endPosition) {
+        this.piece = piece;
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Move move = (Move) o;
-        return priority == move.priority && power == move.power &&
-                Objects.equals(endPosition, move.endPosition);
+    // TODO: finish PGN-to-move conversion
+    /*
+    public Move(String pgn, Board board) {
+        if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_knight"))) {
+            piece = PieceType.KNIGHT;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_pegasus"))) {
+            piece = PieceType.PEGASUS;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_bishop"))) {
+            piece = PieceType.BISHOP;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_sniper"))) {
+            piece = PieceType.SNIPER;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_rook"))) {
+            piece = PieceType.ROOK;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_queen"))) {
+            piece = PieceType.QUEEN;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_king"))) {
+            piece = PieceType.KNIGHT;
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_amazon"))) {
+            piece = PieceType.AMAZON;
+        } else {
+            piece = PieceType.PAWN;
+        }
+        pgn = pgn.substring(1);
+    }
+     */
+
+    @NotNull
+    public static String getRow(int row) {
+        return String.valueOf(row + 1);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(endPosition, power, priority);
+    @NotNull
+    public static String getColumn(int col) {
+        return String.valueOf((char) (col + 'a'));
+    }
+
+    @NotNull
+    public static String getCoordinates(@NotNull Point position) {
+        return getColumn(position.y) + getRow(position.x);
     }
 
     public Point getEndPosition() {
         return endPosition;
     }
 
-    public int getRow() {
-        return endPosition.x;
+    public static boolean contains(@NotNull ArrayList<Move> moves, int endRow, int endCol) {
+        return containsWithPowerAtLeast(moves, endRow, endCol, 0);
     }
 
-    public int getCol() {
-        return endPosition.y;
+    public static boolean containsWithPowerAtLeast(@NotNull ArrayList<Move> moves, int endRow, int endCol, int power) {
+        for (Move move : moves) {
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol && move.getPower() >= power) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setEndPosition(Point endPosition) {
         this.endPosition = endPosition;
     }
 
-    public void setRow(int row) {
-        endPosition.x = row;
+    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol) {
+        return amount(moves, piece, endRow, endCol, 0, 0, false, false);
     }
 
-    public void setCol(int col) {
-        endPosition.y = col;
+    private static int amountRow(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow) {
+        return amount(moves, piece, endRow, endCol, startRow, 0, true, false);
     }
 
     public int getPriority() {
@@ -79,31 +119,89 @@ public class Move {
         this.power = power;
     }
 
-    @NotNull
-    public static ArrayList<Point> toListOfPoints(@NotNull ArrayList<Move> moves) {
-        ArrayList<Point> points = new ArrayList<>();
-        for (Move m : moves) {
-            points.add(m.endPosition);
-        }
-        return points;
+    private static int amountCol(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startCol) {
+        return amount(moves, piece, endRow, endCol, 0, startCol, false, true);
     }
 
-    public static boolean contains(@NotNull ArrayList<Move> moves, int row, int col) {
+    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow, int startCol, boolean checkRow, boolean checkColumn) {
+        int amount = 0;
         for (Move move : moves) {
-            if (move.getRow() == row && move.getCol() == col) {
-                return true;
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol
+                    && (move.getStartRow() == startRow || !checkRow)
+                    && (move.getStartCol() == startCol || !checkColumn)
+                    && move.piece == piece) {
+                ++amount;
             }
         }
-        return false;
+        return amount;
     }
 
-    public static boolean containsWithPowerAtLeast(int power, @NotNull ArrayList<Move> moves, int row, int col) {
-        for (Move move : moves) {
-            if (move.getRow() == row && move.getCol() == col && move.getPower() >= power) {
-                return true;
+    public Point getStartPosition() {
+        return startPosition;
+    }
+
+    public int getStartRow() {
+        return startPosition.x;
+    }
+
+    public int getStartCol() {
+        return startPosition.y;
+    }
+
+    public int getEndRow() {
+        return endPosition.x;
+    }
+
+    public void setEndRow(int row) {
+        endPosition.x = row;
+    }
+
+    public int getEndCol() {
+        return endPosition.y;
+    }
+
+    public void setEndCol(int col) {
+        endPosition.y = col;
+    }
+
+    public PieceType getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(PieceType promotion) {
+        this.promotion = promotion;
+    }
+
+    public void setCheckFlag() {
+        this.isCheck = true;
+    }
+
+    public void setGameEndFlag() {
+        this.isGameEnd = true;
+    }
+
+    public void setData(Board board) {
+        if (!board.isFree(getEndRow(), getEndCol())) {
+            isCapture = true;
+        }
+        for (Point p : board.movablePieces) {
+            ArrayList<Move> moves;
+            if (isCapture) {
+                moves = board.getAllAvailableCaptures(board.getSide(getStartRow(), getStartCol()));
+            } else {
+                moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
+            }
+            if (amount(moves, piece, getEndRow(), getEndCol()) > 1) {
+                addCol = true;
+                if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartCol()) > 1) {
+                    addCol = false;
+                    addRow = true;
+                }
+                if (amountRow(moves, piece, getEndRow(), getEndCol(), getStartRow()) > 1) {
+                    addCol = true;
+                }
             }
         }
-        return false;
     }
 
     public static void setPriority(ArrayList<Move> moves, int priority) {
@@ -118,7 +216,49 @@ public class Move {
         }
     }
 
-    public int getCapturePriority(Board board) {
-        return MovePriorities.getCapturePriority(board.getType(endPosition.x, endPosition.y));
+    private String toInternalNotation(Translation translation) {
+        if (isCastling()) {
+            if (getEndCol() > getStartCol()) {
+                return "O-O";
+            } else {
+                return "O-O-O";
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(piece.getShortNameTag(translation));
+        if (addCol || (sb.toString().equals("") && isCapture)) {
+            sb.append(getColumn(getStartCol()));
+        }
+        if (addRow) {
+            sb.append(getRow(getStartRow()));
+        }
+        if (isCapture) {
+            sb.append("×");
+        }
+        sb.append(getCoordinates(endPosition));
+        if (promotion != PieceType.NONE) {
+            sb.append("=");
+            sb.append(promotion.getShortNameTag(translation));
+        }
+        if (isCheck) {
+            if (isGameEnd) {
+                sb.append("#");
+            } else {
+                sb.append("+");
+            }
+        }
+        return sb.toString();
+    }
+
+    private boolean isCastling() {
+        return piece == PieceType.KING && Math.abs(getStartCol() - getEndCol()) > 1;
+    }
+
+    public String toNotation(Translation translation) {
+        return toInternalNotation(translation).replace("=", "");
+    }
+
+    public String toPGN(Translation translation) {
+        return toInternalNotation(translation).replace("×", "x");
     }
 }

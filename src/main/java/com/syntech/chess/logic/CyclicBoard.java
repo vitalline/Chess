@@ -7,17 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class CyclicBoard extends Board {
-    public CyclicBoard(@NotNull Piece[][] board, Translation translation, boolean initialize) {
-        super(board, translation, initialize);
+    public CyclicBoard(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
+        super(board, translation, initialize, update);
     }
 
     public CyclicBoard(@NotNull Piece[][] board, Translation translation) {
         super(board, translation);
-    }
-
-    @Override
-    protected boolean isOnBoard(int row, int col) {
-        return row >= 0 && row < height;
     }
 
     private int getColumn(int col) {
@@ -41,9 +36,9 @@ public class CyclicBoard extends Board {
     }
 
     @Override
-    protected Board getNextTurn(int fromrow, int fromcol, int torow, int tocol) {
+    protected Board getNextTurn(int startRow, int startCol, int endRow, int endCol) {
         CyclicBoard nextTurn = new CyclicBoard(getBoard(), getTranslation());
-        nextTurn.move(fromrow, fromcol, torow, tocol);
+        nextTurn.move(startRow, startCol, endRow, endCol);
         return nextTurn;
     }
 
@@ -56,7 +51,7 @@ public class CyclicBoard extends Board {
 
     private void format(ArrayList<Move> moves) {
         for (Move move : moves) {
-            move.setCol(getColumn(move.getCol()));
+            move.setEndCol(getColumn(move.getEndCol()));
         }
     }
 }

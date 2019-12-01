@@ -11,6 +11,8 @@ public enum Color {
     BUTTON,
     WHITE,
     BLACK,
+    MOVABLE_WHITE,
+    MOVABLE_BLACK,
     SELECTED_WHITE,
     SELECTED_BLACK,
     MOVE_WHITE,
@@ -21,11 +23,13 @@ public enum Color {
     public Side toSide() {
         switch (this) {
             case WHITE:
+            case MOVABLE_WHITE:
             case SELECTED_WHITE:
             case MOVE_WHITE:
             case CAPTURE_WHITE:
                 return Side.WHITE;
             case BLACK:
+            case MOVABLE_BLACK:
             case SELECTED_BLACK:
             case MOVE_BLACK:
             case CAPTURE_BLACK:
@@ -42,6 +46,10 @@ public enum Color {
                 return new JImVec4(0.8f, 0.8f, 0.8f, 1.0f);
             case BLACK:
                 return new JImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+            case MOVABLE_WHITE:
+                return new JImVec4(0.875f, 0.875f, 0.725f, 1.0f);
+            case MOVABLE_BLACK:
+                return new JImVec4(0.275f, 0.275f, 0.125f, 1.0f);
             case SELECTED_WHITE:
                 return new JImVec4(0.9f, 0.9f, 0.7f, 1.0f);
             case SELECTED_BLACK:
@@ -72,6 +80,10 @@ public enum Color {
                 return new JImVec4(0.85f, 0.85f, 0.85f, 1.0f);
             case BLACK:
                 return new JImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+            case MOVABLE_WHITE:
+                return new JImVec4(0.925f, 0.925f, 0.775f, 1.0f);
+            case MOVABLE_BLACK:
+                return new JImVec4(0.325f, 0.325f, 0.175f, 1.0f);
             case SELECTED_WHITE:
                 return new JImVec4(0.95f, 0.95f, 0.75f, 1.0f);
             case SELECTED_BLACK:
@@ -98,6 +110,10 @@ public enum Color {
                 return new JImVec4(0.825f, 0.825f, 0.825f, 1.0f);
             case BLACK:
                 return new JImVec4(0.225f, 0.225f, 0.225f, 1.0f);
+            case MOVABLE_WHITE:
+                return new JImVec4(0.9f, 0.9f, 0.8f, 1.0f);
+            case MOVABLE_BLACK:
+                return new JImVec4(0.3f, 0.3f, 0.2f, 1.0f);
             case SELECTED_WHITE:
                 return new JImVec4(0.925f, 0.925f, 0.725f, 1.0f);
             case SELECTED_BLACK:

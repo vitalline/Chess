@@ -54,77 +54,77 @@ public class Main {
                 switch (menuPage) {
                     case 0:
                         if (imGui.button(translation.get("chess#short"))) {
-                            board = new Board(StartingPositions.chess, translation, true);
+                            board = new Board(StartingPositions.chess, translation, true, true);
                             gameType = "chess";
                         }
                         displayTooltip("chess", imGui);
                         if (imGui.button(translation.get("cyclic_chess#short"))) {
-                            board = new CyclicBoard(StartingPositions.chess, translation, true);
+                            board = new CyclicBoard(StartingPositions.chess, translation, true, true);
                             gameType = "cyclic_chess";
                         }
                         displayTooltip("cyclic_chess", imGui);
                         if (imGui.button(translation.get("forced_chess#short"))) {
-                            board = new Board(StartingPositions.forcedChess, translation, true);
+                            board = new Board(StartingPositions.forcedChess, translation, true, true);
                             gameType = "forced_chess";
                         }
                         displayTooltip("forced_chess", imGui);
                         if (imGui.button(translation.get("modest_forced_chess#short"))) {
-                            board = new Board(StartingPositions.modestForcedChess, translation, true);
+                            board = new Board(StartingPositions.modestForcedChess, translation, true, true);
                             gameType = "modest_forced_chess";
                         }
                         displayTooltip("modest_forced_chess", imGui);
                         if (imGui.button(translation.get("force_major_chess#short"))) {
-                            board = new Board(StartingPositions.forceMajorChess, translation, true);
+                            board = new Board(StartingPositions.forceMajorChess, translation, true, true);
                             gameType = "force_major_chess";
                         }
                         displayTooltip("force_major_chess", imGui);
                         if (imGui.button(translation.get("force_minor_chess#short"))) {
-                            board = new Board(StartingPositions.forceMinorChess, translation, true);
+                            board = new Board(StartingPositions.forceMinorChess, translation, true, true);
                             gameType = "force_minor_chess";
                         }
                         displayTooltip("force_minor_chess", imGui);
                         if (imGui.button(translation.get("cyclic_modest_forced_chess#short"))) {
-                            board = new CyclicBoard(StartingPositions.modestForcedChess, translation, true);
+                            board = new CyclicBoard(StartingPositions.modestForcedChess, translation, true, true);
                             gameType = "cyclic_modest_forced_chess";
                         }
                         displayTooltip("cyclic_modest_forced_chess", imGui);
                         if (imGui.button(translation.get("classical_chess_4x4#short"))) {
-                            board = new Board(StartingPositions.chess4x4, translation, true);
+                            board = new Board(StartingPositions.chess4x4, translation, true, true);
                             gameType = "classical_chess_4x4";
                         }
                         displayTooltip("classical_chess_4x4", imGui);
                         if (imGui.button(translation.get("sniper_forced_chess#short"))) {
-                            board = new Board(StartingPositions.sniperChess, translation, true);
+                            board = new Board(StartingPositions.sniperChess, translation, true, true);
                             gameType = "sniper_forced_chess";
                         }
                         displayTooltip("sniper_forced_chess", imGui);
                         if (imGui.button(translation.get("modest_sniper_forced_chess#short"))) {
-                            board = new Board(StartingPositions.modestSniperChess, translation, true);
+                            board = new Board(StartingPositions.modestSniperChess, translation, true, true);
                             gameType = "modest_sniper_forced_chess";
                         }
                         displayTooltip("modest_sniper_forced_chess", imGui);
                         if (imGui.button(translation.get("reserve_forced_chess#short"))) {
-                            board = new Board(StartingPositions.reserveChess, translation, true);
+                            board = new Board(StartingPositions.reserveChess, translation, true, true);
                             gameType = "reserve_forced_chess";
                         }
                         displayTooltip("reserve_forced_chess", imGui);
                         if (imGui.button(translation.get("modest_reserve_forced_chess#short"))) {
-                            board = new Board(StartingPositions.modestReserveChess, translation, true);
+                            board = new Board(StartingPositions.modestReserveChess, translation, true, true);
                             gameType = "modest_reserve_forced_chess";
                         }
                         displayTooltip("modest_reserve_forced_chess", imGui);
                         if (imGui.button(translation.get("pegasi_reserve_forced_chess#short"))) {
-                            board = new Board(StartingPositions.pegasiReserveChess, translation, true);
+                            board = new Board(StartingPositions.pegasiReserveChess, translation, true, true);
                             gameType = "pegasi_reserve_forced_chess";
                         }
                         displayTooltip("pegasi_reserve_forced_chess", imGui);
                         if (imGui.button(translation.get("sniper_reserve_forced_chess#short"))) {
-                            board = new Board(StartingPositions.sniperReserveChess, translation, true);
+                            board = new Board(StartingPositions.sniperReserveChess, translation, true, true);
                             gameType = "sniper_reserve_forced_chess";
                         }
                         displayTooltip("sniper_reserve_forced_chess", imGui);
                         if (imGui.button(translation.get("sniper_pegasi_reserve_forced_chess#short"))) {
-                            board = new Board(StartingPositions.sniperPegasiReserveChess, translation, true);
+                            board = new Board(StartingPositions.sniperPegasiReserveChess, translation, true, true);
                             gameType = "sniper_pegasi_reserve_forced_chess";
                         }
                         displayTooltip("sniper_pegasi_reserve_forced_chess", imGui);
@@ -134,62 +134,62 @@ public class Main {
                         break;
                     case 1:
                         if (imGui.button(translation.get("involution_forced_chess#short"))) {
-                            board = new Board(StartingPositions.involutionForcedChess, translation, true);
+                            board = new Board(StartingPositions.involutionForcedChess, translation, true, true);
                             gameType = "involution_forced_chess";
                         }
                         displayTooltip("involution_forced_chess", imGui);
                         if (imGui.button(translation.get("mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP), translation, true, true);
                             gameType = "mmorpg_forced_chess";
                         }
                         displayTooltip("mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("involution_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN), translation, true, true);
                             gameType = "involution_mmorpg_forced_chess";
                         }
                         displayTooltip("involution_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("resistance_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_RES), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_RES), translation, true, true);
                             gameType = "resistance_mmorpg_forced_chess";
                         }
                         displayTooltip("resistance_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("resistance_power_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_RES_POW), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_RES_POW), translation, true, true);
                             gameType = "resistance_power_mmorpg_forced_chess";
                         }
                         displayTooltip("resistance_power_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("resistance_involution_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES), translation, true, true);
                             gameType = "resistance_involution_mmorpg_forced_chess";
                         }
                         displayTooltip("resistance_involution_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("resistance_power_involution_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES_POW), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES_POW), translation, true, true);
                             gameType = "resistance_power_involution_mmorpg_forced_chess";
                         }
                         displayTooltip("resistance_power_involution_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("forced_involution_forced_chess#short"))) {
-                            board = new Board(StartingPositions.forcedInvolutionForcedChess, translation, true);
+                            board = new Board(StartingPositions.forcedInvolutionForcedChess, translation, true, true);
                             gameType = "forced_involution_forced_chess";
                         }
                         displayTooltip("forced_involution_forced_chess", imGui);
                         if (imGui.button(translation.get("forced_involution_mmorpg_forced_chess#short"))) {
-                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN), translation, true);
+                            board = new Board(StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN), translation, true, true);
                             gameType = "forced_involution_mmorpg_forced_chess";
                         }
                         displayTooltip("forced_involution_mmorpg_forced_chess", imGui);
                         if (imGui.button(translation.get("cloning_forced_chess#short"))) {
-                            board = new Board(StartingPositions.cloningForcedChess, translation, true);
+                            board = new Board(StartingPositions.cloningForcedChess, translation, true, true);
                             gameType = "cloning_forced_chess";
                         }
                         displayTooltip("cloning_forced_chess", imGui);
                         if (imGui.button(translation.get("cyclic_chess_8x12#short"))) {
-                            board = new CyclicBoard(StartingPositions.chess8x12, translation, true);
+                            board = new CyclicBoard(StartingPositions.chess8x12, translation, true, true);
                             gameType = "cyclic_chess_8x12";
                         }
                         displayTooltip("cyclic_chess_8x12", imGui);
                         if (imGui.button(translation.get("cyclic_chess_8x16#short"))) {
-                            board = new CyclicBoard(StartingPositions.chess8x16, translation, true);
+                            board = new CyclicBoard(StartingPositions.chess8x16, translation, true, true);
                             gameType = "cyclic_chess_8x16";
                         }
                         displayTooltip("cyclic_chess_8x16", imGui);
@@ -241,6 +241,9 @@ public class Main {
                             board = null;
                         }
                     }
+
+                    //TODO: add redo button and functionality
+
                     imGui.sameLine();
                     if (showLog) {
                         if (board != null) {

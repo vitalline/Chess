@@ -8,6 +8,11 @@ import java.awt.*;
 public class PieceFactory {
 
     @NotNull
+    public static Piece none() {
+        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.NONE, Side.NEUTRAL);
+    }
+
+    @NotNull
     public static Piece cell() {
         return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, Side.NEUTRAL);
     }
@@ -102,7 +107,7 @@ public class PieceFactory {
             case CLONING_FORCED_PIECE:
                 return new CloningForcedPiece(side, type.getMovementType(side));
             default:
-                return cell();
+                return none();
         }
     }
 }
