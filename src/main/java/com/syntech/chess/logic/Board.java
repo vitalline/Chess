@@ -65,8 +65,9 @@ public class Board implements Cloneable {
                 }
             }
         }
+        pieces = getPieces();
         if (update) {
-            updatePieces();
+            updateMovablePieces();
         }
     }
 
@@ -267,6 +268,7 @@ public class Board implements Cloneable {
         }
         piece.move(this, endRow, endCol);
         selectedPiece = new Point(endRow, endCol);
+        pieces = getPieces();
         if (getSelectedPiece().canBePromoted()) {
             displayPromotionPopup = true;
         } else {
@@ -293,7 +295,7 @@ public class Board implements Cloneable {
     }
 
     private void checkStatusConditions() {
-        updatePieces();
+        updateMovablePieces();
         status = getStatusConditions(turnIndicator);
         if (isInCheck(getTurnSide())) {
             getLastMove().setCheckFlag();
@@ -542,15 +544,13 @@ public class Board implements Cloneable {
         turnIndicator = turnIndicator.getOpponent();
     }
 
-    private void updatePieces() {
-        pieces = getPieces();
+    private void updateMovablePieces() {
         movablePieces = getMovablePieces();
     }
 
     protected Board getNextTurn(int startRow, int startCol, int endRow, int endCol) {
         Board nextTurn = new Board(board, translation);
         nextTurn.move(startRow, startCol, endRow, endCol);
-        nextTurn.pieces = nextTurn.getPieces();
         return nextTurn;
     }
 
