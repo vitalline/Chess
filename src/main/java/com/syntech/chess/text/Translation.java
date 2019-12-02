@@ -117,6 +117,7 @@ public enum Translation {
             "status_stalemate",
 
             "action_undo",
+            "action_redo",
             "action_close",
             "action_next",
             "action_previous",
@@ -237,6 +238,7 @@ public enum Translation {
             "%s has stalemated %s!",
 
             "Undo last move",
+            "Redo next move",
             "Remove board",
             "Next page",
             "Previous page",
@@ -356,7 +358,8 @@ public enum Translation {
             "Шах и мат! Победа %s!",
             "У %2$s пат!",
 
-            "Вернуть ход",
+            "Отменить ход",
+            "Повторить ход",
             "Убрать доску",
             "Следующая страница",
             "Предыдущая страница",

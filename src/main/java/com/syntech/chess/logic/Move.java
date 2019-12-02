@@ -59,6 +59,11 @@ public class Move {
     }
      */
 
+    public boolean hasDifferentMoveData(Move newMove) {
+        return !startPosition.equals(newMove.getStartPosition())
+                || !endPosition.equals(newMove.getEndPosition());
+    }
+
     @NotNull
     public static String getRow(int row) {
         return String.valueOf(row + 1);

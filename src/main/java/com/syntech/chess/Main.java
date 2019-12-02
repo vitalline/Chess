@@ -219,36 +219,48 @@ public class Main {
                 JImGuiGen.end();
                 JImGuiGen.popStyleColor(3);
                 if (board != null) {
+
                     imGui.setWindowPos("Board", boardX, margin);
                     board.display(imGui, "Board", cellSize);
-                    imGui.setWindowPos("Turn Indicator", boardX, board.getWindowHeight() + 2 * margin);
-                    imGui.begin("Turn Indicator", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+
+                    imGui.setWindowPos("Game Info", boardX, board.getWindowHeight() + margin);
+                    imGui.begin("Game Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+
                     String status = board.getStatusString();
                     if (status == null) {
                         status = String.format(translation.get("status_turn"), board.getTurnSide().getProperName(translation));
                     }
                     CellGraphics.display(imGui, board.getStatusSide(), board.getStatusPiece(), status, cellSize, board.getTurnSide().toColor(), -1);
+
                     imGui.sameLine();
+
                     imGui.text(status + "\n" + String.format(translation.get("status_game"), translation.get(gameType)));
-                    imGui.sameLine();
+
                     if (board.getPreviousBoard() != null) {
                         if (CellGraphics.display(imGui, "left", translation.get("action_undo"), cellSize, Color.WHITE, -1)) {
                             board = board.getPreviousBoard();
                             board.setTranslation(translation);
                         }
                     } else {
-                        if (CellGraphics.display(imGui, "cross", translation.get("action_close"), cellSize, Color.CAPTURE_WHITE, -1)) {
-                            board = null;
-                        }
+                        CellGraphics.display(imGui, "left", translation.get("action_undo"), cellSize, Color.NONE, -1);
                     }
 
-                    //TODO: add redo button and functionality
+                    imGui.sameLine();
+
+                    if (board.canRedo()) {
+                        if (CellGraphics.display(imGui, "right", translation.get("action_redo"), cellSize, Color.WHITE, -1)) {
+                            board.redo();
+                        }
+                    } else {
+                        CellGraphics.display(imGui, "right", translation.get("action_redo"), cellSize, Color.NONE, -1);
+                    }
 
                     imGui.sameLine();
+
+                    int logHeight = 170;
+
                     if (showLog) {
-                        if (board != null) {
-                            board.displayLog(imGui, width - 2 * margin, 170, margin, height - 170 - margin);
-                        }
+                        board.displayLog(imGui, width - 2 * margin, logHeight, margin, height - logHeight - margin);
                         if (CellGraphics.display(imGui, "info", translation.get("action_close_log"), cellSize, Color.MOVE_WHITE, -1)) {
                             showLog = false;
                         }
@@ -257,6 +269,13 @@ public class Main {
                             showLog = true;
                         }
                     }
+
+                    imGui.sameLine();
+
+                    if (CellGraphics.display(imGui, "cross", translation.get("action_close"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                        board = null;
+                    }
+
                     JImGuiGen.end();
                 }
                 imGui.popStyleColor();
