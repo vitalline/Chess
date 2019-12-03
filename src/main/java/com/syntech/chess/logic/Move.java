@@ -33,6 +33,20 @@ public class Move {
         this.endPosition = endPosition;
     }
 
+    public Move(Move move) {
+        this.piece = move.piece;
+        this.addRow = move.addRow;
+        this.addCol = move.addCol;
+        this.startPosition = move.startPosition;
+        this.endPosition = move.endPosition;
+        this.isCapture = move.isCapture;
+        this.promotion = move.promotion;
+        this.isCheck = move.isCheck;
+        this.isGameEnd = move.isGameEnd;
+        this.priority = move.priority;
+        this.power = move.power;
+    }
+
     // TODO: finish PGN-to-move conversion
     /*
     public Move(String pgn, Board board) {
@@ -177,6 +191,10 @@ public class Move {
         this.promotion = promotion;
     }
 
+    public void setCaptureFlag() {
+        this.isCapture = true;
+    }
+
     public void setCheckFlag() {
         this.isCheck = true;
     }
@@ -186,25 +204,20 @@ public class Move {
     }
 
     public void setData(Board board) {
-        if (!board.isFree(getEndRow(), getEndCol())) {
-            isCapture = true;
+        ArrayList<Move> moves;
+        if (isCapture) {
+            moves = board.getAllAvailableCaptures(board.getSide(getStartRow(), getStartCol()));
+        } else {
+            moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
         }
-        for (Point p : board.movablePieces) {
-            ArrayList<Move> moves;
-            if (isCapture) {
-                moves = board.getAllAvailableCaptures(board.getSide(getStartRow(), getStartCol()));
-            } else {
-                moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
+        if (amount(moves, piece, getEndRow(), getEndCol()) > 1) {
+            addCol = true;
+            if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartCol()) > 1) {
+                addCol = false;
+                addRow = true;
             }
-            if (amount(moves, piece, getEndRow(), getEndCol()) > 1) {
+            if (amountRow(moves, piece, getEndRow(), getEndCol(), getStartRow()) > 1) {
                 addCol = true;
-                if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartCol()) > 1) {
-                    addCol = false;
-                    addRow = true;
-                }
-                if (amountRow(moves, piece, getEndRow(), getEndCol(), getStartRow()) > 1) {
-                    addCol = true;
-                }
             }
         }
     }

@@ -86,6 +86,9 @@ public class Piece implements Cloneable {
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board) {
         if (availableCapturesWithoutSpecialRules == null) {
             availableCapturesWithoutSpecialRules = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
+            for (Move move : availableCapturesWithoutSpecialRules) {
+                move.setCaptureFlag();
+            }
         }
         return availableCapturesWithoutSpecialRules;
     }
@@ -93,7 +96,8 @@ public class Piece implements Cloneable {
     public ArrayList<Move> getAvailableMoves(Board board) {
         if (availableMoves == null) {
             availableMoves = getAvailableMovesWithoutSpecialRules(board);
-            availableMoves = board.excludeMovesThatLeaveKingInCheck(position, side, availableMoves);
+            availableMoves = addPromotions(availableMoves);
+            availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
             availableMoves = MovePriorities.topPriorityMoves(availableMoves);
         }
         return availableMoves;
@@ -102,7 +106,8 @@ public class Piece implements Cloneable {
     public ArrayList<Move> getAvailableCaptures(Board board) {
         if (availableCaptures == null) {
             availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
-            availableCaptures = board.excludeMovesThatLeaveKingInCheck(position, side, availableCaptures);
+            availableCaptures = addPromotions(availableCaptures);
+            availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
             availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
         }
         return availableCaptures;
@@ -125,6 +130,26 @@ public class Piece implements Cloneable {
 
     public boolean canBePromoted() {
         return promotionInfo != null && promotionInfo.canBePromoted(position.x);
+    }
+
+    public boolean canBePromotedAfterMove(Move move) {
+        return promotionInfo != null && promotionInfo.canBePromoted(move.getEndRow());
+    }
+
+    public ArrayList<Move> addPromotions(ArrayList<Move> moves) {
+        ArrayList<Move> filteredMoves = new ArrayList<>();
+        for (Move move : moves) {
+            if (canBePromotedAfterMove(move)) {
+                for (PieceType type : getPromotionTypes()) {
+                    Move newMove = new Move(move);
+                    newMove.setPromotion(type);
+                    filteredMoves.add(newMove);
+                }
+            } else {
+                filteredMoves.add(move);
+            }
+        }
+        return filteredMoves;
     }
 
     public PieceType[] getPromotionTypes() {

@@ -41,11 +41,12 @@ public class Board implements Cloneable {
     private Point selectedPiece = new Point(-1, -1);
     private Point enPassantPointWhite = new Point(-1, -1);
     private Point enPassantPointBlack = new Point(-1, -1);
-    private int turn = 0;
+    protected int turn = 0;
     private ArrayList<Move> moveLog = new ArrayList<>();
 
-    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
+    private Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update, int turn) {
         this.translation = translation;
+        this.turn = turn;
         height = board.length;
         width = board[0].length;
         this.board = new Piece[height][width];
@@ -71,15 +72,19 @@ public class Board implements Cloneable {
         }
     }
 
-    public Board(@NotNull Piece[][] board, Translation translation) {
-        this(board, translation, false, false);
+    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
+        this(board, translation, initialize, update, 0);
+    }
+
+    public Board(@NotNull Piece[][] board, Translation translation, int turn) {
+        this(board, translation, false, false, turn);
     }
 
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         Board clone = (Board) super.clone();
-        Board copy = new Board(board, translation);
+        Board copy = new Board(board, translation, turn);
         clone.board = copy.board;
         clone.previousBoard = previousBoard;
         clone.selectedPiece = pieceNone;
@@ -215,7 +220,7 @@ public class Board implements Cloneable {
                     paddedMove = " " + move;
                 }
             }
-            if (sb.length() % characterWidth > (sb.length() + move.length()) % characterWidth) {
+            if (sb.length() - sb.lastIndexOf("\n") + paddedMove.length() > characterWidth) {
                 sb.append("\n");
                 sb.append(move);
             } else {
@@ -249,8 +254,14 @@ public class Board implements Cloneable {
     }
 
     protected void move(int startRow, int startCol, int endRow, int endCol) {
+        move(startRow, startCol, endRow, endCol, true);
+    }
+
+    protected void move(int startRow, int startCol, int endRow, int endCol, boolean moveDataNeeded) {
         Move move = new Move(getType(startRow, startCol), startRow, startCol, endRow, endCol);
-        move.setData(this);
+        if (moveDataNeeded) {
+            move.setData(this);
+        }
         try {
             previousBoard = (Board) clone();
         } catch (CloneNotSupportedException ignore) {
@@ -297,7 +308,7 @@ public class Board implements Cloneable {
         }
     }
 
-    private void updateMove(Move newMove) {
+    protected void updateMove(Move newMove) {
         if (moveLog.size() > turn) {
             if (moveLog.get(turn).hasDifferentMoveData(newMove)) {
                 moveLog.subList(turn, moveLog.size()).clear();
@@ -578,20 +589,16 @@ public class Board implements Cloneable {
         updatePieces(); //this is needed in case a piece has been promoted, which changes its movepool
     }
 
-    protected Board getNextTurn(int startRow, int startCol, int endRow, int endCol) {
-        Board nextTurn = new Board(board, translation);
-        nextTurn.move(startRow, startCol, endRow, endCol);
+    protected Board getNextTurn(Move move) {
+        Board nextTurn = new Board(board, translation, turn);
+        if (move != null) {
+            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+        }
         return nextTurn;
     }
 
     public boolean isInCheck(@NotNull Side side) {
-        return isInCheck(side, false);
-    }
-
-    public boolean isInCheck(@NotNull Side side, boolean updateNeeded) {
-        if (updateNeeded) {
-            updatePieces();
-        }
+        updatePieces();
         ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
         for (Move capture : captures) {
             if (getType(capture.getEndRow(), capture.getEndCol()) == PieceType.KING) {
@@ -602,10 +609,10 @@ public class Board implements Cloneable {
     }
 
     @NotNull
-    public ArrayList<Move> excludeMovesThatLeaveKingInCheck(@NotNull Point position, Side side, @NotNull ArrayList<Move> moves) {
+    public ArrayList<Move> excludeMovesThatLeaveKingInCheck(Side side, @NotNull ArrayList<Move> moves) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (!getNextTurn(position.x, position.y, move.getEndRow(), move.getEndCol()).isInCheck(side)) {
+            if (!getNextTurn(move).isInCheck(side)) {
                 filteredMoves.add(move);
             }
         }
@@ -614,5 +621,26 @@ public class Board implements Cloneable {
 
     public Board getPreviousBoard() {
         return previousBoard;
+    }
+
+    protected Move getRandomMove() {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Point p : movablePieces) {
+            moves.addAll(getAvailableMoves(p.x, p.y));
+            moves.addAll(getAvailableCaptures(p.x, p.y));
+        }
+        if (moves.size() > 0) {
+            return moves.get((int) (Math.random() * moves.size()));
+        }
+        return null;
+    }
+
+    public void makeRandomMove() {
+        Move move = getRandomMove();
+        if (move != null) {
+            move.setData(this);
+            updateMove(move);
+            redo();
+        }
     }
 }

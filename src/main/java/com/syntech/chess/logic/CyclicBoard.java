@@ -11,8 +11,8 @@ public class CyclicBoard extends Board {
         super(board, translation, initialize, update);
     }
 
-    public CyclicBoard(@NotNull Piece[][] board, Translation translation) {
-        super(board, translation);
+    public CyclicBoard(@NotNull Piece[][] board, Translation translation, int turn) {
+        super(board, translation, turn);
     }
 
     private int getColumn(int col) {
@@ -36,9 +36,11 @@ public class CyclicBoard extends Board {
     }
 
     @Override
-    protected Board getNextTurn(int startRow, int startCol, int endRow, int endCol) {
-        CyclicBoard nextTurn = new CyclicBoard(getBoard(), getTranslation());
-        nextTurn.move(startRow, startCol, endRow, endCol);
+    protected Board getNextTurn(Move move) {
+        CyclicBoard nextTurn = new CyclicBoard(getBoard(), getTranslation(), turn);
+        if (move != null) {
+            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+        }
         return nextTurn;
     }
 
@@ -53,5 +55,11 @@ public class CyclicBoard extends Board {
         for (Move move : moves) {
             move.setEndCol(getColumn(move.getEndCol()));
         }
+    }
+
+    protected Move getRandomMove() {
+        Move move = super.getRandomMove();
+        move.setEndCol(getColumn(move.getEndCol()));
+        return move;
     }
 }

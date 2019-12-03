@@ -258,6 +258,12 @@ public class Main {
 
                     imGui.sameLine();
 
+                    if (CellGraphics.display(imGui, "qmark", translation.get("action_random"), cellSize, Color.WHITE, -1)) {
+                        board.makeRandomMove();
+                    }
+
+                    imGui.sameLine();
+
                     int logHeight = 170;
 
                     if (showLog) {

@@ -20,7 +20,7 @@ public class CastlingKingType extends SpecialFirstMoveType {
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         MovementRules.addKingLikeMovement(position, board, moves);
-        moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
+        moves = board.excludeMovesThatLeaveKingInCheck(side, moves);
         if (hasNotMoved()
                 && Move.contains(moves, position.x, position.y + 1)
                 && !board.isInCheck(side)

@@ -33,6 +33,7 @@ public class CellGraphics {
         loadTexture("cross", "ui");
         loadTexture("info", "ui");
         loadTexture("left", "ui");
+        loadTexture("qmark", "ui");
         loadTexture("right", "ui");
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
         loadTexture(Side.NEUTRAL, PieceType.WALL);
