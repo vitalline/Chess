@@ -205,6 +205,9 @@ public class Move {
 
     public void setData(Board board) {
         ArrayList<Move> moves;
+        if (!board.isFree(getEndRow(), getEndCol())) {
+            isCapture = true;
+        }
         if (isCapture) {
             moves = board.getAllAvailableCaptures(board.getSide(getStartRow(), getStartCol()));
         } else {
