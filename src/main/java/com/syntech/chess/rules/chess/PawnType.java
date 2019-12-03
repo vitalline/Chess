@@ -13,23 +13,21 @@ import java.util.ArrayList;
 
 public class PawnType extends MovementType {
 
-    protected Side side;
-
     public PawnType(Side side) {
-        this.side = side;
+        super(side);
     }
 
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeMovement(position, board, MovementRules.getPawnMoveDirection(this.side), false, moves);
+        MovementRules.addPawnLikeMovement(position, board, false, moves);
         return moves;
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(@NotNull Point position, @NotNull Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeThreatening(position, board, side, MovementRules.getPawnMoveDirection(this.side), moves);
+        MovementRules.addPawnLikeCapturing(position, board, moves);
         return moves;
     }
 

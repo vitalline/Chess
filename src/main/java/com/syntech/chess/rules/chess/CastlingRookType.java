@@ -12,6 +12,10 @@ import java.util.ArrayList;
 
 public class CastlingRookType extends SpecialFirstMoveType {
 
+    public CastlingRookType(Side side) {
+        super(side);
+    }
+
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -20,9 +24,9 @@ public class CastlingRookType extends SpecialFirstMoveType {
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalThreatening(position, board, side, moves);
+        MovementRules.addOrthogonalCapturing(position, board, moves);
         return moves;
     }
 

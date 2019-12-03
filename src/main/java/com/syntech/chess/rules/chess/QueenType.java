@@ -12,6 +12,10 @@ import java.util.ArrayList;
 
 public class QueenType extends MovementType {
 
+    public QueenType(Side side) {
+        super(side);
+    }
+
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -21,10 +25,10 @@ public class QueenType extends MovementType {
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalThreatening(position, board, side, moves);
-        MovementRules.addDiagonalThreatening(position, board, side, moves);
+        MovementRules.addOrthogonalCapturing(position, board, moves);
+        MovementRules.addDiagonalCapturing(position, board, moves);
         return moves;
     }
 

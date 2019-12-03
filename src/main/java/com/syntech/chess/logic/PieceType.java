@@ -63,25 +63,25 @@ public enum PieceType {
             case DOUBLE_PAWN:
                 return new DoublePawnType(side);
             case KNIGHT:
-                return new KnightType();
+                return new KnightType(side);
             case PEGASUS:
-                return new PegasusType();
+                return new PegasusType(side);
             case BISHOP:
-                return new BishopType();
+                return new BishopType(side);
             case SNIPER:
-                return new SniperType();
+                return new SniperType(side);
             case ROOK:
-                return new RookType();
+                return new RookType(side);
             case CASTLING_ROOK:
-                return new CastlingRookType();
+                return new CastlingRookType(side);
             case QUEEN:
-                return new QueenType();
+                return new QueenType(side);
             case KING:
                 return new KingType(side);
             case CASTLING_KING:
                 return new CastlingKingType(side);
             case AMAZON:
-                return new AmazonType();
+                return new AmazonType(side);
             default:
                 return null;
         }

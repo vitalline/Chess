@@ -10,10 +10,14 @@ import java.util.ArrayList;
 
 public abstract class MovementType implements Cloneable {
 
+    protected Side side;
+
     public MovementType() {
+        this(Side.NEUTRAL);
     }
 
-    public MovementType(MovementType movementType) {
+    public MovementType(Side side) {
+        this.side = side;
     }
 
     @Override
@@ -27,5 +31,5 @@ public abstract class MovementType implements Cloneable {
 
     public abstract ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board);
 
-    public abstract ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side);
+    public abstract ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board);
 }

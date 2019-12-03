@@ -13,23 +13,21 @@ import java.util.ArrayList;
 
 public class DoublePawnType extends SpecialFirstMoveType {
 
-    protected Side side;
-
     public DoublePawnType(Side side) {
-        this.side = side;
+        super(side);
     }
 
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeMovement(position, board, MovementRules.getPawnMoveDirection(this.side), hasNotMoved(), moves);
+        MovementRules.addPawnLikeMovement(position, board, hasNotMoved(), moves);
         return moves;
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(@NotNull Point position, @NotNull Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeThreatening(position, board, side, MovementRules.getPawnMoveDirection(this.side), moves);
+        MovementRules.addPawnLikeCapturing(position, board, moves);
         return moves;
     }
 

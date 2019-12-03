@@ -29,16 +29,17 @@ public class Main {
             String gameType = null;
             int menuPage = 0;
             boolean showLog = false;
-            File fontFile = new File("PureProg 12.ttf");
+            String fontName = "PureProg 12.ttf";
+            File fontFile = new File(fontName);
             if (!fontFile.exists()) {
-                String fontPath = "fonts/PureProg 12.ttf";
+                String fontPath = "fonts/" + fontName;
                 InputStream fontInput = Main.class.getClassLoader().getResourceAsStream(fontPath);
                 assert fontInput != null;
                 Files.copy(fontInput, fontFile.getAbsoluteFile().toPath());
             }
             float boardX;
             NativeShort glyphRange = imGui.getIO().getFonts().getGlyphRangesForCyrillic();
-            JImFont font = imGui.getIO().getFonts().addFontFromFile("PureProg 12.ttf", (float) cellSize / 2, glyphRange);
+            JImFont font = imGui.getIO().getFonts().addFontFromFile(fontName, (float) cellSize / 2, glyphRange);
             font.setDisplayOffsetX((float) cellSize / 25);
             font.setDisplayOffsetY((float) -cellSize / 25);
             imGui.setBackground(Color.BACKGROUND.getColor());
@@ -260,7 +261,7 @@ public class Main {
                     int logHeight = 170;
 
                     if (showLog) {
-                        board.displayLog(imGui, width - 2 * margin, logHeight, margin, height - logHeight - margin);
+                        board.displayLog(imGui, width - 2 * margin, logHeight, margin, height - logHeight - margin, width * 4 / cellSize);
                         if (CellGraphics.display(imGui, "info", translation.get("action_close_log"), cellSize, Color.MOVE_WHITE, -1)) {
                             showLog = false;
                         }

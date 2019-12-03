@@ -15,7 +15,11 @@ public class Piece implements Cloneable {
     protected Point position;
     protected MovementType movementType;
     private PromotionInfo promotionInfo;
-    PieceBaseType baseType;
+    protected PieceBaseType baseType;
+    private ArrayList<Move> availableMovesWithoutSpecialRules = null;
+    private ArrayList<Move> availableCapturesWithoutSpecialRules = null;
+    private ArrayList<Move> availableMoves = null;
+    private ArrayList<Move> availableCaptures = null;
 
     public Piece(Side side, MovementType movementType) {
         this(side, movementType, null);
@@ -73,27 +77,42 @@ public class Piece implements Cloneable {
     }
 
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
-        return movementType.getAvailableMovesWithoutSpecialRules(position, board);
-    }
-
-    public ArrayList<Move> getAvailableThreatsOn(Board board, Side side) {
-        return movementType.getAvailableThreatsOn(position, board, side);
+        if (availableMovesWithoutSpecialRules == null) {
+            availableMovesWithoutSpecialRules = movementType.getAvailableMovesWithoutSpecialRules(position, board);
+        }
+        return availableMovesWithoutSpecialRules;
     }
 
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board) {
-        return getAvailableThreatsOn(board, side.getOpponent());
+        if (availableCapturesWithoutSpecialRules == null) {
+            availableCapturesWithoutSpecialRules = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
+        }
+        return availableCapturesWithoutSpecialRules;
     }
 
     public ArrayList<Move> getAvailableMoves(Board board) {
-        ArrayList<Move> moves = getAvailableMovesWithoutSpecialRules(board);
-        moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
-        return MovePriorities.topPriorityMoves(moves);
+        if (availableMoves == null) {
+            availableMoves = getAvailableMovesWithoutSpecialRules(board);
+            availableMoves = board.excludeMovesThatLeaveKingInCheck(position, side, availableMoves);
+            availableMoves = MovePriorities.topPriorityMoves(availableMoves);
+        }
+        return availableMoves;
     }
 
     public ArrayList<Move> getAvailableCaptures(Board board) {
-        ArrayList<Move> moves = getAvailableCapturesWithoutSpecialRules(board);
-        moves = board.excludeMovesThatLeaveKingInCheck(position, side, moves);
-        return MovePriorities.topPriorityMoves(moves);
+        if (availableCaptures == null) {
+            availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
+            availableCaptures = board.excludeMovesThatLeaveKingInCheck(position, side, availableCaptures);
+            availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
+        }
+        return availableCaptures;
+    }
+
+    public void resetMoveCache() {
+        availableMovesWithoutSpecialRules = null;
+        availableCapturesWithoutSpecialRules = null;
+        availableMoves = null;
+        availableCaptures = null;
     }
 
     public void move(@NotNull Board board, int row, int col) {

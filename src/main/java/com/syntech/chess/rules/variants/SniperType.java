@@ -12,9 +12,13 @@ import java.util.ArrayList;
 
 public class SniperType extends BishopType {
 
+    public SniperType(Side side) {
+        super(side);
+    }
+
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
-        ArrayList<Move> moves = super.getAvailableThreatsOn(position, board, side);
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
+        ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(position, board);
         Move.setPriority(moves, MovePriorities.SNIPER_SHOT);
         return moves;
     }

@@ -13,6 +13,10 @@ import java.util.ArrayList;
 
 public class KnightType extends MovementType {
 
+    public KnightType(Side side) {
+        super(side);
+    }
+
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -21,9 +25,9 @@ public class KnightType extends MovementType {
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addLeapingThreatening(position, board, 1, 2, side, moves);
+        MovementRules.addLeapingCapturing(position, board, 1, 2, moves);
         return moves;
     }
 

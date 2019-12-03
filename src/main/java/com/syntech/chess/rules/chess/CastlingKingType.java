@@ -12,10 +12,8 @@ import java.util.ArrayList;
 
 public class CastlingKingType extends SpecialFirstMoveType {
 
-    private Side side;
-
     public CastlingKingType(Side side) {
-        this.side = side;
+        super(side);
     }
 
     @Override
@@ -46,9 +44,9 @@ public class CastlingKingType extends SpecialFirstMoveType {
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(Point position, Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeThreatening(position, board, side, moves);
+        MovementRules.addKingLikeCapturing(position, board, moves);
         return moves;
     }
 

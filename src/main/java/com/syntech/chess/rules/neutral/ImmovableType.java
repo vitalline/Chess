@@ -3,7 +3,6 @@ package com.syntech.chess.rules.neutral;
 import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
-import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,7 @@ public class ImmovableType extends MovementType {
     }
 
     @Override
-    public ArrayList<Move> getAvailableThreatsOn(@NotNull Point position, @NotNull Board board, Side side) {
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         return new ArrayList<>();
     }
 

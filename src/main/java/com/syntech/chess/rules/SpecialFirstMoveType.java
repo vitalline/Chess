@@ -1,10 +1,13 @@
 package com.syntech.chess.rules;
 
+import com.syntech.chess.logic.Side;
+
 public abstract class SpecialFirstMoveType extends MovementType {
 
     private boolean hasNotMoved = true;
 
-    protected SpecialFirstMoveType() {
+    protected SpecialFirstMoveType(Side side) {
+        super(side);
     }
 
     @Override
