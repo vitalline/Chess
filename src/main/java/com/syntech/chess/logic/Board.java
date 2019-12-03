@@ -585,6 +585,13 @@ public class Board implements Cloneable {
     }
 
     public boolean isInCheck(@NotNull Side side) {
+        return isInCheck(side, false);
+    }
+
+    public boolean isInCheck(@NotNull Side side, boolean updateNeeded) {
+        if (updateNeeded) {
+            updatePieces();
+        }
         ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
         for (Move capture : captures) {
             if (getType(capture.getEndRow(), capture.getEndCol()) == PieceType.KING) {
