@@ -97,29 +97,8 @@ public class Move {
         return endPosition;
     }
 
-    public static boolean contains(@NotNull ArrayList<Move> moves, int endRow, int endCol) {
-        return containsWithPowerAtLeast(moves, endRow, endCol, 0);
-    }
-
-    public static boolean containsWithPowerAtLeast(@NotNull ArrayList<Move> moves, int endRow, int endCol, int power) {
-        for (Move move : moves) {
-            if (move.getEndRow() == endRow && move.getEndCol() == endCol && move.getPower() >= power) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void setEndPosition(Point endPosition) {
         this.endPosition = endPosition;
-    }
-
-    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol) {
-        return amount(moves, piece, endRow, endCol, 0, 0, false, false);
-    }
-
-    private static int amountRow(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow) {
-        return amount(moves, piece, endRow, endCol, startRow, 0, true, false);
     }
 
     public int getPriority() {
@@ -138,6 +117,27 @@ public class Move {
         this.power = power;
     }
 
+    public static boolean contains(@NotNull ArrayList<Move> moves, int endRow, int endCol) {
+        return containsWithPowerAtLeast(moves, endRow, endCol, 0);
+    }
+
+    public static boolean containsWithPowerAtLeast(@NotNull ArrayList<Move> moves, int endRow, int endCol, int power) {
+        for (Move move : moves) {
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol && move.getPower() >= power) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol) {
+        return amount(moves, piece, endRow, endCol, 0, 0, false, false);
+    }
+
+    private static int amountRow(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow) {
+        return amount(moves, piece, endRow, endCol, startRow, 0, true, false);
+    }
+
     private static int amountCol(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startCol) {
         return amount(moves, piece, endRow, endCol, 0, startCol, false, true);
     }
@@ -146,8 +146,8 @@ public class Move {
         int amount = 0;
         for (Move move : moves) {
             if (move.getEndRow() == endRow && move.getEndCol() == endCol
-                    && (move.getStartRow() == startRow || !checkRow)
-                    && (move.getStartCol() == startCol || !checkColumn)
+                    && ((move.getStartRow() == startRow) == !checkRow)
+                    && ((move.getStartCol() == startCol) == !checkColumn)
                     && move.piece == piece) {
                 ++amount;
             }
