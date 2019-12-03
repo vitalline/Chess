@@ -246,7 +246,7 @@ public class LevellingForcedPiece extends ForcedPiece {
     private void levelUpPowerAndResistance() {
         if (hasResistance()) {
             if (hasPower()) {
-                while (powerXP >= getMaxPowerXP()) {
+                while (powerXP >= getMaxPowerXP() && hasPower()) {
                     powerXP -= getMaxPowerXP();
                     powerLevel += 1;
                 }
@@ -256,7 +256,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             } else {
                 powerXP = 0;
             }
-            while (resistanceXP >= getMaxResistanceXP()) {
+            while (resistanceXP >= getMaxResistanceXP() && hasResistance()) {
                 resistanceXP -= getMaxResistanceXP();
                 resistanceLevel += 1;
             }
