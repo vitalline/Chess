@@ -130,24 +130,40 @@ public class Move {
         return false;
     }
 
-    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol) {
-        return amount(moves, piece, endRow, endCol, 0, 0, false, false);
-    }
-
-    private static int amountRow(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow) {
-        return amount(moves, piece, endRow, endCol, startRow, 0, true, false);
-    }
-
-    private static int amountCol(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startCol) {
-        return amount(moves, piece, endRow, endCol, 0, startCol, false, true);
-    }
-
-    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece, int endRow, int endCol, int startRow, int startCol, boolean checkRow, boolean checkColumn) {
-        int amount = 0;
+    private static int amount(@NotNull ArrayList<Move> moves, PieceType piece,
+                              int endRow, int endCol, int startRow, int startCol) {
+        int amount = 1;
         for (Move move : moves) {
             if (move.getEndRow() == endRow && move.getEndCol() == endCol
-                    && ((move.getStartRow() == startRow) == !checkRow)
-                    && ((move.getStartCol() == startCol) == !checkColumn)
+                    && (move.getStartRow() != startRow || move.getStartCol() != startCol)
+                    && move.piece == piece) {
+                ++amount;
+            }
+        }
+        return amount;
+    }
+
+    private static int amountRow(@NotNull ArrayList<Move> moves, PieceType piece,
+                                 int endRow, int endCol, int startRow, int startCol) {
+        int amount = 1;
+        for (Move move : moves) {
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol
+                    && move.getStartRow() == startRow
+                    && move.getStartCol() != startCol
+                    && move.piece == piece) {
+                ++amount;
+            }
+        }
+        return amount;
+    }
+
+    private static int amountCol(@NotNull ArrayList<Move> moves, PieceType piece,
+                                 int endRow, int endCol, int startRow, int startCol) {
+        int amount = 1;
+        for (Move move : moves) {
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol
+                    && move.getStartRow() != startRow
+                    && move.getStartCol() == startCol
                     && move.piece == piece) {
                 ++amount;
             }
@@ -213,14 +229,14 @@ public class Move {
         } else {
             moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
         }
-        if (amount(moves, piece, getEndRow(), getEndCol()) > 1) {
+        if (amount(moves, piece, getEndRow(), getEndCol(), getStartRow(), getStartCol()) > 1) {
             addCol = true;
-            if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartCol()) > 1) {
+            if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartRow(), getStartCol()) > 1) {
                 addCol = false;
                 addRow = true;
-            }
-            if (amountRow(moves, piece, getEndRow(), getEndCol(), getStartRow()) > 1) {
-                addCol = true;
+                if (amountRow(moves, piece, getEndRow(), getEndCol(), getStartRow(), getStartCol()) > 1) {
+                    addCol = true;
+                }
             }
         }
     }

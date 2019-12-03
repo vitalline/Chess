@@ -41,7 +41,7 @@ public class Board implements Cloneable {
     private Point selectedPiece = new Point(-1, -1);
     private Point enPassantPointWhite = new Point(-1, -1);
     private Point enPassantPointBlack = new Point(-1, -1);
-    protected int turn = 0;
+    protected int turn;
     private ArrayList<Move> moveLog = new ArrayList<>();
 
     private Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update, int turn) {
@@ -327,8 +327,7 @@ public class Board implements Cloneable {
         if (canRedo()) {
             Move move = moveLog.get(turn);
             move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol());
-            if (move.getPromotion() != getType(move.getEndRow(), move.getEndCol())
-                    && move.getPromotion() != PieceType.NONE) {
+            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted() && move.getPromotion() != PieceType.NONE) {
                 getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
                 advanceTurn();
             }
@@ -599,6 +598,15 @@ public class Board implements Cloneable {
 
     public boolean isInCheck(@NotNull Side side) {
         updatePieces();
+        boolean kingIsPresent = false;
+        for (Point p : pieces) {
+            if (getType(p.x, p.y) == PieceType.KING && getSide(p.x, p.y) == side) {
+                kingIsPresent = true;
+            }
+        }
+        if (!kingIsPresent) {
+            return true;
+        }
         ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
         for (Move capture : captures) {
             if (getType(capture.getEndRow(), capture.getEndCol()) == PieceType.KING) {
