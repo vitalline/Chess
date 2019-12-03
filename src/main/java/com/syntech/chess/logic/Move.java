@@ -269,7 +269,7 @@ public class Move {
     }
 
     private boolean isCastling() {
-        return piece == PieceType.KING && Math.abs(getStartCol() - getEndCol()) > 1;
+        return piece == PieceType.KING && Math.abs(getStartCol() - getEndCol()) == 2 && getStartRow() == getEndRow();
     }
 
     public String toNotation(Translation translation) {
