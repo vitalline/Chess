@@ -103,7 +103,7 @@ public class Board implements Cloneable {
 
     public void setTranslation(Translation translation) {
         this.translation = translation;
-        status = getStatusConditions(turnIndicator);
+        status = getStatusConditions(getTurnSide());
     }
 
     public void display(@NotNull JImGui imGui, String name, float size) {
@@ -217,7 +217,7 @@ public class Board implements Cloneable {
                 if (i % 2 == 0) {
                     paddedMove = "   " + paddedMove;
                 } else {
-                    paddedMove = " " + move;
+                    paddedMove = " " + paddedMove;
                 }
             }
             if (sb.length() - sb.lastIndexOf("\n") + paddedMove.length() > characterWidth) {
@@ -225,6 +225,20 @@ public class Board implements Cloneable {
                 sb.append(move);
             } else {
                 sb.append(paddedMove);
+            }
+        }
+        String result = getResultString();
+        if (result.length() > 0) {
+            if (turn % 2 == 0) {
+                result = "   " + result;
+            } else {
+                result = " " + result;
+            }
+            if (sb.length() - sb.lastIndexOf("\n") + result.length() > characterWidth) {
+                sb.append("\n");
+                sb.append(getResultString());
+            } else {
+                sb.append(result);
             }
         }
         imGui.text(sb.toString());
@@ -308,7 +322,7 @@ public class Board implements Cloneable {
         }
     }
 
-    protected void updateMove(Move newMove) {
+    private void updateMove(Move newMove) {
         if (moveLog.size() > turn) {
             if (moveLog.get(turn).hasDifferentMoveData(newMove)) {
                 moveLog.subList(turn, moveLog.size()).clear();
@@ -317,6 +331,10 @@ public class Board implements Cloneable {
         } else {
             moveLog.add(newMove);
         }
+    }
+
+    public boolean hasPromotion() {
+        return displayPromotionPopup;
     }
 
     public boolean canRedo() {
@@ -338,7 +356,7 @@ public class Board implements Cloneable {
 
     private void checkStatusConditions() {
         updateMovablePieces();
-        status = getStatusConditions(turnIndicator);
+        status = getStatusConditions(getTurnSide());
         if (isInCheck(getTurnSide())) {
             moveLog.get(turn - 1).setCheckFlag();
         }
@@ -374,6 +392,21 @@ public class Board implements Cloneable {
                 return null;
             }
         }
+    }
+
+    @NotNull
+    private String getResultString() {
+        if (gameEnded) {
+            if (isInCheck(getTurnSide())) {
+                if (getTurnSide() == Side.WHITE) {
+                    return "0-1";
+                } else {
+                    return "1-0";
+                }
+            }
+            return "1/2-1/2";
+        }
+        return "";
     }
 
     private Point getEnPassantPoint(Side side) {
@@ -588,7 +621,7 @@ public class Board implements Cloneable {
         updatePieces(); //this is needed in case a piece has been promoted, which changes its movepool
     }
 
-    protected Board getNextTurn(Move move) {
+    public Board getNextTurn(Move move) {
         Board nextTurn = new Board(board, translation, turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);

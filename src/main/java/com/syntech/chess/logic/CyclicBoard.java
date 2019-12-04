@@ -50,7 +50,7 @@ public class CyclicBoard extends Board {
     }
 
     @Override
-    protected Board getNextTurn(Move move) {
+    public Board getNextTurn(Move move) {
         CyclicBoard nextTurn = new CyclicBoard(getBoard(), getTranslation(), turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);

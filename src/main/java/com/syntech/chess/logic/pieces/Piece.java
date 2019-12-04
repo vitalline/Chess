@@ -96,7 +96,7 @@ public class Piece implements Cloneable {
     public ArrayList<Move> getAvailableMoves(Board board) {
         if (availableMoves == null) {
             availableMoves = getAvailableMovesWithoutSpecialRules(board);
-            availableMoves = addPromotions(availableMoves);
+            availableMoves = addPromotions(availableMoves, board);
             availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
             availableMoves = MovePriorities.topPriorityMoves(availableMoves);
         }
@@ -106,7 +106,7 @@ public class Piece implements Cloneable {
     public ArrayList<Move> getAvailableCaptures(Board board) {
         if (availableCaptures == null) {
             availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
-            availableCaptures = addPromotions(availableCaptures);
+            availableCaptures = addPromotions(availableCaptures, board);
             availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
             availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
         }
@@ -132,14 +132,14 @@ public class Piece implements Cloneable {
         return promotionInfo != null && promotionInfo.canBePromoted(position.x);
     }
 
-    public boolean canBePromotedAfterMove(Move move) {
-        return promotionInfo != null && promotionInfo.canBePromoted(move.getEndRow());
+    private boolean canBePromotedAfterMove(Move move, Board board) {
+        return board.getNextTurn(move).hasPromotion();
     }
 
-    public ArrayList<Move> addPromotions(ArrayList<Move> moves) {
+    private ArrayList<Move> addPromotions(ArrayList<Move> moves, Board board) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (canBePromotedAfterMove(move)) {
+            if (canBePromotedAfterMove(move, board)) {
                 for (PieceType type : getPromotionTypes()) {
                     Move newMove = new Move(move);
                     newMove.setPromotion(type);
