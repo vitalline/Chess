@@ -256,6 +256,9 @@ public class LevellingForcedPiece extends ForcedPiece {
             } else {
                 powerXP = 0;
             }
+            if (getPowerLevel() > ForcedXPRules.RESISTED_PIECES.size()) {
+                powerLevel -= getPowerLevel() - ForcedXPRules.RESISTED_PIECES.size();
+            }
             while (resistanceXP >= getMaxResistanceXP() && hasResistance()) {
                 resistanceXP -= getMaxResistanceXP();
                 resistanceLevel += 1;
