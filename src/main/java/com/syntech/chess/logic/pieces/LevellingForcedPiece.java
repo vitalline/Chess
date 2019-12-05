@@ -197,6 +197,9 @@ public class LevellingForcedPiece extends ForcedPiece {
                 if (blockingPiece instanceof InvincibleForcedPiece) {
                     return;
                 }
+                if (blockingPiece.getType() == PieceType.KING) {
+                    return;
+                }
                 if (blockingPiece instanceof LevellingForcedPiece) {
                     ((LevellingForcedPiece) blockingPiece).respawn(board);
                 }
