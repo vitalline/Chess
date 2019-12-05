@@ -17,7 +17,7 @@ public class InvincibleForcedPiece extends LevellingForcedPiece {
     @Override
     public String getLabel(Translation translation) {
         String label = super.getLabel(translation).split("\n")[0];
-        label += '\n' + translation.get("label_invincible");
+        label += '\n' + translation.get("label.invincible");
         return label;
     }
 

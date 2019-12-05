@@ -71,13 +71,13 @@ public class Main {
                     }
 
                     if (menuPage > 0) {
-                        if (CellGraphics.display(imGui, "left", translation.get("action_previous"), cellSize, Color.WHITE, -2)) {
+                        if (CellGraphics.display(imGui, "left", translation.get("action.previous"), cellSize, Color.WHITE, -2)) {
                             --menuPage;
                         }
                     }
 
                     if (menuPage < Setup.values().length / menuButtonAmount) {
-                        if (CellGraphics.display(imGui, "right", translation.get("action_next"), cellSize, Color.WHITE, -2)) {
+                        if (CellGraphics.display(imGui, "right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
                             ++menuPage;
                         }
                     }
@@ -89,7 +89,7 @@ public class Main {
 
                 for (Translation t : Translation.values()) {
                     if (t.ordinal() > 0) {
-                        if (imGui.button(t.get("language#short"))) {
+                        if (imGui.button(t.get("language.short"))) {
                             translation = t;
                             if (board != null) {
                                 board.setTranslation(translation);
@@ -97,7 +97,7 @@ public class Main {
                         }
                         if (imGui.isItemHovered()) {
                             JImGuiGen.beginTooltip();
-                            imGui.text(t.get("language"));
+                            imGui.text(t.get("language.name"));
                             JImGuiGen.endTooltip();
                         }
                     }
@@ -119,36 +119,36 @@ public class Main {
 
                     String status = board.getStatusString();
                     if (status == null) {
-                        status = String.format(translation.get("status_turn"), board.getTurnSide().getProperName(translation));
+                        status = String.format(translation.get("status.turn"), board.getTurnSide().getProperName(translation));
                     }
                     CellGraphics.display(imGui, board.getStatusSide(), board.getStatusPiece(), status, cellSize, board.getTurnSide().toColor(), -1);
 
                     imGui.sameLine();
 
-                    imGui.text(status + "\n" + String.format(translation.get("status_game"), setup.getGameType(translation)));
+                    imGui.text(status + "\n" + String.format(translation.get("status.game"), setup.getGameType(translation)));
 
                     if (board.getPreviousBoard() != null) {
-                        if (CellGraphics.display(imGui, "left", translation.get("action_undo"), cellSize, Color.WHITE, -1)) {
+                        if (CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.WHITE, -1)) {
                             board = board.getPreviousBoard();
                             board.setTranslation(translation);
                         }
                     } else {
-                        CellGraphics.display(imGui, "left", translation.get("action_undo"), cellSize, Color.NONE, -1);
+                        CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.NONE, -1);
                     }
 
                     imGui.sameLine();
 
                     if (board.canRedo()) {
-                        if (CellGraphics.display(imGui, "right", translation.get("action_redo"), cellSize, Color.WHITE, -1)) {
+                        if (CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.WHITE, -1)) {
                             board.redo();
                         }
                     } else {
-                        CellGraphics.display(imGui, "right", translation.get("action_redo"), cellSize, Color.NONE, -1);
+                        CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.NONE, -1);
                     }
 
                     imGui.sameLine();
 
-                    if (CellGraphics.display(imGui, "qmark", translation.get("action_random"), cellSize, Color.WHITE, -1)) {
+                    if (CellGraphics.display(imGui, "qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
                         board.makeRandomMove();
                     }
 
@@ -158,37 +158,37 @@ public class Main {
 
                     if (showLog) {
                         board.displayLog(imGui, width - 2 * margin, logHeight, margin, height - logHeight - margin, width * 4 / cellSize);
-                        if (CellGraphics.display(imGui, "info", translation.get("action_close_log"), cellSize, Color.MOVE_WHITE, -1)) {
+                        if (CellGraphics.display(imGui, "info", translation.get("action.log.close"), cellSize, Color.MOVE_WHITE, -1)) {
                             showLog = false;
                         }
                     } else {
-                        if (CellGraphics.display(imGui, "info", translation.get("action_open_log"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                        if (CellGraphics.display(imGui, "info", translation.get("action.log.open"), cellSize, Color.CAPTURE_WHITE, -1)) {
                             showLog = true;
                         }
                     }
 
                     imGui.sameLine();
 
-                    if (CellGraphics.display(imGui, "info", translation.get("action_info"), cellSize, Color.SELECTED_WHITE, 1000)) {
+                    if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.SELECTED_WHITE, 1000)) {
                         showInfo = true;
                     }
 
                     imGui.sameLine();
 
-                    if (CellGraphics.display(imGui, "restart", translation.get("action_restart"), cellSize, Color.WHITE, -1)) {
+                    if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.WHITE, -1)) {
                         board = setup.getBoard(translation);
                     }
 
                     imGui.sameLine();
 
-                    if (CellGraphics.display(imGui, "cross", translation.get("action_return"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                    if (CellGraphics.display(imGui, "cross", translation.get("action.return"), cellSize, Color.CAPTURE_WHITE, -1)) {
                         board = null;
                     }
 
                     JImGuiGen.end();
 
                     if (showInfo) {
-                        imGui.openPopup(translation.get("info"));
+                        imGui.openPopup(setup.getGameType(translation));
                     }
 
                     //And here we see the most non-user-friendly thing ever in JImGui.
@@ -199,17 +199,17 @@ public class Main {
                     NativeBool alwaysTrue = new NativeBool();
                     alwaysTrue.modifyValue(true);
 
-                    if (imGui.beginPopupModal(translation.get("info"), alwaysTrue, JImWindowFlags.NoResize)) {
-                        imGui.text(setup.getGameType(translation));
+                    if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.NoResize)) {
+                        //imGui.text(setup.getGameType(translation));
                         imGui.text(setup.getGameInfo(translation));
-                        if (imGui.button(translation.get("action_ok"))) {
+                        if (imGui.button(translation.get("action.ok"))) {
                             showInfo = false;
                             JImGuiGen.closeCurrentPopup();
                         }
                         JImGuiGen.endPopup();
                     }
 
-                    if (!imGui.isPopupOpen(translation.get("info"))) {
+                    if (!imGui.isPopupOpen(setup.getGameType(translation))) {
                         showInfo = false;
                     }
                 }

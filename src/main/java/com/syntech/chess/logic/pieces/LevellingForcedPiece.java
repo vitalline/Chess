@@ -84,30 +84,30 @@ public class LevellingForcedPiece extends ForcedPiece {
     public String getLabel(Translation translation) {
         String label = super.getLabel(translation);
         if (canLevelUp()) {
-            label += '\n' + String.format(translation.get("label_xp"), xp, getMaxXP());
-            label += '\n' + String.format(translation.get("label_next_level"), ForcedXPRules.getNextLevel(getType()).getProperName(translation));
+            label += '\n' + String.format(translation.get("label.xp"), xp, getMaxXP());
+            label += '\n' + String.format(translation.get("label.next_level"), ForcedXPRules.getNextLevel(getType()).getProperName(translation));
         }
         if (hasResistance()) {
-            label += '\n' + String.format(translation.get("label_resistance_xp"), resistanceXP, ForcedXPRules.getResistanceLevelXP(resistanceLevel));
+            label += '\n' + String.format(translation.get("label.resistance_xp"), resistanceXP, ForcedXPRules.getResistanceLevelXP(resistanceLevel));
         }
         if (levellingData.hasResistance()) {
-            label += '\n' + String.format(translation.get("label_resistant_to"), ForcedXPRules.getResistedPieceList(resistanceLevel, translation));
+            label += '\n' + String.format(translation.get("label.resistant_to"), ForcedXPRules.getResistedPieceList(resistanceLevel, translation));
         }
         if (hasPower()) {
-            label += '\n' + String.format(translation.get("label_power_xp"), powerXP, ForcedXPRules.getPowerLevelXP(powerLevel));
+            label += '\n' + String.format(translation.get("label.power_xp"), powerXP, ForcedXPRules.getPowerLevelXP(powerLevel));
         }
         if (levellingData.hasPower()) {
-            label += '\n' + String.format(translation.get("label_power_level"), ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
+            label += '\n' + String.format(translation.get("label.power_level"), ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
         }
         if (canLevelDown()) {
-            label += '\n' + String.format(translation.get("label_started_on"), Move.getCoordinates(initialPosition));
-            label += '\n' + String.format(translation.get("label_will_respawn_as"), ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
+            label += '\n' + String.format(translation.get("label.started_on"), Move.getCoordinates(initialPosition));
+            label += '\n' + String.format(translation.get("label.will_respawn_as"), ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
         }
         if (ForcedXPRules.getPieceXPWorth(getType()) != 0
                 && levellingData != LevellingData.NONE
                 && levellingData != LevellingData.DOWN
                 && levellingData != LevellingData.FORCE_DOWN) {
-            label += '\n' + String.format(translation.get("label_worth_xp"), ForcedXPRules.getPieceXPWorth(getType()));
+            label += '\n' + String.format(translation.get("label.worth_xp"), ForcedXPRules.getPieceXPWorth(getType()));
         }
         return label;
     }

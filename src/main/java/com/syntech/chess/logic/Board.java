@@ -169,7 +169,7 @@ public class Board implements Cloneable {
 
         if (imGui.beginPopup("Result", JImWindowFlags.AlwaysAutoResize)) {
             imGui.text(status);
-            if (imGui.button(translation.get("action_ok"))) {
+            if (imGui.button(translation.get("action.ok"))) {
                 displayResultPopup = false;
                 JImGuiGen.closeCurrentPopup();
             }
@@ -373,11 +373,11 @@ public class Board implements Cloneable {
             if (isInCheck(side)) {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.QUEEN;
-                return String.format(translation.get("status_checkmate"), side.getOpponent().getProperName(translation));
+                return String.format(translation.get("status.checkmate"), side.getOpponent().getProperName(translation));
             } else {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.KING;
-                return String.format(translation.get("status_stalemate"),
+                return String.format(translation.get("status.stalemate"),
                         side.getOpponent().getProperName(translation),
                         side.getProperName(translation));
             }
@@ -385,7 +385,7 @@ public class Board implements Cloneable {
             if (isInCheck(side)) {
                 statusSide = side;
                 statusPiece = PieceType.KING;
-                return String.format(translation.get("status_check"), side.getProperName(translation));
+                return String.format(translation.get("status.check"), side.getProperName(translation));
             } else {
                 statusSide = side;
                 statusPiece = PieceType.PAWN;

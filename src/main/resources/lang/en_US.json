@@ -1,0 +1,213 @@
+{
+  "language.code": "en_US",
+  "language.short": "ENG",
+  "language.name": "English",
+  "chess.short": "Regular Chess",
+  "chess.name": "Chess",
+  "chess.cyclic.short": "Cyclic Chess",
+  "chess.cyclic.name": "Cyclic Chess",
+  "chess.forced.short": "Forced Chess",
+  "chess.forced.name": "Forced Chess",
+  "chess.forced.modest.short": "Modest Forced Chess",
+  "chess.forced.modest.name": "Modest Forced Chess",
+  "chess.forced.major.short": "Force Major Chess",
+  "chess.forced.major.name": "Force Major Chess",
+  "chess.forced.minor.short": "Force Minor Chess",
+  "chess.forced.minor.name": "Force Minor Chess",
+  "chess.forced.modest.cyclic.short": "Cyclic Modest Frc. Ch.",
+  "chess.forced.modest.cyclic.name": "Cyclic Modest Forced Chess",
+  "chess.4x4.short": "Classical Chess 4×4",
+  "chess.4x4.name": "Classical Chess 4×4",
+  "chess.forced.sniper.short": "Sniper Forced Chess",
+  "chess.forced.sniper.name": "Sniper Forced Chess",
+  "chess.forced.sniper.modest.short": "Modest Sniper Frc. Ch.",
+  "chess.forced.sniper.modest.name": "Modest Sniper Forced Chess",
+  "chess.forced.reserve.short": "Reserve Forced Chess",
+  "chess.forced.reserve.name": "Reserve Forced Chess",
+  "chess.forced.reserve.modest.short": "Modest Reserve Frc. Ch.",
+  "chess.forced.reserve.modest.name": "Modest Reserve Forced Chess",
+  "chess.forced.pegasi_reserve.short": "Pegasi Reserve Frc. Ch.",
+  "chess.forced.pegasi_reserve.name": "Pegasi Reserve Forced Chess",
+  "chess.forced.sniper.reserve.short": "Sniper-Reserve Frc. Ch.",
+  "chess.forced.sniper.reserve.name": "Sniper-Reserve Forced Chess",
+  "chess.forced.sniper.pegasi_reserve.short": "Snpr.-Pgs.-Rsrv. Frc. Ch.",
+  "chess.forced.sniper.pegasi_reserve.name": "Sniper-Pegasi-Reserve Forced Chess",
+  "chess.forced.down.short": "Involution Forced Chess",
+  "chess.forced.down.name": "Involution Forced Chess",
+  "chess.forced.up.short": "MMORPG Forced Chess",
+  "chess.forced.up.name": "MMORPG Forced Chess",
+  "chess.forced.up.down.short": "Inv.-MMORPG Forced Chess",
+  "chess.forced.up.down.name": "Involution-MMORPG Forced Chess",
+  "chess.forced.up.res.short": "Resist. MMORPG Frc. Ch.",
+  "chess.forced.up.res.name": "Resistance MMORPG Forced Chess",
+  "chess.forced.up.res.pow.short": "Res.-Pow. MMORPG Frc. Ch.",
+  "chess.forced.up.res.pow.name": "Resistance-Power MMORPG Forced Chess",
+  "chess.forced.up.down.res.short": "Resist. Inv. MMORPG FC",
+  "chess.forced.up.down.res.name": "Resistance Involution-MMORPG Forced Chess",
+  "chess.forced.up.down.res.pow.short": "Res.-Pow. Inv. MMORPG FC",
+  "chess.forced.up.down.res.pow.name": "Resistance-Power Involution-MMORPG Forced Chess",
+  "chess.forced.down.telefrag.short": "\"Forced Inv.\" Frc. Ch.",
+  "chess.forced.down.telefrag.name": "\"Forced Involution\" Forced Chess",
+  "chess.forced.up.down.telefrag.short": "\"Frc. Inv.\" MMORPG FC",
+  "chess.forced.up.down.telefrag.name": "\"Forced Involution\" MMORPG Forced Chess",
+  "chess.forced.cloning.short": "Cloning Forced Chess",
+  "chess.forced.cloning.name": "Cloning Forced Chess",
+  "chess.cyclic.8x12.short": "Cyclic Chess 8×12",
+  "chess.cyclic.8x12.name": "Cyclic Chess 8×12",
+  "chess.cyclic.8x16.short": "Cyclic Chess 8×16",
+  "chess.cyclic.8x16.name": "Cyclic Chess 8×16",
+  "side.white": "White",
+  "side.black": "Black",
+  "type.none": "",
+  "type.forced": "Forced",
+  "type.forced.modest": "Modest Forced",
+  "type.forced.cloning": "Cloning Forced",
+  "piece.none": "none",
+  "piece.empty": "Empty Cell",
+  "piece.wall": "Wall",
+  "piece.pawn": "Pawn",
+  "piece.knight": "Knight",
+  "piece.pegasus": "Pegasus",
+  "piece.bishop": "Bishop",
+  "piece.sniper": "Sniper",
+  "piece.rook": "Rook",
+  "piece.queen": "Queen",
+  "piece.king": "King",
+  "piece.amazon": "Amazon",
+  "log.pawn": "",
+  "log.knight": "N",
+  "log.pegasus": "P",
+  "log.bishop": "B",
+  "log.sniper": "S",
+  "log.rook": "R",
+  "log.queen": "Q",
+  "log.king": "K",
+  "log.amazon": "A",
+  "label.name": "%s %s %s",
+  "label.xp": "[ XP: %d/%d ]",
+  "label.next_level": "Next level: %s",
+  "label.resistance_xp": "[ Res.XP: %d/%d ]",
+  "label.resistant_to": "Resistant to: %s",
+  "label.power_xp": "[ Pow.XP: %d/%d ]",
+  "label.power_level": "Power level: %s",
+  "label.started_on": "Started on %s",
+  "label.will_respawn_as": "Will respawn as %s",
+  "label.worth_xp": "Worth %d XP",
+  "label.invincible": "Invincible",
+  "status.game": "Game: %s",
+  "status.turn": "%s's Turn",
+  "status.check": "%s is in check!",
+  "status.checkmate": "Checkmate! %s wins!",
+  "status.stalemate": "%s has stalemated %s!",
+  "action.ok": "OK",
+  "action.undo": "Undo last move",
+  "action.redo": "Redo next move",
+  "action.close": "Remove board",
+  "action.next": "Next page",
+  "action.previous": "Previous page",
+  "action.log.open": "Show moves",
+  "action.log.close": "Hide moves",
+  "action.info": "Info",
+  "action.random": "Random move",
+  "action.restart": "New game",
+  "action.return": "Return to menu",
+  "chess.info": [
+    "If you have decided to start this application, chances are, you know how to play chess.",
+    "Although if you don't, may the colors help you.",
+    "Select a movable piece to see where it can move (highlighted by green) or capture (red).",
+    "If you aren't sure which pieces can move, click an empty space.",
+    "The movable pieces will have a yellow highlight.",
+    "",
+    "This also applies to every other mode out there, simply because it's convenient.",
+    "So if you are confused, you can always rely on it. (Probably.)"
+  ],
+  "chess.cyclic.info": [
+    "It's the same as regular chess, but the left and right edges are considered adjacent.",
+    "Everything else works as you'd expect - it's just the fact that the edges are connected."
+  ],
+  "chess.forced.info": [
+    "The classical Forced Chess. For when you don't have time for regular chess.",
+    "The main differences are as follows:",
+    "1. Capturing is not optional anymore. You have to capture, even if it puts you in a bad position.",
+    "2. Pawns can only move one space ahead, not two.",
+    "3. Moves like castling and en passant are not allowed, simply because of the space limitations.",
+    "4. Pawns can't be promoted into knights or bishops."
+  ],
+  "chess.forced.modest.info": [
+    "Same as Forced Chess, but you have to capture the least powerful piece if you have a choice."
+  ],
+  "chess.forced.major.info": [
+    "Same as Forced Chess, but every piece (except the kings) is a queen.",
+    "The sheer amount of power coming from the board is unexpectedly high."
+  ],
+  "chess.forced.minor.info": [
+    "Same as Forced Chess, but every piece (except the kings) is a pawn.",
+    "Well, at least they can be promoted."
+  ],
+  "chess.forced.modest.cyclic.info": [
+    "Modest Forced Chess but on a cyclic board.",
+    "Regular Forced Chess on a cyclic board wasn't included because of the white player's unfair advantage."
+  ],
+  "chess.4x4.info": [
+    "Ever wondered why does Forced Chess have that mandatory capturing rule? ...no?..",
+    "In any case, here's a variant of Forced Chess without the mandatory capturing rule."
+  ],
+  "chess.forced.sniper.info": [
+    "chess.forced.sniper.info"
+  ],
+  "chess.forced.sniper.modest.info": [
+    "chess.forced.sniper.modest.info"
+  ],
+  "chess.forced.reserve.info": [
+    "chess.forced.reserve.info"
+  ],
+  "chess.forced.reserve.modest.info": [
+    "chess.forced.reserve.modest.info"
+  ],
+  "chess.forced.pegasi_reserve.info": [
+    "chess.forced.pegasi_reserve.info"
+  ],
+  "chess.forced.sniper.reserve.info": [
+    "chess.forced.sniper.reserve.info"
+  ],
+  "chess.forced.sniper.pegasi_reserve.info": [
+    "chess.forced.sniper.pegasi_reserve.info"
+  ],
+  "chess.forced.down.info": [
+    "chess.forced.down.info"
+  ],
+  "chess.forced.up.info": [
+    "chess.forced.up.info"
+  ],
+  "chess.forced.up.down.info": [
+    "chess.forced.up.down.info"
+  ],
+  "chess.forced.up.res.info": [
+    "chess.forced.up.res.info"
+  ],
+  "chess.forced.up.res.pow.info": [
+    "chess.forced.up.res.pow.info"
+  ],
+  "chess.forced.up.down.res.info": [
+    "chess.forced.up.down.res.info"
+  ],
+  "chess.forced.up.down.res.pow.info": [
+    "chess.forced.up.down.res.pow.info"
+  ],
+  "chess.forced.down.telefrag.info": [
+    "chess.forced.down.telefrag.info"
+  ],
+  "chess.forced.up.down.telefrag.info": [
+    "chess.forced.up.down.telefrag.info"
+  ],
+  "chess.forced.cloning.info": [
+    "Any piece except for the king will clone itself before making any non-capturing move.",
+    "The question of which of the two pieces actually makes the move will forever be left unanswered."
+  ],
+  "chess.cyclic.8x12.info": [
+    "Cyclic Chess but on an 8 by 12 board. Because why the heck not."
+  ],
+  "chess.cyclic.8x16.info": [
+    "Cyclic Chess but on an 8 by 16 board. Yes please."
+  ]
+}

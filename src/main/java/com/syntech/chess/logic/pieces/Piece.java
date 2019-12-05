@@ -72,7 +72,7 @@ public class Piece implements Cloneable {
         String baseType = getBaseType().getProperName(translation);
         String side = getSide().getProperName(translation);
         String type = getType().getProperName(translation);
-        String label = String.format(translation.get("label_name"), baseType, side, type).trim().replaceAll(" {2}", " ");
+        String label = String.format(translation.get("label.name"), baseType, side, type).trim().replaceAll(" {2}", " ");
         return label;
     }
 

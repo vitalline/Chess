@@ -55,27 +55,32 @@ public class CellGraphics {
     private static void loadTexture(String name, String folder) throws IOException {
         String texturePath = String.format("textures/%s/%s.png", folder, name);
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
-        assert textureInput != null;
-        textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(textureInput)));
-        names.add(name);
+        if (textureInput != null) {
+            textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(textureInput)));
+            names.add(name);
+        }
     }
 
     private static void loadTextures(Side side, PieceType type) throws IOException {
         String texturePath = String.format("textures/chess/%s.png", getName(side, type));
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
-        assert textureInput != null;
-        BufferedImage texture = ImageIO.read(textureInput);
-        Graphics2D graphics = (Graphics2D) texture.getGraphics();
-        for (int i = 0; i <= XP_BAR_STAGES; i++) {
-            String barTexturePath = String.format("textures/xp_bar/%d.png", i);
-            InputStream barTextureInput = Main.class.getClassLoader().getResourceAsStream(barTexturePath);
-            assert barTextureInput != null;
-            BufferedImage barTexture = ImageIO.read(barTextureInput);
-            graphics.drawImage(barTexture, 0, 0, null);
-            ByteArrayOutputStream textureOutput = new ByteArrayOutputStream();
-            ImageIO.write(texture, "png", textureOutput);
-            textures.add(JImTextureID.fromBytes(textureOutput.toByteArray()));
-            names.add(String.format("%s%d", getName(side, type), i));
+        BufferedImage texture;
+        if (textureInput != null) {
+            texture = ImageIO.read(textureInput);
+            Graphics2D graphics = (Graphics2D) texture.getGraphics();
+            for (int i = 0; i <= XP_BAR_STAGES; i++) {
+                String barTexturePath = String.format("textures/xp_bar/%d.png", i);
+                InputStream barTextureInput = Main.class.getClassLoader().getResourceAsStream(barTexturePath);
+                BufferedImage barTexture;
+                if (barTextureInput != null) {
+                    barTexture = ImageIO.read(barTextureInput);
+                    graphics.drawImage(barTexture, 0, 0, null);
+                    ByteArrayOutputStream textureOutput = new ByteArrayOutputStream();
+                    ImageIO.write(texture, "png", textureOutput);
+                    textures.add(JImTextureID.fromBytes(textureOutput.toByteArray()));
+                    names.add(String.format("%s%d", getName(side, type), i));
+                }
+            }
         }
     }
 

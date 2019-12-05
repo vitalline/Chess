@@ -5,8 +5,8 @@ import com.syntech.chess.text.Translation;
 
 public enum Side {
     NEUTRAL("neutral", ""),
-    WHITE("white", "side_white"),
-    BLACK("black", "side_black");
+    WHITE("white", "side.white"),
+    BLACK("black", "side.black");
 
     private final String textureID;
     private final String translationString;

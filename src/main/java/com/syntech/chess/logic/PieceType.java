@@ -10,21 +10,21 @@ import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.Nullable;
 
 public enum PieceType {
-    NONE("none", "piece_none"),
-    EMPTY("Cell", "piece_empty"),
-    WALL("Wall", "piece_wall"),
-    PAWN("Pawn", "piece_pawn"),
-    DOUBLE_PAWN("Pawn", "piece_pawn"),
-    KNIGHT("Knight", "piece_knight"),
-    PEGASUS("Knight", "piece_pegasus"),
-    BISHOP("Bishop", "piece_bishop"),
-    SNIPER("Bishop", "piece_sniper"),
-    ROOK("Rook", "piece_rook"),
-    CASTLING_ROOK("Rook", "piece_rook"),
-    QUEEN("Queen", "piece_queen"),
-    KING("King", "piece_king"),
-    CASTLING_KING("King", "piece_king"),
-    AMAZON("Amazon", "piece_amazon");
+    NONE("none", "piece.none"),
+    EMPTY("Cell", "piece.empty"),
+    WALL("Wall", "piece.wall"),
+    PAWN("Pawn", "piece.pawn"),
+    DOUBLE_PAWN("Pawn", "piece.pawn"),
+    KNIGHT("Knight", "piece.knight"),
+    PEGASUS("Knight", "piece.pegasus"),
+    BISHOP("Bishop", "piece.bishop"),
+    SNIPER("Bishop", "piece.sniper"),
+    ROOK("Rook", "piece.rook"),
+    CASTLING_ROOK("Rook", "piece.rook"),
+    QUEEN("Queen", "piece.queen"),
+    KING("King", "piece.king"),
+    CASTLING_KING("King", "piece.king"),
+    AMAZON("Amazon", "piece.amazon");
 
     private final String textureID;
     private final String translationString;

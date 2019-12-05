@@ -50,21 +50,21 @@ public class Move {
     // TODO: finish PGN-to-move conversion
     /*
     public Move(String pgn, Board board) {
-        if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_knight"))) {
+        if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.knight"))) {
             piece = PieceType.KNIGHT;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_pegasus"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.pegasus"))) {
             piece = PieceType.PEGASUS;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_bishop"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.bishop"))) {
             piece = PieceType.BISHOP;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_sniper"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.sniper"))) {
             piece = PieceType.SNIPER;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_rook"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.rook"))) {
             piece = PieceType.ROOK;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_queen"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.queen"))) {
             piece = PieceType.QUEEN;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_king"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.king"))) {
             piece = PieceType.KNIGHT;
-        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log_amazon"))) {
+        } else if (pgn.substring(0, 1).equals(Translation.EN_US.get("log.amazon"))) {
             piece = PieceType.AMAZON;
         } else {
             piece = PieceType.PAWN;
