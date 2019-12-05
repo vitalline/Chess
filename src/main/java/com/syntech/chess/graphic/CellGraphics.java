@@ -30,11 +30,7 @@ public class CellGraphics {
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
         names = new ArrayList<>();
-        loadTexture("cross", "ui");
-        loadTexture("info", "ui");
-        loadTexture("left", "ui");
-        loadTexture("qmark", "ui");
-        loadTexture("right", "ui");
+        loadUITextures();
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
         loadTexture(Side.NEUTRAL, PieceType.WALL);
         loadSet(Side.WHITE);
@@ -45,6 +41,15 @@ public class CellGraphics {
 
     private static void loadTexture(Side side, PieceType type) throws IOException {
         loadTexture(getName(side, type), "chess");
+    }
+
+    private static void loadUITextures() throws IOException {
+        loadTexture("cross", "ui");
+        loadTexture("info", "ui");
+        loadTexture("left", "ui");
+        loadTexture("qmark", "ui");
+        loadTexture("restart", "ui");
+        loadTexture("right", "ui");
     }
 
     private static void loadTexture(String name, String folder) throws IOException {

@@ -169,7 +169,7 @@ public class Board implements Cloneable {
 
         if (imGui.beginPopup("Result", JImWindowFlags.AlwaysAutoResize)) {
             imGui.text(status);
-            if (imGui.button("OK")) {
+            if (imGui.button(translation.get("action_ok"))) {
                 displayResultPopup = false;
                 JImGuiGen.closeCurrentPopup();
             }

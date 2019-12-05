@@ -1,4 +1,6 @@
 package com.syntech.chess.text;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -66,10 +68,123 @@ public enum Translation {
 
             "cloning_forced_chess#short", "Cloning Forced Chess", "Размножающиеся ФШ",
             "cloning_forced_chess", "Cloning Forced Chess", "Размножающиеся ФШ",
+
             "cyclic_chess_8x12#short", "Cyclic Chess 8×12", "Цилиндр. шахматы 8×12",
             "cyclic_chess_8x12", "Cyclic Chess 8×12", "Цилиндрические шахматы 8×12",
             "cyclic_chess_8x16#short", "Cyclic Chess 8×16", "Цилиндр. шахматы 8×16",
             "cyclic_chess_8x16", "Cyclic Chess 8×16", "Цилиндрические шахматы 8×16",
+
+            "info", "Info", "Информация",
+
+            "chess#info",
+            "Just your regular plain old chess. Have fun!",
+            "Просто обычные шахматы. Приятной игры!",
+
+            //TODO: fill in the "#info" translation fields
+
+            "cyclic_chess#info",
+            "",
+            "",
+
+            "forced_chess#info",
+            "",
+            "",
+
+            "modest_forced_chess#info",
+            "",
+            "",
+
+            "force_major_chess#info",
+            "",
+            "",
+
+            "force_minor_chess#info",
+            "",
+            "",
+
+            "cyclic_modest_forced_chess#info",
+            "",
+            "",
+
+            "classical_chess_4x4#info",
+            "",
+            "",
+
+            "sniper_forced_chess#info",
+            "",
+            "",
+
+            "modest_sniper_forced_chess#info",
+            "",
+            "",
+
+            "reserve_forced_chess#info",
+            "",
+            "",
+
+            "modest_reserve_forced_chess#info",
+            "",
+            "",
+
+            "pegasi_reserve_forced_chess#info",
+            "",
+            "",
+
+            "sniper_reserve_forced_chess#info",
+            "",
+            "",
+
+            "sniper_pegasi_reserve_forced_chess#info",
+            "",
+            "",
+
+            "involution_forced_chess#info",
+            "",
+            "",
+
+            "mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "involution_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "resistance_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "resistance_power_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "resistance_involution_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "resistance_power_involution_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "forced_involution_forced_chess#info",
+            "",
+            "",
+
+            "forced_involution_mmorpg_forced_chess#info",
+            "",
+            "",
+
+            "cloning_forced_chess#info",
+            "",
+            "",
+
+            "cyclic_chess_8x12#info",
+            "",
+            "",
+
+            "cyclic_chess_8x16#info",
+            "",
+            "",
 
             "side_white", "White", "белых",
             "side_black", "Black", "чёрных",
@@ -120,14 +235,17 @@ public enum Translation {
             "status_checkmate", "Checkmate! %s wins!", "Шах и мат! Победа %s!",
             "status_stalemate", "%s has stalemated %s!", "У %2$s пат!",
 
+            "action_ok", "OK", "ОК",
             "action_undo", "Undo last move", "Отменить ход",
             "action_redo", "Redo next move", "Повторить ход",
-            "action_close", "Remove board", "Убрать доску",
             "action_next", "Next page", "Следующая страница",
             "action_previous", "Previous page", "Предыдущая страница",
             "action_open_log", "Show moves", "Показать ходы",
             "action_close_log", "Hide moves", "Скрыть ходы",
-            "action_random", "Random move", "Случайный ход"
+            "action_info", "Info", "Информация",
+            "action_random", "Random move", "Случайный ход",
+            "action_restart", "New game", "Новая игра",
+            "action_return", "Return to menu", "Вернуться в меню"
     ));
     private final int offset;
 
@@ -135,25 +253,26 @@ public enum Translation {
         this.offset = offset;
     }
 
-    public static int languageAmount() {
-        return Translation.values().length;
-    }
-
-    public String getRaw(String str) {
-        try {
+    @NotNull
+    public final String get(String str) {
+        int index = strings.indexOf(str);
+        if (index == -1) {
+            return "[" + str + "]";
+        } else {
             return strings.get(strings.indexOf(str) + offset);
-        } catch (IndexOutOfBoundsException ignored) {
-            return str;
         }
     }
 
-    public final String get(String str) {
-        try {
+    // when in doubt, delet this
+    @NotNull
+    public final String getPadded(String str) {
+        int index = strings.indexOf(str);
+        if (index == -1) {
+            return "{" + str + "}";
+        } else {
             String rawTranslation = strings.get(strings.indexOf(str) + offset);
-            String padding = new String(new char[getRaw("status_game").replace("%s", "").length()]).replace("\0", " ");
+            String padding = new String(new char[get("status_game").replace("%s", "").length()]).replace("\0", " ");
             return rawTranslation.replace("\n", "\n" + padding);
-        } catch (IndexOutOfBoundsException ignored) {
-            return str.equals("") ? "" : '[' + str + ']';
         }
     }
 }

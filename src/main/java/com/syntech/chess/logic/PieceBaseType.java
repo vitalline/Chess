@@ -12,13 +12,13 @@ public enum PieceBaseType {
     CLONING_FORCED_PIECE("type_cloning_forced"),
     NEUTRAL_PIECE("type_none");
 
-    private final String translation_string;
+    private final String translationString;
 
-    PieceBaseType(String translation_string) {
-        this.translation_string = translation_string;
+    PieceBaseType(String translationString) {
+        this.translationString = translationString;
     }
 
     public String getProperName(Translation translation) {
-        return translation.get(translation_string);
+        return translation.get(translationString);
     }
 }
