@@ -45,11 +45,19 @@ public class CellGraphics {
 
     private static void loadUITextures() throws IOException {
         loadTexture("cross", "ui");
+        loadTexture("double_left", "ui");
+        loadTexture("double_right", "ui");
+        loadTexture("down", "ui");
         loadTexture("info", "ui");
         loadTexture("left", "ui");
+        loadTexture("load", "ui");
+        loadTexture("log_closed", "ui");
+        loadTexture("log_opened", "ui");
         loadTexture("qmark", "ui");
         loadTexture("restart", "ui");
         loadTexture("right", "ui");
+        loadTexture("save", "ui");
+        loadTexture("up", "ui");
     }
 
     private static void loadTexture(String name, String folder) throws IOException {

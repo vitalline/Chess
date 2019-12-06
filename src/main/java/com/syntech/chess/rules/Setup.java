@@ -61,18 +61,18 @@ public enum Setup {
     }
 
     @NotNull
-    public Board getBoard(Translation translation) {
+    public Board getBoard() {
         if (gameType.contains("cyclic")) {
-            return new CyclicBoard(pieces, translation, true, true);
+            return new CyclicBoard(pieces, true, true);
         } else {
-            return new Board(pieces, translation, true, true);
+            return new Board(pieces, true, true);
         }
     }
 
     public Board boardButton(@NotNull JImGui imGui, @NotNull Translation translation) {
         Board board = null;
         if (imGui.button(translation.get(gameType + ".short"))) {
-            board = getBoard(translation);
+            board = getBoard();
         }
         displayTooltip(imGui, translation);
         return board;

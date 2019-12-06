@@ -2,6 +2,7 @@
   "language.code": "ru_RU",
   "language.short": "РУС",
   "language.name": "Русский",
+
   "chess.short": "Обычные шахматы",
   "chess.name": "Шахматы",
   "chess.cyclic.short": "Цилиндрические шахматы",
@@ -99,9 +100,12 @@
   "status.check": "Объявлен шах игроку за %s!",
   "status.checkmate": "Шах и мат! Победа %s!",
   "status.stalemate": "У %2$s пат!",
+  "status.choosing_file": "Выбор файла...",
   "action.ok": "ОК",
   "action.undo": "Отменить ход",
   "action.redo": "Повторить ход",
+  "action.undo_all": "Отменить все ходы",
+  "action.redo_all": "Повторить все ходы",
   "action.close": "Убрать доску",
   "action.next": "Следующая страница",
   "action.previous": "Предыдущая страница",
@@ -111,6 +115,15 @@
   "action.random": "Случайный ход",
   "action.restart": "Новая игра",
   "action.return": "Вернуться в меню",
+  "action.load": "Импортировать PGN...",
+  "action.save": "Экспортировать в PGN (в разработке)]",
+  "error": "Ошибка!",
+  "error.generic": "Неизвестная ошибка.",
+  "error.pgn.invalid_variant": [
+    "Импортированный файл PGN содержит неопределённый тег Variant.",
+    "Либо приложение не поддерживает этот вариант, либо тег некорректен."
+  ],
+  "error.pgn.invalid_move": "Импортированный файл PGN содержит недопустимый или некорректный ход.",
   "chess.info": [
     "Если вы решили запустить это приложение, скорее всего, вы знаете, как играть в шахматы.",
     "Но если нет, то пусть цвета помогут вам.",

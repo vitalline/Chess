@@ -1,26 +1,25 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.logic.pieces.Piece;
-import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class CyclicBoard extends Board {
-    public CyclicBoard(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
-        super(board, translation, initialize, update);
+    public CyclicBoard(@NotNull Piece[][] board, boolean initialize, boolean update) {
+        super(board, initialize, update);
     }
 
-    public CyclicBoard(@NotNull Piece[][] board, Translation translation, int turn) {
-        super(board, translation, turn);
+    public CyclicBoard(@NotNull Piece[][] board, int turn) {
+        super(board, turn);
     }
 
     private int getColumn(int col) {
         while (col < 0) {
-            col += width;
+            col += getWidth();
         }
-        while (col >= width) {
-            col -= width;
+        while (col >= getWidth()) {
+            col -= getWidth();
         }
         return col;
     }
@@ -51,7 +50,7 @@ public class CyclicBoard extends Board {
 
     @Override
     public Board getNextTurn(Move move) {
-        CyclicBoard nextTurn = new CyclicBoard(getBoard(), getTranslation(), turn);
+        CyclicBoard nextTurn = new CyclicBoard(getBoard(), turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }

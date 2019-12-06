@@ -18,13 +18,11 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
-//TODO: add the ability to import PGN files
-
 public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
-    protected int width, height;
-    protected ArrayList<Point> pieces;
-    protected ArrayList<Point> movablePieces = new ArrayList<>();
+    private int width, height;
+    private ArrayList<Point> pieces;
+    private ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
     protected ArrayList<Move> availableCaptures = new ArrayList<>();
     private Board previousBoard = null;
@@ -44,8 +42,8 @@ public class Board implements Cloneable {
     protected int turn;
     private ArrayList<Move> moveLog = new ArrayList<>();
 
-    private Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update, int turn) {
-        this.translation = translation;
+    private Board(@NotNull Piece[][] board, boolean initialize, boolean update, int turn) {
+        this.translation = Translation.EN_US;
         this.turn = turn;
         height = board.length;
         width = board[0].length;
@@ -72,19 +70,19 @@ public class Board implements Cloneable {
         }
     }
 
-    public Board(@NotNull Piece[][] board, Translation translation, boolean initialize, boolean update) {
-        this(board, translation, initialize, update, 0);
+    public Board(@NotNull Piece[][] board, boolean initialize, boolean update) {
+        this(board, initialize, update, 0);
     }
 
-    public Board(@NotNull Piece[][] board, Translation translation, int turn) {
-        this(board, translation, false, false, turn);
+    public Board(@NotNull Piece[][] board, int turn) {
+        this(board, false, false, turn);
     }
 
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         Board clone = (Board) super.clone();
-        Board copy = new Board(board, translation, turn);
+        Board copy = new Board(board, turn);
         clone.board = copy.board;
         clone.previousBoard = previousBoard;
         clone.selectedPiece = pieceNone;
@@ -97,7 +95,15 @@ public class Board implements Cloneable {
         return board;
     }
 
-    protected Translation getTranslation() {
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Translation getTranslation() {
         return translation;
     }
 
@@ -201,7 +207,7 @@ public class Board implements Cloneable {
         displayLabel(imGui, "", size / 2, size / 2);
     }
 
-    public void displayLog(@NotNull JImGui imGui, int width, int height, int posX, int posY, int characterWidth) {
+    public void displayLog(@NotNull JImGui imGui, float width, float height, float posX, float posY, int characterWidth) {
         imGui.setWindowSize("Turn Info", width, height);
         imGui.setWindowPos("Turn Info", posX, posY);
         imGui.begin("Turn Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.NoResize);
@@ -322,7 +328,7 @@ public class Board implements Cloneable {
         }
     }
 
-    private void updateMove(Move newMove) {
+    public void updateMove(Move newMove) {
         if (moveLog.size() > turn) {
             if (moveLog.get(turn).hasDifferentMoveData(newMove)) {
                 moveLog.subList(turn, moveLog.size()).clear();
@@ -622,7 +628,7 @@ public class Board implements Cloneable {
     }
 
     public Board getNextTurn(Move move) {
-        Board nextTurn = new Board(board, translation, turn);
+        Board nextTurn = new Board(board, turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }
@@ -681,6 +687,20 @@ public class Board implements Cloneable {
         if (move != null) {
             move.setData(this);
             updateMove(move);
+            redo();
+        }
+    }
+
+    public Board getInitialBoard() {
+        if (getPreviousBoard() != null) {
+            return getPreviousBoard().getInitialBoard();
+        } else {
+            return this;
+        }
+    }
+
+    public void redoAll() {
+        while (canRedo()) {
             redo();
         }
     }

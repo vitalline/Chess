@@ -2,6 +2,7 @@
   "language.code": "en_US",
   "language.short": "ENG",
   "language.name": "English",
+
   "chess.short": "Regular Chess",
   "chess.name": "Chess",
   "chess.cyclic.short": "Cyclic Chess",
@@ -99,9 +100,12 @@
   "status.check": "%s is in check!",
   "status.checkmate": "Checkmate! %s wins!",
   "status.stalemate": "%s has stalemated %s!",
+  "status.choosing_file": "Choosing file...",
   "action.ok": "OK",
   "action.undo": "Undo last move",
   "action.redo": "Redo next move",
+  "action.undo_all": "Undo all moves",
+  "action.redo_all": "Redo all moves",
   "action.close": "Remove board",
   "action.next": "Next page",
   "action.previous": "Previous page",
@@ -111,6 +115,15 @@
   "action.random": "Random move",
   "action.restart": "New game",
   "action.return": "Return to menu",
+  "action.load": "Import PGN...",
+  "action.save": "Export to PGN... [NYI]",
+  "error": "Error!",
+  "error.generic": "Unknown error.",
+  "error.pgn.invalid_variant": [
+    "Imported PGN contains unrecognized Variant tag.",
+    "Either the application does not support this variant, or the tag is incorrect."
+  ],
+  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move.",
   "chess.info": [
     "If you have decided to start this application, chances are, you know how to play chess.",
     "Although if you don't, may the colors help you.",

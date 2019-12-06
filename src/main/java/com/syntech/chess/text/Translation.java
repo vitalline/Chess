@@ -1,4 +1,5 @@
 package com.syntech.chess.text;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syntech.chess.Main;
@@ -51,7 +52,7 @@ public enum Translation {
         return str;
     }
 
-    public boolean exists(String str) {
+    public boolean exists(@NotNull String str) {
         return !str.equals(get(str));
     }
 }
