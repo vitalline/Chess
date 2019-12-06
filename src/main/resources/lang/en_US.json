@@ -101,6 +101,8 @@
   "status.checkmate": "Checkmate! %s wins!",
   "status.stalemate": "%s has stalemated %s!",
   "status.choosing_file": "Choosing file...",
+  "status.file": "File: %s",
+  "status.saved_as": "Saved as %s",
   "action.ok": "OK",
   "action.undo": "Undo last move",
   "action.redo": "Redo next move",

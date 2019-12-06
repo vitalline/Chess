@@ -32,6 +32,7 @@ public class Main {
             Setup setup = null;
             int menuPage = 0;
             boolean showLog = false, showInfo = false, showErrorMessage = false, saveMode = false, blockInput = false;
+            String fileName = null;
             String errorMessage = null;
             FileChooser fileChooser = null;
 
@@ -150,15 +151,28 @@ public class Main {
                             status = String.format(translation.get("status.turn"), board.getTurnSide().getProperName(translation));
                         }
 
-                        imGui.text(status + "\n" + String.format(translation.get("status.game"), setup.getGameType(translation)));
+                        imGui.text(status);
+                        imGui.text(String.format(translation.get("status.game"), setup.getGameType(translation)));
+
+                        if (fileName != null) {
+                            if (saveMode) {
+                                imGui.text(String.format(translation.get("status.saved_as"), fileName));
+                            } else {
+                                imGui.text(String.format(translation.get("status.file"), fileName));
+                            }
+                        } else {
+                            imGui.text("");
+                        }
 
                         if (board.getPreviousBoard() != null) {
                             if (CellGraphics.display(imGui, "double_left", translation.get("action.undo_all"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 board = board.getInitialBoard();
                                 board.setTranslation(translation);
                             }
                             imGui.sameLine();
                             if (CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 board = board.getPreviousBoard();
                                 board.setTranslation(translation);
                             }
@@ -172,10 +186,12 @@ public class Main {
 
                         if (board.canRedo()) {
                             if (CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 board.redo();
                             }
                             imGui.sameLine();
                             if (CellGraphics.display(imGui, "double_right", translation.get("action.redo_all"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 board.redoAll();
                             }
                         } else {
@@ -188,6 +204,7 @@ public class Main {
 
                         if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
                             saveMode = false;
+                            fileName = null;
                             blockInput = true;
                             fileChooser = new FileChooser(saveMode);
                             fileChooser.start();
@@ -197,6 +214,7 @@ public class Main {
 
                         if (CellGraphics.display(imGui, "save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
                             saveMode = true;
+                            fileName = null;
                             blockInput = true;
                             fileChooser = new FileChooser(saveMode);
                             fileChooser.start();
@@ -207,6 +225,7 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
+                            fileName = null;
                             board.makeRandomMove();
                         }
 
@@ -216,10 +235,12 @@ public class Main {
                             board.displayLog(imGui, width - 2 * margin, height - board.getWindowHeight() - 3 * margin,
                                     margin, board.getWindowHeight() + 2 * margin, width * 4 / cellSize);
                             if (CellGraphics.display(imGui, "log_opened", translation.get("action.log.close"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 showLog = false;
                             }
                         } else {
                             if (CellGraphics.display(imGui, "log_closed", translation.get("action.log.open"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 showLog = true;
                             }
                         }
@@ -228,6 +249,7 @@ public class Main {
 
                         if (setup.gameInfoExists(translation)) {
                             if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
                                 showInfo = true;
                             }
 
@@ -235,12 +257,14 @@ public class Main {
                         }
 
                         if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                            fileName = null;
                             board = setup.getBoard();
                         }
 
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "cross", translation.get("action.return"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                            fileName = null;
                             board = null;
                         }
 
@@ -267,6 +291,8 @@ public class Main {
                         if (fileChooser.getFilePath() != null) {
                             if (saveMode) {
                                 if (board != null && setup != null) {
+                                    String[] path = fileChooser.getFilePath().split("[/\\\\]");
+                                    fileName = path[path.length - 1];
                                     board.saveToPGN(fileChooser.getFilePath(), setup);
                                 }
                             } else {
@@ -282,6 +308,8 @@ public class Main {
                                         showErrorMessage = true;
                                         errorMessage = translation.get("error.pgn.invalid_move");
                                     } else {
+                                        String[] path = fileChooser.getFilePath().split("[/\\\\]");
+                                        fileName = path[path.length - 1];
                                         setup = newSetup;
                                         board = newBoard;
                                     }

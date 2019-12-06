@@ -101,6 +101,8 @@
   "status.checkmate": "Шах и мат! Победа %s!",
   "status.stalemate": "У %2$s пат!",
   "status.choosing_file": "Выбор файла...",
+  "status.file": "Файл: %s",
+  "status.saved_as": "Игра сохранена как %s",
   "action.ok": "ОК",
   "action.undo": "Отменить ход",
   "action.redo": "Повторить ход",

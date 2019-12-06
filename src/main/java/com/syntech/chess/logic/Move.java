@@ -426,7 +426,10 @@ public class Move {
 
     @Nullable
     public static Board getGameFromPGN(@NotNull String game) {
-        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]]|\\{.+?}|\\$\\d+|(;.+?)?\\r?\\n")));
+        game = game.replaceAll("(;[^}\\r\\n]+?)?\\r?\\n", " ");
+        game = game.replaceAll("\\$\\d+", " ");
+        game = game.replaceAll("\\r", " ");
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]]|\\{.+?}")));
         tokens.removeIf(String::isEmpty);
         Setup setup = getSetupFromPGN(game);
         if (setup == null) {

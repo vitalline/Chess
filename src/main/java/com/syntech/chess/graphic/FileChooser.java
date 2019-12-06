@@ -1,7 +1,10 @@
 package com.syntech.chess.graphic;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileChooser extends Thread {
 
@@ -17,15 +20,24 @@ public class FileChooser extends Thread {
 
     @Override
     public void run() {
-        JFileChooser fileopen = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter pgn = new FileNameExtensionFilter("Portable Game Notation files", "pgn");
+        File currentPath = Paths.get("").toFile();
+        Path pgnPath = Paths.get(currentPath.getAbsoluteFile().getParent() + "/pgn");
+        fileChooser.setCurrentDirectory(pgnPath.toFile());
+        fileChooser.setFileFilter(pgn);
+        fileChooser.addChoosableFileFilter(pgn);
         if (save) {
-            status = fileopen.showSaveDialog(null);
+            status = fileChooser.showSaveDialog(null);
         } else {
-            status = fileopen.showOpenDialog(null);
+            status = fileChooser.showOpenDialog(null);
         }
         if (status.equals(JFileChooser.APPROVE_OPTION)) {
-            File file = fileopen.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
             filePath = file.getAbsolutePath();
+            if (!filePath.endsWith(".pgn")) {
+                filePath += ".pgn";
+            }
         }
     }
 
