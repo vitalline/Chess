@@ -252,9 +252,11 @@ public class Main {
                                 fileName = saveMode ? null : fileName;
                                 showInfo = true;
                             }
-
-                            imGui.sameLine();
+                        } else {
+                            CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.NONE, -1);
                         }
+
+                        imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {
                             fileName = null;
