@@ -310,8 +310,8 @@ public class Move {
         return toInternalNotation(translation).replace("=", "");
     }
 
-    public String toPGN(Translation translation) {
-        return toInternalNotation(translation).replace("×", "x");
+    public String toPGN() {
+        return toInternalNotation(Translation.EN_US).replace("×", "x");
     }
 
     @Nullable
@@ -406,7 +406,7 @@ public class Move {
 
     @Nullable
     public static Setup getSetupFromPGN(@NotNull String game) {
-        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]\\r\\n]|\\{.+?}")));
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]\\r\\n]")));
         tokens.removeIf(String::isEmpty);
         for (String token : tokens) {
             if (token.startsWith("Variant ")) {
@@ -426,7 +426,7 @@ public class Move {
 
     @Nullable
     public static Board getGameFromPGN(@NotNull String game) {
-        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]\\r\\n]|\\{.+?}")));
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]]|\\{.+?}|\\$\\d+|(;.+?)?\\r?\\n")));
         tokens.removeIf(String::isEmpty);
         Setup setup = getSetupFromPGN(game);
         if (setup == null) {
@@ -434,12 +434,13 @@ public class Move {
         }
         Board board = setup.getBoard();
         for (String token : tokens) {
-            if (!token.matches(".+ \".+\"")) {
+            if (!token.matches(".+ \".*\"")) {
                 ArrayList<String> moves = new ArrayList<>(Arrays.asList(token.split("\\d+\\.|\\s|0-1|1-0|1/2-1/2")));
                 moves.removeIf(String::isEmpty);
                 for (String moveString : moves) {
                     Move move = Move.fromPGN(moveString, board);
                     if (move != null) {
+                        move.setData(board);
                         board.updateMove(move);
                         board.redo();
                     } else {

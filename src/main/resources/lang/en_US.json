@@ -116,7 +116,7 @@
   "action.restart": "New game",
   "action.return": "Return to menu",
   "action.load": "Import PGN...",
-  "action.save": "Export to PGN... [NYI]",
+  "action.save": "Export to PGN...",
   "error": "Error!",
   "error.generic": "Unknown error.",
   "error.pgn.invalid_variant": [

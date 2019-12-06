@@ -5,6 +5,7 @@ import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
+import com.syntech.chess.rules.Setup;
 import com.syntech.chess.rules.chess.DoublePawnType;
 import com.syntech.chess.text.Translation;
 import org.ice1000.jimgui.JImGui;
@@ -16,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Board implements Cloneable {
@@ -234,7 +238,7 @@ public class Board implements Cloneable {
             }
         }
         String result = getResultString();
-        if (result.length() > 0) {
+        if (result.length() > 1) {
             if (turn % 2 == 0) {
                 result = "   " + result;
             } else {
@@ -412,7 +416,7 @@ public class Board implements Cloneable {
             }
             return "1/2-1/2";
         }
-        return "";
+        return "*";
     }
 
     private Point getEnPassantPoint(Side side) {
@@ -703,5 +707,37 @@ public class Board implements Cloneable {
         while (canRedo()) {
             redo();
         }
+    }
+
+    public void saveToPGN(@NotNull String path, Setup setup) throws IOException {
+        FileWriter fileWriter = new FileWriter(path);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.print("[Event \"-\"]\n");
+        printWriter.print("[Site \"-\"]\n");
+        printWriter.printf("[Date \"%s\"]\n", java.time.LocalDate.now().toString().replace('-', '.'));
+        printWriter.print("[Round \"1\"]\n");
+        printWriter.print("[White \"Player 1\"]\n");
+        printWriter.print("[Black \"Player 2\"]\n");
+        printWriter.printf("[Result \"%s\"]\n", getResultString());
+        if (setup != Setup.CHESS) {
+            printWriter.printf("[Variant \"%s\"]\n", setup.getGameType(Translation.EN_US));
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < turn; i++) {
+            if (i % 14 == 0) {
+                sb.append("\n");
+            }
+            String move = moveLog.get(i).toPGN() + ' ';
+            if (i % 2 == 0) {
+                move = String.format("%d. ", i / 2 + 1) + move;
+            }
+            sb.append(move);
+        }
+        String result = getResultString();
+        if (result.length() > 1) {
+            sb.append(result);
+        }
+        printWriter.print(sb.toString());
+        printWriter.close();
     }
 }

@@ -116,7 +116,7 @@
   "action.restart": "Новая игра",
   "action.return": "Вернуться в меню",
   "action.load": "Импортировать PGN...",
-  "action.save": "Экспортировать в PGN (в разработке)]",
+  "action.save": "Экспортировать в PGN...",
   "error": "Ошибка!",
   "error.generic": "Неизвестная ошибка.",
   "error.pgn.invalid_variant": [

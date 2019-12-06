@@ -7,16 +7,22 @@ public class FileChooser extends Thread {
 
     private String filePath;
     private Integer status;
+    private boolean save;
 
-    public FileChooser() {
+    public FileChooser(boolean save) {
         filePath = null;
         status = null;
+        this.save = save;
     }
 
     @Override
     public void run() {
         JFileChooser fileopen = new JFileChooser();
-        status = fileopen.showDialog(null, "Открыть файл");
+        if (save) {
+            status = fileopen.showSaveDialog(null);
+        } else {
+            status = fileopen.showOpenDialog(null);
+        }
         if (status.equals(JFileChooser.APPROVE_OPTION)) {
             File file = fileopen.getSelectedFile();
             filePath = file.getAbsolutePath();

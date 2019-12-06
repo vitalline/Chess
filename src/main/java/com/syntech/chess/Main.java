@@ -31,9 +31,9 @@ public class Main {
             Board board = null;
             Setup setup = null;
             int menuPage = 0;
-            boolean showLog = false, showInfo = false, showErrorMessage = false, blockInput = false;
+            boolean showLog = false, showInfo = false, showErrorMessage = false, saveMode = false, blockInput = false;
             String errorMessage = null;
-            FileChooser fileChooser = new FileChooser();
+            FileChooser fileChooser = null;
 
             String fontName = "PureProg 12.ttf";
             File fontFile = new File(fontName);
@@ -55,6 +55,8 @@ public class Main {
             imGui.initBeforeMainLoop();
 
             while (!imGui.windowShouldClose()) {
+
+                //TODO: make the UI code a bit less cumbersome to navigate
 
                 imGui.initNewFrame();
 
@@ -99,14 +101,10 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+                            saveMode = false;
                             blockInput = true;
+                            fileChooser = new FileChooser(saveMode);
                             fileChooser.start();
-                        }
-
-                        imGui.sameLine();
-
-                        if (CellGraphics.display(imGui, "save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
-                            //TODO: make the UI code a bit less cumbersome to navigate
                         }
 
                         JImGuiGen.end();
@@ -189,14 +187,19 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+                            saveMode = false;
                             blockInput = true;
+                            fileChooser = new FileChooser(saveMode);
                             fileChooser.start();
                         }
 
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
-                            //TODO: implement saving to PGN
+                            saveMode = true;
+                            blockInput = true;
+                            fileChooser = new FileChooser(saveMode);
+                            fileChooser.start();
                         }
 
                         CellGraphics.display(imGui, board.getStatusSide(), board.getStatusPiece(), status, cellSize, board.getTurnSide().toColor(), -1);
@@ -224,7 +227,7 @@ public class Main {
                         imGui.sameLine();
 
                         if (setup.gameInfoExists(translation)) {
-                            if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.SELECTED_WHITE, -1)) {
+                            if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
                                 showInfo = true;
                             }
 
@@ -246,91 +249,99 @@ public class Main {
                         JImGuiGen.end();
 
                         if (board != null) {
-                            imGui.setWindowPos("Game Info", board.getWindowWidth() + 2 * margin, board.getWindowHeight() - infoHeight + margin);
+                            if (board.getWindowHeight() > cellSize && board.getWindowWidth() > cellSize) {
+                                imGui.setWindowPos("Game Info", board.getWindowWidth() + 2 * margin, board.getWindowHeight() - infoHeight + margin);
+                            }
                         }
 
                         if (showInfo) {
                             imGui.openPopup(setup.getGameType(translation));
                         }
-
-
-                        if (showErrorMessage) {
-                            imGui.openPopup(translation.get("error"));
-                        }
-
-                        //And here we see the most non-user-friendly thing ever in JImGui.
-                        //Like, seriously, who even declares a boolean variable like that?
-                        //While it's usually possible to use "new NativeBool()", here it's
-                        //necessary to initialize it to "true", else the popup won't open.
-
-                        NativeBool alwaysTrue = new NativeBool();
-                        alwaysTrue.modifyValue(true);
-
-                        if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.NoResize)) {
-                            imGui.text(setup.getGameInfo(translation));
-                            if (imGui.button(translation.get("action.ok"))) {
-                                showInfo = false;
-                                JImGuiGen.closeCurrentPopup();
-                            }
-                            JImGuiGen.endPopup();
-                        }
-
-                        if (!imGui.isPopupOpen(setup.getGameType(translation))) {
-                            showInfo = false;
-                        }
-
-                        if (imGui.beginPopupModal(translation.get("error"), alwaysTrue, JImWindowFlags.NoResize)) {
-                            if (errorMessage != null) {
-                                imGui.text(errorMessage);
-                            } else {
-                                imGui.text(translation.get("error.generic"));
-                            }
-                            if (imGui.button(translation.get("action.ok"))) {
-                                showErrorMessage = false;
-                                JImGuiGen.closeCurrentPopup();
-                            }
-                            JImGuiGen.endPopup();
-                        }
-
-                        if (!imGui.isPopupOpen(translation.get("error"))) {
-                            showErrorMessage = false;
-                        }
                     }
-
-                } else {
+                } else if (fileChooser != null) {
                     imGui.setWindowPos("FileNotChosen", margin, margin);
                     imGui.begin("FileNotChosen", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
                     imGui.text(translation.get("status.choosing_file"));
                     JImGuiGen.end();
-
                     if (fileChooser.getStatus() != null) {
                         if (fileChooser.getFilePath() != null) {
-                            byte[] contents = Files.readAllBytes(Paths.get(fileChooser.getFilePath()));
-                            String pgn = new String(contents, StandardCharsets.UTF_8);
-                            Setup newSetup = Move.getSetupFromPGN(pgn);
-                            if (newSetup == null) {
-                                showErrorMessage = true;
-                                errorMessage = translation.get("error.pgn.invalid_variant");
+                            if (saveMode) {
+                                if (board != null && setup != null) {
+                                    board.saveToPGN(fileChooser.getFilePath(), setup);
+                                }
                             } else {
-                                Board newBoard = Move.getGameFromPGN(pgn);
-                                if (newBoard == null) {
+                                byte[] contents = Files.readAllBytes(Paths.get(fileChooser.getFilePath()));
+                                String pgn = new String(contents, StandardCharsets.UTF_8);
+                                Setup newSetup = Move.getSetupFromPGN(pgn);
+                                if (newSetup == null) {
                                     showErrorMessage = true;
-                                    errorMessage = translation.get("error.pgn.invalid_move");
+                                    errorMessage = translation.get("error.pgn.invalid_variant");
                                 } else {
-                                    setup = newSetup;
-                                    board = newBoard;
+                                    Board newBoard = Move.getGameFromPGN(pgn);
+                                    if (newBoard == null) {
+                                        showErrorMessage = true;
+                                        errorMessage = translation.get("error.pgn.invalid_move");
+                                    } else {
+                                        setup = newSetup;
+                                        board = newBoard;
+                                    }
                                 }
                             }
                         }
-                        fileChooser = new FileChooser();
                         blockInput = false;
                     }
+                }
+
+                if (showErrorMessage) {
+                    imGui.openPopup(translation.get("error"));
+                }
+
+                //And here we see the most non-user-friendly thing ever in JImGui.
+                //Like, seriously, who even declares a boolean variable like that?
+                //While it's usually possible to use "new NativeBool()", here it's
+                //necessary to initialize it to "true", else the popup won't open.
+
+                NativeBool alwaysTrue = new NativeBool();
+                alwaysTrue.modifyValue(true);
+
+                if (setup != null) {
+                    if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.NoResize)) {
+                        imGui.text(setup.getGameInfo(translation));
+                        if (imGui.button(translation.get("action.ok"))) {
+                            showInfo = false;
+                            JImGuiGen.closeCurrentPopup();
+                        }
+                        JImGuiGen.endPopup();
+                    }
+
+                    if (!imGui.isPopupOpen(setup.getGameType(translation))) {
+                        showInfo = false;
+                    }
+                }
+
+                if (imGui.beginPopupModal(translation.get("error"), alwaysTrue, JImWindowFlags.NoResize)) {
+                    if (errorMessage != null) {
+                        imGui.text(errorMessage);
+                    } else {
+                        imGui.text(translation.get("error.generic"));
+                    }
+                    if (imGui.button(translation.get("action.ok"))) {
+                        showErrorMessage = false;
+                        errorMessage = null;
+                        JImGuiGen.closeCurrentPopup();
+                    }
+                    JImGuiGen.endPopup();
+                }
+
+                if (!imGui.isPopupOpen(translation.get("error"))) {
+                    showErrorMessage = false;
+                    errorMessage = null;
                 }
 
                 imGui.render();
             }
 
-            if (fileChooser.isAlive()) {
+            if (fileChooser != null && fileChooser.isAlive()) {
                 fileChooser.interrupt();
             }
         }
