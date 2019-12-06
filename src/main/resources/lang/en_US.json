@@ -149,7 +149,8 @@
     "4. Pawns can't be promoted into knights or bishops."
   ],
   "chess.forced.modest.info": [
-    "Same as Forced Chess, but you have to capture the least powerful piece if you have a choice."
+    "Same as Forced Chess, but you have to capture the least powerful piece if you have a choice.",
+    "Pawns are considered the least powerful piece, queens being the most powerful. Rooks are in between."
   ],
   "chess.forced.major.info": [
     "Same as Forced Chess, but every piece (except the kings) is a queen.",
@@ -167,13 +168,38 @@
     "Ever wondered why does Forced Chess have that mandatory capturing rule? ...no?..",
     "In any case, here's a variant of Forced Chess without the mandatory capturing rule."
   ],
-  "chess.forced.sniper.info": [],
-  "chess.forced.sniper.modest.info": [],
-  "chess.forced.reserve.info": [],
-  "chess.forced.reserve.modest.info": [],
-  "chess.forced.pegasi_reserve.info": [],
-  "chess.forced.sniper.reserve.info": [],
-  "chess.forced.sniper.pegasi_reserve.info": [],
+  "chess.forced.sniper.info": [
+    "In this variant, the board has 4 additional \"towers\" housing the 4 snipers.",
+    "Snipers look and capture like bishops, but don't move (even when capturing).",
+    "They can, however, check (and possibly even checkmate) the other king.",
+    "Capturing by a sniper is mandatory whenever possible, even when another capture is available.",
+    "(This also applies to Modest Sniper Forced Chess.)",
+    "A sniper can (and must) capture the other sniper once the diagonal is free.",
+    "The towers aren't there just for the snipers - kings (and queens) can also hide in there.",
+    "Oh, and pawns promote on the 3rd and 6th rows respectively and cannot promote into a sniper."
+  ],
+  "chess.forced.sniper.modest.info": [
+    "Sniper Forced Chess. But modest. Sniper capturing is still mandatory."
+  ],
+  "chess.forced.reserve.info": [
+    "In this variant, the board has an additional \"reserve\" with 8 knights.",
+    "These are just your normal everyday chess knights, and can step in and out of the central square.",
+    "Like in Sniper Chess, pawns promote on the 3rd and 6th rows respectively and can't promote into a knight."
+  ],
+  "chess.forced.reserve.modest.info": [
+    "Nothing new to say about this one.",
+    "Like in regular chess, knights are considered more powerful than a pawn but less powerful than a rook."
+  ],
+  "chess.forced.pegasi_reserve.info": [
+    "Knights have been replaced with invincible Pegasi in this one.",
+    "It's impossible to capture a Pegasus, no matter how hard you try."
+  ],
+  "chess.forced.sniper.reserve.info": [
+    "Snipers AND knights. Pretty self-explanatory."
+  ],
+  "chess.forced.sniper.pegasi_reserve.info": [
+    "Everything you know and love, with an additional rule: snipers can capture Pegasi."
+  ],
   "chess.forced.down.info": [],
   "chess.forced.up.info": [],
   "chess.forced.up.down.info": [],
