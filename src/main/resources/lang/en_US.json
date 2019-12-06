@@ -152,54 +152,22 @@
     "Ever wondered why does Forced Chess have that mandatory capturing rule? ...no?..",
     "In any case, here's a variant of Forced Chess without the mandatory capturing rule."
   ],
-  "chess.forced.sniper.info": [
-    "chess.forced.sniper.info"
-  ],
-  "chess.forced.sniper.modest.info": [
-    "chess.forced.sniper.modest.info"
-  ],
-  "chess.forced.reserve.info": [
-    "chess.forced.reserve.info"
-  ],
-  "chess.forced.reserve.modest.info": [
-    "chess.forced.reserve.modest.info"
-  ],
-  "chess.forced.pegasi_reserve.info": [
-    "chess.forced.pegasi_reserve.info"
-  ],
-  "chess.forced.sniper.reserve.info": [
-    "chess.forced.sniper.reserve.info"
-  ],
-  "chess.forced.sniper.pegasi_reserve.info": [
-    "chess.forced.sniper.pegasi_reserve.info"
-  ],
-  "chess.forced.down.info": [
-    "chess.forced.down.info"
-  ],
-  "chess.forced.up.info": [
-    "chess.forced.up.info"
-  ],
-  "chess.forced.up.down.info": [
-    "chess.forced.up.down.info"
-  ],
-  "chess.forced.up.res.info": [
-    "chess.forced.up.res.info"
-  ],
-  "chess.forced.up.res.pow.info": [
-    "chess.forced.up.res.pow.info"
-  ],
-  "chess.forced.up.down.res.info": [
-    "chess.forced.up.down.res.info"
-  ],
-  "chess.forced.up.down.res.pow.info": [
-    "chess.forced.up.down.res.pow.info"
-  ],
-  "chess.forced.down.telefrag.info": [
-    "chess.forced.down.telefrag.info"
-  ],
-  "chess.forced.up.down.telefrag.info": [
-    "chess.forced.up.down.telefrag.info"
-  ],
+  "chess.forced.sniper.info": [],
+  "chess.forced.sniper.modest.info": [],
+  "chess.forced.reserve.info": [],
+  "chess.forced.reserve.modest.info": [],
+  "chess.forced.pegasi_reserve.info": [],
+  "chess.forced.sniper.reserve.info": [],
+  "chess.forced.sniper.pegasi_reserve.info": [],
+  "chess.forced.down.info": [],
+  "chess.forced.up.info": [],
+  "chess.forced.up.down.info": [],
+  "chess.forced.up.res.info": [],
+  "chess.forced.up.res.pow.info": [],
+  "chess.forced.up.down.res.info": [],
+  "chess.forced.up.down.res.pow.info": [],
+  "chess.forced.down.telefrag.info": [],
+  "chess.forced.up.down.telefrag.info": [],
   "chess.forced.cloning.info": [
     "Any piece except for the king will clone itself before making any non-capturing move.",
     "The question of which of the two pieces actually makes the move will forever be left unanswered."

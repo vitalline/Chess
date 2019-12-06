@@ -46,12 +46,18 @@ public enum Setup {
         this.pieces = pieces;
     }
 
-    public String getGameType(Translation translation) {
+    @NotNull
+    public String getGameType(@NotNull Translation translation) {
         return translation.get(gameType + ".name");
     }
 
-    public String getGameInfo(Translation translation) {
+    @NotNull
+    public String getGameInfo(@NotNull Translation translation) {
         return translation.get(gameType + ".info");
+    }
+
+    public boolean gameInfoExists(@NotNull Translation translation) {
+        return translation.exists(gameType + ".info");
     }
 
     @NotNull

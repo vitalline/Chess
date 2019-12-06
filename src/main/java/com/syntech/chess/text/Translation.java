@@ -30,7 +30,7 @@ public enum Translation {
     }
 
     @NotNull
-    public final String get(String str) {
+    public String get(String str) {
         if (json != null) {
             JsonNode field = json.get(str);
             if (field != null) {
@@ -42,14 +42,16 @@ public enum Translation {
                         sb.append(subfield.asText());
                         sb.append("\n");
                     }
-                    return sb.toString();
+                    if (sb.length() > 0) {
+                        return sb.toString();
+                    }
                 }
             }
         }
-        if (this != NONE) {
-            return NONE.get(str);
-        } else {
-            return str;
-        }
+        return str;
+    }
+
+    public boolean exists(String str) {
+        return !str.equals(get(str));
     }
 }

@@ -169,11 +169,13 @@ public class Main {
 
                     imGui.sameLine();
 
-                    if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.SELECTED_WHITE, 1000)) {
-                        showInfo = true;
-                    }
+                    if (setup.gameInfoExists(translation)) {
+                        if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.SELECTED_WHITE, 1000)) {
+                            showInfo = true;
+                        }
 
-                    imGui.sameLine();
+                        imGui.sameLine();
+                    }
 
                     if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.WHITE, -1)) {
                         board = setup.getBoard(translation);
@@ -200,7 +202,6 @@ public class Main {
                     alwaysTrue.modifyValue(true);
 
                     if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.NoResize)) {
-                        //imGui.text(setup.getGameType(translation));
                         imGui.text(setup.getGameInfo(translation));
                         if (imGui.button(translation.get("action.ok"))) {
                             showInfo = false;
