@@ -671,6 +671,10 @@ public class Board implements Cloneable {
     }
 
     public Board getPreviousBoard() {
+        if (previousBoard != null) {
+            previousBoard.windowWidth = windowWidth;
+            previousBoard.windowHeight = windowHeight;
+        }
         return previousBoard;
     }
 
