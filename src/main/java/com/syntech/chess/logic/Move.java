@@ -356,7 +356,7 @@ public class Move {
 
             if (getType(pgn.substring(pgn.length() - 1)) != PieceType.NONE) {
                 promotion = getType(pgn.substring(pgn.length() - 1));
-                pgn = pgn.substring(0, pgn.length() - 1);
+                pgn = pgn.substring(0, pgn.length() - 2);
             }
 
             if (pgn.length() > 2) {
