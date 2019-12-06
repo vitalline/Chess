@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         JniLoaderEx.loadGlfw();
-        final int width = 1280, height = 800, cellSize = 50, margin = 10, menuButtonAmount = 15;
+        final int width = 1366, height = 768, cellSize = 50, margin = 10, menuButtonAmount = 15;
         try (JImGui imGui = new JImGui(width, height, "Chess")) {
             CellGraphics.initialize();
 
