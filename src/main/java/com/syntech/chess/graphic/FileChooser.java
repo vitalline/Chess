@@ -35,7 +35,7 @@ public class FileChooser extends Thread {
         if (status.equals(JFileChooser.APPROVE_OPTION)) {
             File file = fileChooser.getSelectedFile();
             filePath = file.getAbsolutePath();
-            if (!filePath.endsWith(".pgn")) {
+            if (save && !filePath.endsWith(".pgn")) {
                 filePath += ".pgn";
             }
         }

@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
@@ -45,12 +46,14 @@ public class Board implements Cloneable {
     private Point enPassantPointBlack = new Point(-1, -1);
     protected int turn;
     private ArrayList<Move> moveLog = new ArrayList<>();
+    private String errorMessage = null;
+    private Object[] errorArguments = null;
 
     private Board(@NotNull Piece[][] board, boolean initialize, boolean update, int turn) {
         this.translation = Translation.EN_US;
         this.turn = turn;
         height = board.length;
-        width = board[0].length;
+        width = board.length > 0 ? board[0].length : 0;
         this.board = new Piece[height][width];
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -82,6 +85,11 @@ public class Board implements Cloneable {
         this(board, false, false, turn);
     }
 
+    public Board(@NotNull String errorMessage, Object... errorArguments) {
+        this(new Piece[0][0], false, false, 0);
+        this.errorMessage = errorMessage;
+        this.errorArguments = errorArguments;
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -620,6 +628,10 @@ public class Board implements Cloneable {
         return selectedPiece.equals(new Point(row, col)) && selectedPieceIsValid();
     }
 
+    public int getTurn() {
+        return turn;
+    }
+
     public Side getTurnSide() {
         return turnIndicator;
     }
@@ -743,5 +755,48 @@ public class Board implements Cloneable {
         }
         printWriter.print(sb.toString());
         printWriter.close();
+    }
+
+    @NotNull
+    public static Board getGameFromPGN(@NotNull String game) {
+        long count = game.chars().filter(ch -> ch == '\0').count();
+        if (count > 0) {
+            return new Board("error.pgn.invalid_file");
+        }
+        game = game.replaceAll("(;[^}\\r\\n]+?)?\\r?\\n", " ");
+        game = game.replaceAll("\\$\\d+", " ");
+        game = game.replaceAll("\\r", " ");
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]]|\\{.+?}")));
+        tokens.removeIf(String::isEmpty);
+        Setup setup = Setup.getSetupFromPGN(game);
+        if (setup == null) {
+            return new Board("error.pgn.invalid_variant");
+        }
+        Board board = setup.getBoard();
+        for (String token : tokens) {
+            if (!token.matches(".+ \".*\"")) {
+                ArrayList<String> moves = new ArrayList<>(Arrays.asList(token.split("\\d+\\.|\\s|0-1|1-0|1/2-1/2")));
+                moves.removeIf(String::isEmpty);
+                for (String moveString : moves) {
+                    Move move = Move.fromPGN(moveString, board);
+                    if (move != null) {
+                        move.setData(board);
+                        board.updateMove(move);
+                        board.redo();
+                    } else {
+                        return new Board("error.pgn.invalid_move", board.getTurn());
+                    }
+                }
+            }
+        }
+        return board;
+    }
+
+    public boolean isErroneous() {
+        return board.length == 0;
+    }
+
+    public String getErrorMessage(Translation translation) {
+        return isErroneous() ? translation.get(errorMessage, errorArguments) : "";
     }
 }

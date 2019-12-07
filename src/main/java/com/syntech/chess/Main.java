@@ -4,7 +4,6 @@ import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.graphic.FileChooser;
 import com.syntech.chess.logic.Board;
-import com.syntech.chess.logic.Move;
 import com.syntech.chess.rules.Setup;
 import com.syntech.chess.text.Translation;
 import org.ice1000.jimgui.*;
@@ -21,6 +20,7 @@ import java.nio.file.Paths;
 public class Main {
 
     private static Translation translation = Translation.EN_US;
+    private static final int MAX_PGN_SIZE = 10240;
 
     public static void main(String... args) throws IOException {
         JniLoaderEx.loadGlfw();
@@ -297,24 +297,23 @@ public class Main {
                                     fileName = path[path.length - 1];
                                     board.saveToPGN(fileChooser.getFilePath(), setup);
                                 }
+                            } else if (new File(fileChooser.getFilePath()).length() > MAX_PGN_SIZE) {
+                                showErrorMessage = true;
+                                errorMessage = translation.get("error.pgn.large_file", MAX_PGN_SIZE,
+                                        new File(fileChooser.getFilePath()).length());
                             } else {
                                 byte[] contents = Files.readAllBytes(Paths.get(fileChooser.getFilePath()));
                                 String pgn = new String(contents, StandardCharsets.UTF_8);
-                                Setup newSetup = Move.getSetupFromPGN(pgn);
-                                if (newSetup == null) {
+                                Board newBoard = Board.getGameFromPGN(pgn);
+                                if (newBoard.isErroneous()) {
                                     showErrorMessage = true;
-                                    errorMessage = translation.get("error.pgn.invalid_variant");
+                                    errorMessage = newBoard.getErrorMessage(translation);
                                 } else {
-                                    Board newBoard = Move.getGameFromPGN(pgn);
-                                    if (newBoard == null) {
-                                        showErrorMessage = true;
-                                        errorMessage = translation.get("error.pgn.invalid_move");
-                                    } else {
-                                        String[] path = fileChooser.getFilePath().split("[/\\\\]");
-                                        fileName = path[path.length - 1];
-                                        setup = newSetup;
-                                        board = newBoard;
-                                    }
+                                    Setup newSetup = Setup.getSetupFromPGN(pgn);
+                                    String[] path = fileChooser.getFilePath().split("[/\\\\]");
+                                    fileName = path[path.length - 1];
+                                    setup = newSetup;
+                                    board = newBoard;
                                 }
                             }
                         }
@@ -335,7 +334,7 @@ public class Main {
                 alwaysTrue.modifyValue(true);
 
                 if (setup != null) {
-                    if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.NoResize)) {
+                    if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
                         imGui.text(setup.getGameInfo(translation));
                         if (imGui.button(translation.get("action.ok"))) {
                             showInfo = false;
@@ -349,7 +348,7 @@ public class Main {
                     }
                 }
 
-                if (imGui.beginPopupModal(translation.get("error"), alwaysTrue, JImWindowFlags.NoResize)) {
+                if (imGui.beginPopupModal(translation.get("error"), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
                     if (errorMessage != null) {
                         imGui.text(errorMessage);
                     } else {

@@ -121,11 +121,13 @@
   "action.save": "Export to PGN...",
   "error": "Error!",
   "error.generic": "Unknown error.",
+  "error.pgn.large_file": "Only files no larger than %d bytes can be imported (got %d bytes).",
+  "error.pgn.invalid_file": "Imported file seems to be invalid.",
   "error.pgn.invalid_variant": [
     "Imported PGN contains unrecognized Variant tag.",
     "Either the application does not support this variant, or the tag is incorrect."
   ],
-  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move.",
+  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move ##%s.",
   "chess.info": [
     "If you have decided to start this application, chances are, you know how to play chess.",
     "Although if you don't, may the colors help you.",

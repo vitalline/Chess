@@ -8,6 +8,10 @@ import com.syntech.chess.text.Translation;
 import org.ice1000.jimgui.JImGui;
 import org.ice1000.jimgui.JImGuiGen;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public enum Setup {
     CHESS("chess", StartingPositions.chess),
@@ -89,5 +93,25 @@ public enum Setup {
             imGui.text(getGameType(translation));
             JImGuiGen.endTooltip();
         }
+    }
+
+    @Nullable
+    public static Setup getSetupFromPGN(@NotNull String game) {
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(game.split("[\\[\\]\\r\\n]")));
+        tokens.removeIf(String::isEmpty);
+        for (String token : tokens) {
+            if (token.startsWith("Variant ")) {
+                ArrayList<String> varTokens = new ArrayList<>(Arrays.asList(token.split("(Variant |\")")));
+                varTokens.removeIf(String::isEmpty);
+                String variant = varTokens.get(0);
+                for (Setup setup : Setup.values()) {
+                    if (setup.getGameType(Translation.EN_US).equals(variant)) {
+                        return setup;
+                    }
+                }
+                return null;
+            }
+        }
+        return Setup.CHESS;
     }
 }
