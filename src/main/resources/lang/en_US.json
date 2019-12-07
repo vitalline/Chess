@@ -202,9 +202,30 @@
   "chess.forced.sniper.pegasi_reserve.info": [
     "Everything you know and love, with an additional rule: snipers can capture Pegasi."
   ],
-  "chess.forced.down.info": [],
-  "chess.forced.up.info": [],
-  "chess.forced.up.down.info": [],
+  "chess.forced.down.info": [
+    "Any captured piece will respawn as a weaker piece on its starting position.",
+    "The order of respawning is as follows: Queen > Rook > Bishop > Knight > Pawn.",
+    "Pieces are unable to respawn if their starting position is taken by another piece.",
+    "Pawns can't respawn at all, but they can promote into a knight or a bishop.",
+    "Note that sometimes a capture can't be made because the respawned piece would check the king."
+  ],
+  "chess.forced.up.info": [
+    "Any piece (except for the kings) gains experience points (XP) and can level up into a stronger piece.",
+    "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
+    "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
+    "XP can be gained as follows: ",
+    " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
+    " - A capturing move gives XP depending on the captured piece:",
+    "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
+    " - If a check happened after a capturing move, it gives 2 extra XP.",
+    " - If a check happened after levelling up but not before levelling up, it gives 2 extra XP.",
+    " - If a check happened before levelling up but went away after levelling up, no XP will be taken away."
+  ],
+  "chess.forced.up.down.info": [
+    "Here, pieces both level up and respawn. All earned XP resets after respawning.",
+    "This one got the name Forever Alone Forced Chess because of the sheer amount of work that's needed",
+    "to properly calculate everything and the difficulty of finding an actual partner for this variant."
+  ],
   "chess.forced.up.res.info": [],
   "chess.forced.up.res.pow.info": [],
   "chess.forced.up.down.res.info": [],

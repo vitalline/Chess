@@ -403,7 +403,7 @@ public class Board implements Cloneable {
             if (isInCheck(side)) {
                 statusSide = side;
                 statusPiece = PieceType.KING;
-                return translation.get("status.check", side.getOpponent().getTranslationString());
+                return translation.get("status.check", side.getTranslationString());
             } else {
                 statusSide = side;
                 statusPiece = PieceType.PAWN;
