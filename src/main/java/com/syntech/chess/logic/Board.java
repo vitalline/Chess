@@ -383,19 +383,19 @@ public class Board implements Cloneable {
             if (isInCheck(side)) {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.QUEEN;
-                return String.format(translation.get("status.checkmate"), side.getOpponent().getProperName(translation));
+                return translation.get("status.checkmate", side.getOpponent().getTranslationString());
             } else {
                 statusSide = side.getOpponent();
                 statusPiece = PieceType.KING;
-                return String.format(translation.get("status.stalemate"),
-                        side.getOpponent().getProperName(translation),
-                        side.getProperName(translation));
+                return translation.get("status.stalemate",
+                        side.getOpponent().getTranslationString(),
+                        side.getTranslationString());
             }
         } else {
             if (isInCheck(side)) {
                 statusSide = side;
                 statusPiece = PieceType.KING;
-                return String.format(translation.get("status.check"), side.getProperName(translation));
+                return translation.get("status.check", side.getOpponent().getTranslationString());
             } else {
                 statusSide = side;
                 statusPiece = PieceType.PAWN;

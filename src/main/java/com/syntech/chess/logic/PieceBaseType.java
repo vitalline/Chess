@@ -1,6 +1,7 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.NotNull;
 
 public enum PieceBaseType {
     PIECE("type.none"),
@@ -18,7 +19,12 @@ public enum PieceBaseType {
         this.translationString = translationString;
     }
 
-    public String getProperName(Translation translation) {
+    public String getTranslationString() {
+        return translationString;
+    }
+
+    @NotNull
+    public String getProperName(@NotNull Translation translation) {
         return translation.get(translationString);
     }
 }

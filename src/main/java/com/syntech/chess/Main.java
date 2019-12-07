@@ -148,17 +148,17 @@ public class Main {
 
                         String status = board.getStatusString();
                         if (status == null) {
-                            status = String.format(translation.get("status.turn"), board.getTurnSide().getProperName(translation));
+                            status = translation.get("status.turn", board.getTurnSide().getTranslationString());
                         }
 
                         imGui.text(status);
-                        imGui.text(String.format(translation.get("status.game"), setup.getGameType(translation)));
+                        imGui.text(translation.get("status.game", setup.getGameType()));
 
                         if (fileName != null) {
                             if (saveMode) {
-                                imGui.text(String.format(translation.get("status.saved_as"), fileName));
+                                imGui.text(translation.get("status.saved_as", fileName));
                             } else {
-                                imGui.text(String.format(translation.get("status.file"), fileName));
+                                imGui.text(translation.get("status.file", fileName));
                             }
                         } else {
                             imGui.text("");

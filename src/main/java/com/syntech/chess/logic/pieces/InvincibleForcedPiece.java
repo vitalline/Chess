@@ -6,6 +6,7 @@ import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.ForcedXPRules;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.NotNull;
 
 public class InvincibleForcedPiece extends LevellingForcedPiece {
 
@@ -15,7 +16,7 @@ public class InvincibleForcedPiece extends LevellingForcedPiece {
     }
 
     @Override
-    public String getLabel(Translation translation) {
+    public String getLabel(@NotNull Translation translation) {
         String label = super.getLabel(translation).split("\n")[0];
         label += '\n' + translation.get("label.invincible");
         return label;

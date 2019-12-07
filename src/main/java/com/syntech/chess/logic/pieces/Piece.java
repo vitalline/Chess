@@ -68,12 +68,12 @@ public class Piece implements Cloneable {
         return getSide().getTextureID() + getType().getTextureID();
     }
 
-    public String getLabel(Translation translation) {
-        String baseType = getBaseType().getProperName(translation);
-        String side = getSide().getProperName(translation);
-        String type = getType().getProperName(translation);
-        String label = String.format(translation.get("label.name"), baseType, side, type).trim().replaceAll(" {2}", " ");
-        return label;
+    public String getLabel(@NotNull Translation translation) {
+        return translation.get("label.name",
+                getBaseType().getTranslationString(),
+                getSide().getTranslationString(),
+                getType().getTranslationString()
+        ).trim().replaceAll(" {2}", " ");
     }
 
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {

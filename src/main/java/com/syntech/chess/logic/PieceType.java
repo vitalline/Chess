@@ -7,6 +7,7 @@ import com.syntech.chess.rules.variants.AmazonType;
 import com.syntech.chess.rules.variants.PegasusType;
 import com.syntech.chess.rules.variants.SniperType;
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PieceType {
@@ -43,11 +44,17 @@ public enum PieceType {
         return textureID;
     }
 
-    public String getProperName(Translation translation) {
+    public String getTranslationString() {
+        return translationString;
+    }
+
+    @NotNull
+    public String getProperName(@NotNull Translation translation) {
         return translation.get(translationString);
     }
 
-    public String getShortNameTag(Translation translation) {
+    @NotNull
+    public String getShortNameTag(@NotNull Translation translation) {
         return translation.get(translationString.replace("piece", "log"));
     }
 

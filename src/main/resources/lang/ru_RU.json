@@ -57,8 +57,14 @@
   "chess.cyclic.8x12.name": "Цилиндрические шахматы 8×12",
   "chess.cyclic.8x16.short": "Цилиндр. шахматы 8×16",
   "chess.cyclic.8x16.name": "Цилиндрические шахматы 8×16",
-  "side.white": "белых",
-  "side.black": "чёрных",
+  "side.white": [
+    "белых",
+    "белым"
+  ],
+  "side.black": [
+    "чёрных",
+    "чёрным"
+  ],
   "type.none": "",
   "type.forced": "Форс.",
   "type.forced.modest": "Скромн. Форс.",
@@ -97,7 +103,7 @@
   "label.invincible": "Неуязвимая фигура",
   "status.game": "Режим: %s",
   "status.turn": "Ход %s",
-  "status.check": "Объявлен шах игроку за %s!",
+  "status.check": "Объявлен шах %s#1!",
   "status.checkmate": "Шах и мат! Победа %s!",
   "status.stalemate": "У %2$s пат!",
   "status.choosing_file": "Выбор файла...",

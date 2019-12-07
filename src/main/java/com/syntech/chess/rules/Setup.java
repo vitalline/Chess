@@ -47,6 +47,11 @@ public enum Setup {
     }
 
     @NotNull
+    public String getGameType() {
+        return gameType + ".name";
+    }
+
+    @NotNull
     public String getGameType(@NotNull Translation translation) {
         return translation.get(gameType + ".name");
     }
