@@ -40,7 +40,8 @@ public enum Setup {
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
     CYCLIC_CHESS_8X12("chess.cyclic.8x12", StartingPositions.chess8x12),
-    CYCLIC_CHESS_8X16("chess.cyclic.8x16", StartingPositions.chess8x16);
+    CYCLIC_CHESS_8X16("chess.cyclic.8x16", StartingPositions.chess8x16),
+    CREDITS("credits", null);
 
     private final String gameType;
     private final Piece[][] pieces;
@@ -48,6 +49,34 @@ public enum Setup {
     Setup(String gameType, Piece[][] pieces) {
         this.gameType = gameType;
         this.pieces = pieces;
+    }
+
+    @Nullable
+    public Setup getPrevious() {
+        Setup[] values = values();
+        for (int i = values.length - 1; i >= 0; i--) {
+            if (values[i] == this) {
+                if (i > 0) {
+                    return values[i - 1];
+                }
+                return values[values.length - 1];
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public Setup getNext() {
+        Setup[] values = values();
+        for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
+            if (values[i] == this) {
+                if (i < valuesLength - 1) {
+                    return values[i + 1];
+                }
+                return values[0];
+            }
+        }
+        return null;
     }
 
     @NotNull

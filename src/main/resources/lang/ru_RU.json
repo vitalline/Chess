@@ -127,7 +127,8 @@
   "action.return": "Вернуться в меню",
   "action.load": "Импортировать PGN...",
   "action.save": "Экспортировать в PGN...",
-  "error": "Ошибка!",
+  "window.info": "Информация",
+  "window.error": "Ошибка!",
   "error.generic": "Неизвестная ошибка.",
   "error.pgn.large_file": "Импортировать можно файлы не больше, чем %d байт (получено: %d байт).",
   "error.pgn.invalid_file": "Импортированный файл не является допустимым файлом PGN.",
@@ -211,6 +212,72 @@
     "Все ваши любимые модификации шахматных фигур в одном флаконе.",
     "Правда, с одним новым правилом: снайперы всё-таки могут бить Пегасов."
   ],
+  "chess.forced.down.info": [
+    "Побитая фигура реинкарнирует на своём стартовом поле в чуть более слабую.",
+    "Порядок реинкарнации: ферзь > ладья > слон > конь > пешка.",
+    "Реинкарнация невозможно, если стартовое поле занято другой фигурой.",
+    "Пешки не реинкарнируют, но при этом могут превратиться в коней или слонов.",
+    "Обратите внимание, что в этих ФШ иногда невозможно совершить взятие,",
+    "поскольку реинкарнировавшая фигура объявила бы шах королю."
+  ],
+  "chess.forced.up.info": [
+    "Any piece (except for the kings) gains experience points (XP) and can level up into a stronger piece.",
+    "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
+    "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
+    "XP can be gained as follows:",
+    " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
+    " - A capturing move gives XP depending on the captured piece:",
+    "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
+    " - If a check happened after a capturing move, it gives 2 extra XP.",
+    " - If a check happened after levelling up but not before levelling up, it gives 2 extra XP.",
+    " - If a check happened before levelling up but went away after levelling up, no XP will be taken away."
+  ],
+  "chess.forced.up.down.info": [
+    "Здесь фигуры как прокачиваются, так и реинкарнируют. ОП у взятой фигуры сбрасываются.",
+    "Этот вариант получил гордое название \"ФШ для Forever Alone\" просто потому, что на просчёт всех этих",
+    "прокачиваний требуется много времени, да и найти себе соперника для этой игры не так-то просто."
+  ],
+  "chess.forced.up.res.info": [
+    "In this variant, in addition to levelling up, the pieces can also gain resistance to other pieces.",
+    "If a piece has resistance to a certain piece type, then that piece type cannot capture said piece.",
+    "Each resistance level also grants resistance bonuses of all previous levels.",
+    "Resistance levels and the amounts of XP needed to get one are as follows:",
+    "Level 1: Resistance to pawns (2 XP);",
+    "Level 2: Resistance to knights (3 XP);",
+    "Level 3: Resistance to bishops (5 XP);",
+    "Level 4: Resistance to rooks (8 XP);",
+    "Level 5: Resistance to queens (13 XP);",
+    "Level 6: Resistance to kings (21 XP);",
+    "Level 7: Resistance to amazons (34 XP)."
+  ],
+  "chess.forced.up.res.pow.info": [
+    "In this variant, in addition to levelling up and gaining resistance, the pieces can also upgrade their power.",
+    "If a piece has upgraded its power by 1, it can capture pieces that have resistance to its initial type.",
+    "Upgrading power by 2 grants the ability to capture pieces of the next resistance level, and so on.",
+    "The amounts of XP needed to upgrade power are as follows:",
+    "Power +1: 6 XP;",
+    "Power +2: 15 XP;",
+    "Power +3: 28 XP;",
+    "Power +4: 45 XP;",
+    "Power +5: 66 XP;",
+    "Power +6: 91 XP.",
+    "This sums up to a total of 251 XP, which should not be a problem for a true hardcore chess gamer."
+  ],
+  "chess.forced.up.down.res.info": [
+    "Прокачивание, реинкарнация и неуязвимость. Реинкарнация уменьшает неуязвимость на 1."
+  ],
+  "chess.forced.up.down.res.pow.info": [
+    "Всё, что только можно прокачать, плюс реинкарнация (которая уменьшает на 1 и неуязвимость, и силу)."
+  ],
+  "chess.forced.down.telefrag.info": [
+    "Here, pieces are able to respawn even if their starting position is taken by another piece.",
+    "The piece that took the starting position would then respawn as well.",
+    "Capturing a piece on its starting position would respawn both pieces immediately.",
+    "The only exception is that pieces cannot respawn if their starting position is taken by a king."
+  ],
+  "chess.forced.up.down.telefrag.info": [
+    "Прокачивание + форсированная реинкарнация."
+  ],
   "chess.forced.cloning.info": [
     "Любая фигура, если это не король, клонирует себя перед любым ходом, если это не взятие.",
     "Вопрос о том, какая же из двух фигур на самом деле делает ход, навсегда останется без ответа."
@@ -220,5 +287,28 @@
   ],
   "chess.cyclic.8x16.info": [
     "Цилиндрические шахматы на доске 8 на 16. Дайте два."
+  ],
+  "credits.name": "Указания автора",
+  "credits.info": [
+    "========================================================",
+    "Создано:                                                ",
+    " . . . . . . . . . . . . . . . . .  Archie the Architect",
+    "========================================================",
+    "Генератор идей:                                         ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    "========================================================",
+    "Тестеры:                                                ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    " . . . . . . . . . . . . . . . . . . . . greenTransistor",
+    "========================================================",
+    "Оригинальный автор ФШ:                                  ",
+    " . . . . . . . . . . . . . . . . . . . . . . . Unnamed55",
+    "========================================================",
+    "PureProg 12 (шрифт):                                    ",
+    " . . . . . . . . . . . . . . . . Timo Acker (Handfratze)",
+    "========================================================",
+    "                                                        ",
+    "                    СПАСИБО ЗА ИГРУ!                    ",
+    ""
   ]
 }

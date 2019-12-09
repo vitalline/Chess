@@ -784,7 +784,11 @@ public class Board implements Cloneable {
                         board.updateMove(move);
                         board.redo();
                     } else {
-                        return new Board("error.pgn.invalid_move", board.getTurn());
+                        if (board.getTurn() > 0) {
+                            return new Board("error.pgn.invalid_move", board.getTurn());
+                        } else {
+                            return new Board("error.pgn.invalid_file");
+                        }
                     }
                 }
             }

@@ -119,7 +119,8 @@
   "action.return": "Return to menu",
   "action.load": "Import PGN...",
   "action.save": "Export to PGN...",
-  "error": "Error!",
+  "window.info": "Info",
+  "window.error": "Error!",
   "error.generic": "Unknown error.",
   "error.pgn.large_file": "Only files no larger than %d bytes can be imported (got %d bytes).",
   "error.pgn.invalid_file": "Imported file seems to be invalid.",
@@ -213,7 +214,7 @@
     "Any piece (except for the kings) gains experience points (XP) and can level up into a stronger piece.",
     "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
     "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
-    "XP can be gained as follows: ",
+    "XP can be gained as follows:",
     " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
     " - A capturing move gives XP depending on the captured piece:",
     "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
@@ -226,12 +227,47 @@
     "This one got the name Forever Alone Forced Chess because of the sheer amount of work that's needed",
     "to properly calculate everything and the difficulty of finding an actual partner for this variant."
   ],
-  "chess.forced.up.res.info": [],
-  "chess.forced.up.res.pow.info": [],
-  "chess.forced.up.down.res.info": [],
-  "chess.forced.up.down.res.pow.info": [],
-  "chess.forced.down.telefrag.info": [],
-  "chess.forced.up.down.telefrag.info": [],
+  "chess.forced.up.res.info": [
+    "In this variant, in addition to levelling up, the pieces can also gain resistance to other pieces.",
+    "If a piece has resistance to a certain piece type, then that piece type cannot capture said piece.",
+    "Each resistance level also grants resistance bonuses of all previous levels.",
+    "Resistance levels and the amounts of XP needed to get one are as follows:",
+    "Level 1: Resistance to pawns (2 XP);",
+    "Level 2: Resistance to knights (3 XP);",
+    "Level 3: Resistance to bishops (5 XP);",
+    "Level 4: Resistance to rooks (8 XP);",
+    "Level 5: Resistance to queens (13 XP);",
+    "Level 6: Resistance to kings (21 XP);",
+    "Level 7: Resistance to amazons (34 XP)."
+  ],
+  "chess.forced.up.res.pow.info": [
+    "In this variant, in addition to levelling up and gaining resistance, the pieces can also upgrade their power.",
+    "If a piece has upgraded its power by 1, it can capture pieces that have resistance to its initial type.",
+    "Upgrading power by 2 grants the ability to capture pieces of the next resistance level, and so on.",
+    "The amounts of XP needed to upgrade power are as follows:",
+    "Power +1: 6 XP;",
+    "Power +2: 15 XP;",
+    "Power +3: 28 XP;",
+    "Power +4: 45 XP;",
+    "Power +5: 66 XP;",
+    "Power +6: 91 XP.",
+    "This sums up to a total of 251 XP, which should not be a problem for a true hardcore chess gamer."
+  ],
+  "chess.forced.up.down.res.info": [
+    "Levelling up, respawning and resistance. Respawning drops resistance level by 1."
+  ],
+  "chess.forced.up.down.res.pow.info": [
+    "Everything related to levels, plus respawning (which decreases both resistance level and power bonus by 1)."
+  ],
+  "chess.forced.down.telefrag.info": [
+    "Here, pieces are able to respawn even if their starting position is taken by another piece.",
+    "The piece that took the starting position would then respawn as well.",
+    "Capturing a piece on its starting position would respawn both pieces immediately.",
+    "The only exception is that pieces cannot respawn if their starting position is taken by a king."
+  ],
+  "chess.forced.up.down.telefrag.info": [
+    "Both levelling up and forced respawning."
+  ],
   "chess.forced.cloning.info": [
     "Any piece except for the king will clone itself before making any non-capturing move.",
     "The question of which of the two pieces actually makes the move will forever be left unanswered."
@@ -241,5 +277,28 @@
   ],
   "chess.cyclic.8x16.info": [
     "Cyclic Chess but on an 8 by 16 board. Yes please."
+  ],
+  "credits.name": "Credits",
+  "credits.info": [
+    "========================================================",
+    "Created by:                                             ",
+    " . . . . . . . . . . . . . . . . .  Archie the Architect",
+    "========================================================",
+    "With contributions and ideas by:                        ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    "========================================================",
+    "Testers:                                                ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    " . . . . . . . . . . . . . . . . . . . . greenTransistor",
+    "========================================================",
+    "Forced Chess original idea:                             ",
+    " . . . . . . . . . . . . . . . . . . . . . . . Unnamed55",
+    "========================================================",
+    "PureProg 12 (the font) by:                              ",
+    " . . . . . . . . . . . . . . . . Timo Acker (Handfratze)",
+    "========================================================",
+    "                       THANKS FOR                       ",
+    "                        PLAYING!                        ",
+    ""
   ]
 }

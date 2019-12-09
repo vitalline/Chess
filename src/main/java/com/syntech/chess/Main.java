@@ -24,17 +24,20 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         JniLoaderEx.loadGlfw();
-        final int width = 1366, height = 768, cellSize = 50, margin = 10, menuButtonAmount = 15;
+        final int width = 1366, height = 768, cellSize = 50, margin = 10, menuButtonAmount = 15, speed = 65;
         try (JImGui imGui = new JImGui(width, height, "Chess")) {
             CellGraphics.initialize();
 
             Board board = null;
-            Setup setup = null;
+            Setup setup = null, infoSetup = null;
             int menuPage = 0;
             boolean showLog = false, showInfo = false, showErrorMessage = false, saveMode = false, blockInput = false;
             String fileName = null;
             String errorMessage = null;
             FileChooser fileChooser = null;
+
+            boolean windowLoaded = false;
+            float infoPosX = -1, infoPosY = -1;
 
             String fontName = "PureProg 12.ttf";
             File fontFile = new File(fontName);
@@ -97,6 +100,13 @@ public class Main {
                             }
                         } else {
                             CellGraphics.display(imGui, "right", translation.get("action.next"), cellSize, Color.NONE, -2);
+                        }
+
+                        imGui.sameLine();
+
+                        if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
+                            infoSetup = Setup.CHESS;
+                            showInfo = true;
                         }
 
                         imGui.sameLine();
@@ -203,8 +213,10 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+                            if (saveMode) {
+                                fileName = null;
+                            }
                             saveMode = false;
-                            fileName = null;
                             blockInput = true;
                             fileChooser = new FileChooser(saveMode);
                             fileChooser.start();
@@ -250,6 +262,7 @@ public class Main {
                         if (setup.gameInfoExists(translation)) {
                             if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
                                 fileName = saveMode ? null : fileName;
+                                infoSetup = setup;
                                 showInfo = true;
                             }
                         } else {
@@ -280,10 +293,12 @@ public class Main {
                             }
                         }
 
-                        if (showInfo) {
-                            imGui.openPopup(setup.getGameType(translation));
-                        }
                     }
+
+                    if (infoSetup != null && showInfo) {
+                        imGui.openPopup(translation.get("window.info"));
+                    }
+
                 } else if (fileChooser != null) {
                     imGui.setWindowPos("FileNotChosen", margin, margin);
                     imGui.begin("FileNotChosen", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
@@ -322,7 +337,7 @@ public class Main {
                 }
 
                 if (showErrorMessage) {
-                    imGui.openPopup(translation.get("error"));
+                    imGui.openPopup(translation.get("window.error"));
                 }
 
                 //And here we see the most non-user-friendly thing ever in JImGui.
@@ -333,22 +348,61 @@ public class Main {
                 NativeBool alwaysTrue = new NativeBool();
                 alwaysTrue.modifyValue(true);
 
-                if (setup != null) {
-                    if (imGui.beginPopupModal(setup.getGameType(translation), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
-                        imGui.text(setup.getGameInfo(translation));
-                        if (imGui.button(translation.get("action.ok"))) {
-                            showInfo = false;
-                            JImGuiGen.closeCurrentPopup();
+                boolean prev = false, next = false;
+
+                if (imGui.beginPopupModal(translation.get("window.info"), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
+                    imGui.text(infoSetup.getGameType(translation));
+                    imGui.text(infoSetup.getGameInfo(translation));
+                    imGui.text("");
+                    imGui.sameLine((JImGuiGen.getWindowWidth()) / 2 - (float) cellSize * 4 / 3);
+                    if (imGui.button("<<")) {
+                        prev = true;
+                    }
+                    imGui.sameLine((JImGuiGen.getWindowWidth()) / 2 - (float) cellSize / 3);
+                    if (imGui.button(translation.get("action.ok"))) {
+                        JImGuiGen.closeCurrentPopup();
+                    }
+                    imGui.sameLine((JImGuiGen.getWindowWidth()) / 2 + (float) cellSize * 2 / 3);
+                    if (imGui.button(">>")) {
+                        next = true;
+                    }
+                    if (windowLoaded) {
+                        infoPosX = tweak(infoPosX, (width - JImGuiGen.getWindowWidth()) / 2, speed);
+                        infoPosY = tweak(infoPosY, (height - JImGuiGen.getWindowHeight()) / 2, speed);
+                        imGui.setWindowPos(translation.get("window.info"), infoPosX, infoPosY);
+                    } else if (infoPosX == -1 && infoPosY == -1) {
+                        infoPosX = (width - JImGuiGen.getWindowWidth()) / 2;
+                        infoPosY = (height - JImGuiGen.getWindowHeight()) / 2;
+                    } else {
+                        windowLoaded = true;
+                        infoPosX = (width - JImGuiGen.getWindowWidth()) / 2;
+                        infoPosY = (height - JImGuiGen.getWindowHeight()) / 2;
+                    }
+                    JImGuiGen.endPopup();
+                }
+
+                if (!imGui.isPopupOpen(translation.get("window.info")) && !prev && !next) {
+                    showInfo = false;
+                    windowLoaded = false;
+                    infoPosX = -1;
+                    infoPosY = -1;
+                }
+
+                if (infoSetup != null) {
+                    if (prev) {
+                        if (infoSetup.getPrevious() != null) {
+                            infoSetup = infoSetup.getPrevious();
                         }
-                        JImGuiGen.endPopup();
                     }
 
-                    if (!imGui.isPopupOpen(setup.getGameType(translation))) {
-                        showInfo = false;
+                    if (next) {
+                        if (infoSetup.getNext() != null) {
+                            infoSetup = infoSetup.getNext();
+                        }
                     }
                 }
 
-                if (imGui.beginPopupModal(translation.get("error"), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
+                if (imGui.beginPopupModal(translation.get("window.error"), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
                     if (errorMessage != null) {
                         imGui.text(errorMessage);
                     } else {
@@ -362,7 +416,7 @@ public class Main {
                     JImGuiGen.endPopup();
                 }
 
-                if (!imGui.isPopupOpen(translation.get("error"))) {
+                if (!imGui.isPopupOpen(translation.get("window.error"))) {
                     showErrorMessage = false;
                     errorMessage = null;
                 }
@@ -374,5 +428,9 @@ public class Main {
                 fileChooser.interrupt();
             }
         }
+    }
+
+    public static float tweak(float from, float to, float speed) {
+        return from + (to - from) * speed / 1000;
     }
 }
