@@ -124,7 +124,7 @@ public class Board implements Cloneable {
         status = getStatusConditions(getTurnSide());
     }
 
-    public void display(@NotNull JImGui imGui, String name, float size) {
+    public boolean display(@NotNull JImGui imGui, String name, float size) {
 
         float spacingX = imGui.getStyle().getItemSpacingX();
         float spacingY = imGui.getStyle().getItemSpacingY();
@@ -136,13 +136,17 @@ public class Board implements Cloneable {
         imGui.getStyle().setFramePaddingX(0);
         imGui.getStyle().setFramePaddingY(0);
 
+        boolean inputReceived = false;
+
         imGui.begin(name, new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
         displayLabelRow(imGui, size);
         for (int row = height - 1; row >= 0; row--) {
             displayLabel(imGui, Move.getRow(row), size / 2, size);
             imGui.sameLine();
             for (int col = 0; col < width; col++) {
-                displayCell(imGui, size, row, col);
+                if (displayCell(imGui, size, row, col)) {
+                    inputReceived = true;
+                }
                 imGui.sameLine();
             }
             displayLabel(imGui, Move.getRow(row), size / 2, size);
@@ -193,12 +197,16 @@ public class Board implements Cloneable {
             }
             JImGuiGen.endPopup();
         }
+
+        return inputReceived;
     }
 
-    private void displayCell(JImGui imGui, float size, int row, int col) {
+    private boolean displayCell(JImGui imGui, float size, int row, int col) {
         if (CellGraphics.display(imGui, getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
             analyzeInput(row, col);
+            return true;
         }
+        return false;
     }
 
     private void displayLabel(@NotNull JImGui imGui, String label, float x, float y) {

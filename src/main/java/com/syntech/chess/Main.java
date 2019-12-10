@@ -158,7 +158,10 @@ public class Main {
                         }
 
                         imGui.setWindowPos("Board", margin, margin);
-                        board.display(imGui, "Board", cellSize);
+
+                        if (board.display(imGui, "Board", cellSize)) {
+                            fileName = null;
+                        }
 
                         imGui.begin("Game Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
 
