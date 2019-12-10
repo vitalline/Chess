@@ -231,6 +231,7 @@
     "In this variant, in addition to levelling up, the pieces can also gain resistance to other pieces.",
     "If a piece has resistance to a certain piece type, then that piece type cannot capture said piece.",
     "Each resistance level also grants resistance bonuses of all previous levels.",
+    "This also applies to kings. It's impossible to check (or checkmate) a king with a piece it has resistance to.",
     "Resistance levels and the amounts of XP needed to get one are as follows:",
     "Level 1: Resistance to pawns (2 XP);",
     "Level 2: Resistance to knights (3 XP);",

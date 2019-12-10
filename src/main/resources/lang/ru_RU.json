@@ -221,16 +221,16 @@
     "поскольку реинкарнировавшая фигура объявила бы шах королю."
   ],
   "chess.forced.up.info": [
-    "Any piece (except for the kings) gains experience points (XP) and can level up into a stronger piece.",
-    "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
-    "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
-    "XP can be gained as follows:",
-    " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
-    " - A capturing move gives XP depending on the captured piece:",
-    "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
-    " - If a check happened after a capturing move, it gives 2 extra XP.",
-    " - If a check happened after levelling up but not before levelling up, it gives 2 extra XP.",
-    " - If a check happened before levelling up but went away after levelling up, no XP will be taken away."
+    "Любая фигура (кроме королей) получает очки опыта (ОП) и может прокачаться до более сильной фигуры.",
+    "Порядок прокачивания: пешка > конь > слон > ладья > ферзь > магараджа (ферзь + конь).",
+    "Чтобы прокачаться, пешке нужно 4 ОП, коню - 9, слону - 16, ладье - 25, а ферзю - 36 ОП.",
+    "Как начисляются ОП:",
+    " - Обычный ход, не заканчивающийся шахом, даёт 1 ОП, заканчивающийся - 2 ОП.",
+    " - Взятие даёт ОП в зависимости от типа взятой фигуры:",
+    "   пешки дают 3 ОП, кони - 5, слоны - 7, ладьи - 12, ферзи - 20, а магараджи - 30 ОП.",
+    " - Если после взятия произошёл шах, за него даётся ещё +2 ОП.",
+    " - Если после прокачивания появился шах, которого не было до прокачивания, то это ещё +2 ОП.",
+    " - Если после прокачивания шах, который был до прокачивания, исчез, ОП за этот шах не снимается."
   ],
   "chess.forced.up.down.info": [
     "Здесь фигуры как прокачиваются, так и реинкарнируют. ОП у взятой фигуры сбрасываются.",
@@ -238,30 +238,31 @@
     "прокачиваний требуется много времени, да и найти себе соперника для этой игры не так-то просто."
   ],
   "chess.forced.up.res.info": [
-    "In this variant, in addition to levelling up, the pieces can also gain resistance to other pieces.",
-    "If a piece has resistance to a certain piece type, then that piece type cannot capture said piece.",
-    "Each resistance level also grants resistance bonuses of all previous levels.",
-    "Resistance levels and the amounts of XP needed to get one are as follows:",
-    "Level 1: Resistance to pawns (2 XP);",
-    "Level 2: Resistance to knights (3 XP);",
-    "Level 3: Resistance to bishops (5 XP);",
-    "Level 4: Resistance to rooks (8 XP);",
-    "Level 5: Resistance to queens (13 XP);",
-    "Level 6: Resistance to kings (21 XP);",
-    "Level 7: Resistance to amazons (34 XP)."
+    "Модификация ММОРПГ-шных ФШ с параллельным прокачиванием неуязвимости к определённым фигурам.",
+    "Фигуру, неуязвимую к определённому типу фигур, не могут побить фигуры этого типа.",
+    "Каждый уровень неуязвимости также даёт неуязвимости всех предыдущих уровней.",
+    "Короли тоже прокачиваются. Фигуры, от которых у короля есть неуязвимость, не могут поставить ему шах (или мат).",
+    "Уровни неуязвимости и количества ОП, необходимые для её прокачивания:",
+    "Уровень 1: неуязвимость к пешкам (2 ОП);",
+    "Уровень 2: неуязвимость к коням (3 ОП);",
+    "Уровень 3: неуязвимость к слонам (5 ОП);",
+    "Уровень 4: неуязвимость к ладьям (8 ОП);",
+    "Уровень 5: неуязвимость к ферзям (13 ОП);",
+    "Уровень 6: неуязвимость к королям (21 ОП);",
+    "Уровень 7: неуязвимость к магараджам (34 ОП)."
   ],
   "chess.forced.up.res.pow.info": [
-    "In this variant, in addition to levelling up and gaining resistance, the pieces can also upgrade their power.",
-    "If a piece has upgraded its power by 1, it can capture pieces that have resistance to its initial type.",
-    "Upgrading power by 2 grants the ability to capture pieces of the next resistance level, and so on.",
-    "The amounts of XP needed to upgrade power are as follows:",
-    "Power +1: 6 XP;",
-    "Power +2: 15 XP;",
-    "Power +3: 28 XP;",
-    "Power +4: 45 XP;",
-    "Power +5: 66 XP;",
-    "Power +6: 91 XP.",
-    "This sums up to a total of 251 XP, which should not be a problem for a true hardcore chess gamer."
+    "Разновидность ММОРПГ-шных ФШ, где можно прокачать не только неуязвимость, но и силу.",
+    "Фигура, прокачавшая силу на 1, может бить фигуры с неуязвимостью к её изначальному типу.",
+    "Прокачивание силы на 2 даёт возможность бить фигуры с неуязвимостью на 1 выше, и т.д.",
+    "Количества ОП, необходимые для прокачивания силы:",
+    "+1 к силе: 6 ОП;",
+    "+2 к силе: 15 ОП;",
+    "+3 к силе: 28 ОП;",
+    "+4 к силе: 45 ОП;",
+    "+5 к силе: 66 ОП;",
+    "+6 к силе: 91 ОП.",
+    "Итого 251 ОП - сущий пустяк для истинного геймера-шахматиста."
   ],
   "chess.forced.up.down.res.info": [
     "Прокачивание, реинкарнация и неуязвимость. Реинкарнация уменьшает неуязвимость на 1."
@@ -270,10 +271,10 @@
     "Всё, что только можно прокачать, плюс реинкарнация (которая уменьшает на 1 и неуязвимость, и силу)."
   ],
   "chess.forced.down.telefrag.info": [
-    "Here, pieces are able to respawn even if their starting position is taken by another piece.",
-    "The piece that took the starting position would then respawn as well.",
-    "Capturing a piece on its starting position would respawn both pieces immediately.",
-    "The only exception is that pieces cannot respawn if their starting position is taken by a king."
+    "Здесь фигуры реинкарнируют, даже если их стартовое поле занято.",
+    "При этом фигура, стоящая ни стартовом поле реинкарнирующей фигуры, тоже реинкарнирует.",
+    "После взятия фигуры, стоящей на её стартовом поле, другой фигурой реинкарнируют обе.",
+    "Единственное исключение - фигура не может реинкарнировать, если её стартовое поле занято королём."
   ],
   "chess.forced.up.down.telefrag.info": [
     "Прокачивание + форсированная реинкарнация."

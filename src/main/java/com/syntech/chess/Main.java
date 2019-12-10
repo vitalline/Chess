@@ -24,7 +24,8 @@ public class Main {
 
     public static void main(String... args) throws IOException {
         JniLoaderEx.loadGlfw();
-        final int width = 1366, height = 768, cellSize = 50, margin = 10, menuButtonAmount = 15, speed = 65;
+        int width = 1366, height = 768;
+        final int cellSize = 50, margin = 10, menuButtonAmount = 15, speed = 65;
         try (JImGui imGui = new JImGui(width, height, "Chess")) {
             CellGraphics.initialize();
 
@@ -62,6 +63,9 @@ public class Main {
 
                 //TODO: make the UI code a bit less cumbersome to navigate
 
+                width = (int) imGui.getPlatformWindowSizeX();
+                height = (int) imGui.getPlatformWindowSizeY();
+
                 imGui.initNewFrame();
 
                 if (!blockInput) {
@@ -77,10 +81,12 @@ public class Main {
                         imGui.begin("Menu", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
 
                         for (int i = menuPage * menuButtonAmount; i < (menuPage + 1) * menuButtonAmount && i < Setup.values().length; i++) {
-                            Board newBoard = Setup.values()[i].boardButton(imGui, translation);
-                            if (newBoard != null) {
-                                setup = Setup.values()[i];
-                                board = newBoard;
+                            if (!Setup.values()[i].isEmpty()) {
+                                Board newBoard = Setup.values()[i].boardButton(imGui, translation);
+                                if (newBoard != null) {
+                                    setup = Setup.values()[i];
+                                    board = newBoard;
+                                }
                             }
                         }
 
@@ -105,7 +111,7 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
-                            infoSetup = Setup.CHESS;
+                            infoSetup = Setup.CREDITS;
                             showInfo = true;
                         }
 
@@ -429,6 +435,8 @@ public class Main {
             }
         }
     }
+
+    //TODO: apply movement to "game info" (status) window
 
     public static float tweak(float from, float to, float speed) {
         return from + (to - from) * speed / 1000;
