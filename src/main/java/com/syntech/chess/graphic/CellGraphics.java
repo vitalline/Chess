@@ -10,7 +10,6 @@ import org.ice1000.jimgui.JImGuiGen;
 import org.ice1000.jimgui.JImStyleColors;
 import org.ice1000.jimgui.JImTextureID;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class CellGraphics {
     private static ArrayList<JImTextureID> textures;
@@ -30,6 +28,10 @@ public class CellGraphics {
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
         names = new ArrayList<>();
+
+        //This one should always be first. Just in case.
+        loadTexture("missingno", "ui");
+
         loadUITextures();
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
         loadTexture(Side.NEUTRAL, PieceType.WALL);
@@ -114,13 +116,13 @@ public class CellGraphics {
         loadTextures(side, PieceType.KING);
     }
 
-    @Nullable
+    @NotNull
     private static JImTextureID getTexture(String name) {
         int index = names.indexOf(name);
         if (index >= 0) {
             return textures.get(index);
         }
-        return null;
+        return textures.get(0);
     }
 
     @NotNull
@@ -133,7 +135,7 @@ public class CellGraphics {
         imGui.pushStyleColor(JImStyleColors.ButtonHovered, color.getHoveredColor());
         imGui.pushStyleColor(JImStyleColors.ButtonActive, color.getActiveColor());
         JImGui.pushID(id);
-        boolean result = imGui.imageButton(Objects.requireNonNull(getTexture(name)), size, size);
+        boolean result = imGui.imageButton(getTexture(name), size, size);
         if (imGui.isItemHovered()) {
             JImGuiGen.beginTooltip();
             imGui.text(label);
