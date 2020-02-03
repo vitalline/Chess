@@ -63,8 +63,23 @@ public class Main {
 
                 //TODO: make the UI code a bit less cumbersome to navigate
 
-                width = (int) imGui.getPlatformWindowSizeX();
-                height = (int) imGui.getPlatformWindowSizeY();
+                int newWidth = (int) imGui.getPlatformWindowSizeX();
+                int newHeight = (int) imGui.getPlatformWindowSizeY();
+
+                //Do not update the widget positions if the window size is changing or it's minimized (size is 0x0).
+                //Draw empty frames instead. (A dirty but viable solution to the Wandering Info Window bug.)
+                while (newWidth != imGui.getPlatformWindowSizeX() || newHeight != imGui.getPlatformWindowSizeY() || newWidth == 0 || newHeight == 0) {
+                    newWidth = (int) imGui.getPlatformWindowSizeX();
+                    newHeight = (int) imGui.getPlatformWindowSizeY();
+                    windowLoaded = false;
+                    infoPosX = -1;
+                    infoPosY = -1;
+                    imGui.initNewFrame();
+                    imGui.render();
+                }
+
+                width = newWidth;
+                height = newHeight;
 
                 imGui.initNewFrame();
 
@@ -359,7 +374,7 @@ public class Main {
 
                 boolean prev = false, next = false;
 
-                if (imGui.beginPopupModal(translation.get("window.info"), alwaysTrue, JImWindowFlags.AlwaysAutoResize)) {
+                if (imGui.beginPopupModal(translation.get("window.info"), alwaysTrue, JImWindowFlags.NoMove | JImWindowFlags.AlwaysAutoResize)) {
                     imGui.text(infoSetup.getGameType(translation));
                     imGui.text(infoSetup.getGameInfo(translation));
                     imGui.text("");
