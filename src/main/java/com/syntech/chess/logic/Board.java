@@ -139,9 +139,9 @@ public class Board implements Cloneable {
         boolean inputReceived = false;
 
         imGui.begin(name, new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
-        displayLabelRow(imGui, size);
+        displayLabelRow(imGui, size, 0);
         for (int row = height - 1; row >= 0; row--) {
-            displayLabel(imGui, Move.getRow(row), size / 2, size);
+            displayLabel(imGui, Move.getRow(row), size / 2, size, 0);
             imGui.sameLine();
             for (int col = 0; col < width; col++) {
                 if (displayCell(imGui, size, row, col)) {
@@ -149,9 +149,9 @@ public class Board implements Cloneable {
                 }
                 imGui.sameLine();
             }
-            displayLabel(imGui, Move.getRow(row), size / 2, size);
+            displayLabel(imGui, Move.getRow(row), size / 2, size, 1);
         }
-        displayLabelRow(imGui, size);
+        displayLabelRow(imGui, size, 1);
         windowWidth = JImGuiGen.getWindowWidth();
         windowHeight = JImGuiGen.getWindowHeight();
         JImGuiGen.end();
@@ -209,22 +209,26 @@ public class Board implements Cloneable {
         return false;
     }
 
-    private void displayLabel(@NotNull JImGui imGui, String label, float x, float y) {
+    private void displayLabel(@NotNull JImGui imGui, String label, float x, float y, int id) {
         imGui.pushStyleColor(JImStyleColors.Button, Color.NONE.getColor());
         imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.NONE.getColor());
         imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.NONE.getColor());
+        JImGui.pushID(id);
         imGui.button(label, x, y);
+        JImGuiGen.popID();
         JImGuiGen.popStyleColor(3);
     }
 
-    private void displayLabelRow(JImGui imGui, float size) {
-        displayLabel(imGui, "", size / 2, size / 2);
+    private void displayLabelRow(JImGui imGui, float size, int id) {
+        displayLabel(imGui, "", size / 2, size / 2, id * 2);
         imGui.sameLine();
+        JImGui.pushID(id);
         for (int col = 0; col < width; col++) {
-            displayLabel(imGui, "" + Move.getColumn(col), size, size / 2);
+            displayLabel(imGui, "" + Move.getColumn(col), size, size / 2, id);
             imGui.sameLine();
         }
-        displayLabel(imGui, "", size / 2, size / 2);
+        JImGuiGen.popID();
+        displayLabel(imGui, "", size / 2, size / 2, id * 2 + 1);
     }
 
     public void displayLog(@NotNull JImGui imGui, float width, float height, float posX, float posY, int characterWidth) {
