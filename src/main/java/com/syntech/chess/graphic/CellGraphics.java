@@ -19,18 +19,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class CellGraphics {
-    private static ArrayList<JImTextureID> textures;
-    private static ArrayList<String> names;
+/**
+ * Class with a bunch of static methods used to draw square cells with various textures on top.
+ * In this case, the texture correspond to chess pieces and UI elements.
+ * <p>
+ * Before doing anything else with this class, make sure to run <tt>initialize</tt>
+ * in order to load all the textures needed for the app.
+ */
 
+public class CellGraphics {
+    /**
+     * The list of textures used.
+     */
+    private static ArrayList<JImTextureID> textures;
+
+    /**
+     * The list of texture IDs. Used when calling <tt>display</tt>.
+     */
+    private static ArrayList<String> ids;
+
+    /**
+     * The total amount of different sprites used for the piece XP bar.
+     */
     public static final int XP_BAR_STAGES = 48;
 
+    /**
+     * Loads all the textures into memory.
+     * Always run this before using the class.
+     */
     public static void initialize() throws IOException {
         textures = new ArrayList<>();
-        names = new ArrayList<>();
+        ids = new ArrayList<>();
 
-        //This one should always be first. Just in case.
-        loadTexture("missingno", "ui");
+        //This should always be the default one. Just in case.
+        loadTexture("ui", "missingno");
 
         loadUITextures();
         loadTexture(Side.NEUTRAL, PieceType.EMPTY);
@@ -41,37 +63,57 @@ public class CellGraphics {
         loadXPSet(Side.BLACK);
     }
 
+    /**
+     * Loads a texture for a single chess piece, given by its side and type.
+     * The ID is determined as <tt>{@link #getName(Side, PieceType) getName}(side, type)</tt>.
+     */
     private static void loadTexture(Side side, PieceType type) throws IOException {
-        loadTexture(getName(side, type), "chess");
+        loadTexture("chess", getName(side, type));
     }
 
+    /**
+     * Loads all the UI textures.
+     */
     private static void loadUITextures() throws IOException {
-        loadTexture("cross", "ui");
-        loadTexture("double_left", "ui");
-        loadTexture("double_right", "ui");
-        loadTexture("down", "ui");
-        loadTexture("info", "ui");
-        loadTexture("left", "ui");
-        loadTexture("load", "ui");
-        loadTexture("log_closed", "ui");
-        loadTexture("log_opened", "ui");
-        loadTexture("qmark", "ui");
-        loadTexture("restart", "ui");
-        loadTexture("right", "ui");
-        loadTexture("save", "ui");
-        loadTexture("up", "ui");
+        loadTexture("ui", "cross");
+        loadTexture("ui", "double_left");
+        loadTexture("ui", "double_right");
+        loadTexture("ui", "down");
+        loadTexture("ui", "info");
+        loadTexture("ui", "left");
+        loadTexture("ui", "load");
+        loadTexture("ui", "log_closed");
+        loadTexture("ui", "log_opened");
+        loadTexture("ui", "qmark");
+        loadTexture("ui", "restart");
+        loadTexture("ui", "right");
+        loadTexture("ui", "save");
+        loadTexture("ui", "up");
     }
 
-    private static void loadTexture(String name, String folder) throws IOException {
+    /**
+     * Loads a single texture from the following path:
+     * <tt>textures/(folder)/(name).png</tt>
+     * The <tt>name</tt> parameter is then used as the texture ID.
+     */
+    private static void loadTexture(String folder, String name) throws IOException {
         String texturePath = String.format("textures/%s/%s.png", folder, name);
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
         if (textureInput != null) {
             textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(textureInput)));
-            names.add(name);
+            ids.add(name);
         }
     }
 
-    private static void loadTextures(Side side, PieceType type) throws IOException {
+    /**
+     * Loads the textures for a chess piece with an XP bar.
+     * The textures are built by using a single piece texture and adding the
+     * XP bar textures from the <tt>textures/xp_bar</tt> folder on top.
+     * The chess piece is given by its side and type.
+     * The texture ID is the piece texture ID concatenated with the
+     * corresponding XP bar filename (without the extension).
+     */
+    private static void loadXPTextures(Side side, PieceType type) throws IOException {
         String texturePath = String.format("textures/chess/%s.png", getName(side, type));
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
         BufferedImage texture;
@@ -88,12 +130,15 @@ public class CellGraphics {
                     ByteArrayOutputStream textureOutput = new ByteArrayOutputStream();
                     ImageIO.write(texture, "png", textureOutput);
                     textures.add(JImTextureID.fromBytes(textureOutput.toByteArray()));
-                    names.add(String.format("%s%d", getName(side, type), i));
+                    ids.add(String.format("%s%d", getName(side, type), i));
                 }
             }
         }
     }
 
+    /**
+     * Loads a set of chess pieces for one side.
+     */
     private static void loadSet(Side side) throws IOException {
         loadTexture(side, PieceType.EMPTY);
         loadTexture(side, PieceType.PAWN);
@@ -105,37 +150,66 @@ public class CellGraphics {
         loadTexture(side, PieceType.KING);
     }
 
+    /**
+     * Loads a set of chess pieces with XP bars for one side.
+     */
     private static void loadXPSet(Side side) throws IOException {
-        loadTextures(side, PieceType.EMPTY);
-        loadTextures(side, PieceType.PAWN);
-        loadTextures(side, PieceType.KNIGHT);
-        loadTextures(side, PieceType.BISHOP);
-        loadTextures(side, PieceType.ROOK);
-        loadTextures(side, PieceType.QUEEN);
-        loadTextures(side, PieceType.AMAZON);
-        loadTextures(side, PieceType.KING);
+        loadXPTextures(side, PieceType.EMPTY);
+        loadXPTextures(side, PieceType.PAWN);
+        loadXPTextures(side, PieceType.KNIGHT);
+        loadXPTextures(side, PieceType.BISHOP);
+        loadXPTextures(side, PieceType.ROOK);
+        loadXPTextures(side, PieceType.QUEEN);
+        loadXPTextures(side, PieceType.AMAZON);
+        loadXPTextures(side, PieceType.KING);
     }
 
+    /**
+     * Returns a texture by its ID.
+     */
     @NotNull
-    private static JImTextureID getTexture(String name) {
-        int index = names.indexOf(name);
+    private static JImTextureID getTexture(String textureID) {
+        int index = ids.indexOf(textureID);
         if (index >= 0) {
             return textures.get(index);
         }
         return textures.get(0);
     }
 
+    /**
+     * Returns the default texture ID for a piece by its side and type.
+     * The ID is generated by concatenating the default IDs for the side
+     * and type, resulting in IDs like "whitePawn" and "blackKing".
+     */
     @NotNull
     private static String getName(@NotNull Side side, @NotNull PieceType type) {
         return side.getTextureID() + type.getTextureID();
     }
 
-    public static boolean display(@NotNull JImGui imGui, String name, String label, float size, @NotNull Color color, int id) {
+    /**
+     * Displays a square cell with a texture given by ID.
+     * <p>
+     * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
+     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * function is then passed over to check if the cell has been pressed.
+     *
+     * @param imGui     the JImGui object to pass the graphics to
+     * @param textureID the desired texture ID
+     * @param label     the label to be displayed when hovering over the cell
+     * @param size      the width and height of the cell (in pixels)
+     * @param color     the background color of the cell
+     * @param buttonID  the ID of the button (used for JImGui to determine
+     *                  which of the buttons to press if there are two
+     *                  buttons that look the same)
+     * @return <tt>true</tt> if the button has been pressed
+     */
+    public static boolean display(@NotNull JImGui imGui, String textureID, String label, float size,
+                                  @NotNull Color color, int buttonID) {
         imGui.pushStyleColor(JImStyleColors.Button, color.getColor());
         imGui.pushStyleColor(JImStyleColors.ButtonHovered, color.getHoveredColor());
         imGui.pushStyleColor(JImStyleColors.ButtonActive, color.getActiveColor());
-        JImGui.pushID(id);
-        boolean result = imGui.imageButton(getTexture(name), size, size);
+        JImGui.pushID(buttonID);
+        boolean result = imGui.imageButton(getTexture(textureID), size, size);
         if (imGui.isItemHovered()) {
             JImGuiGen.beginTooltip();
             imGui.text(label);
@@ -146,12 +220,48 @@ public class CellGraphics {
         return result;
     }
 
-    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, String label, float size, Color color, int id) {
-        return display(imGui, getName(side, type), label, size, color, id);
+    /**
+     * Displays a square cell with a chess piece given by its side and type.
+     * <p>
+     * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
+     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * function is then passed over to check if the cell has been pressed.
+     *
+     * @param imGui    the JImGui object to pass the graphics to
+     * @param side     the side of the piece
+     * @param type     the type of the piece
+     * @param label    the label to be displayed when hovering over the cell
+     * @param size     the width and height of the cell (in pixels)
+     * @param color    the background color of the cell
+     * @param buttonID the ID of the button (used for JImGui to determine
+     *                 which of the buttons to press if there are two
+     *                 buttons that look the same)
+     * @return <tt>true</tt> if the button has been pressed
+     */
+    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, String label, float size,
+                                  @NotNull Color color, int buttonID) {
+        return display(imGui, getName(side, type), label, size, color, buttonID);
     }
 
-
-    public static boolean display(JImGui imGui, @NotNull Piece piece, String label, float size, Color color, int id) {
-        return display(imGui, piece.getTextureID(), label, size, color, id);
+    /**
+     * Displays a square cell with a certain chess piece.
+     * <p>
+     * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
+     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * function is then passed over to check if the cell has been pressed.
+     *
+     * @param imGui    the JImGui object to pass the graphics to
+     * @param piece    the piece to be displayed
+     * @param label    the label to be displayed when hovering over the cell
+     * @param size     the width and height of the cell (in pixels)
+     * @param color    the background color of the cell
+     * @param buttonID the ID of the button (used for JImGui to determine
+     *                 which of the buttons to press if there are two
+     *                 buttons that look the same)
+     * @return <tt>true</tt> if the button has been pressed
+     */
+    public static boolean display(JImGui imGui, @NotNull Piece piece, String label, float size,
+                                  @NotNull Color color, int buttonID) {
+        return display(imGui, piece.getTextureID(), label, size, color, buttonID);
     }
 }
