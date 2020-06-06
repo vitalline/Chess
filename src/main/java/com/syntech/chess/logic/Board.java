@@ -48,6 +48,7 @@ public class Board implements Cloneable {
     private ArrayList<Move> moveLog = new ArrayList<>();
     private String errorMessage = null;
     private Object[] errorArguments = null;
+    private static final Piece none = PieceFactory.none();
 
     private Board(@NotNull Piece[][] board, boolean initialize, boolean update, int turn) {
         this.translation = Translation.EN_US;
@@ -575,7 +576,7 @@ public class Board implements Cloneable {
         try {
             return board[row][col];
         } catch (ArrayIndexOutOfBoundsException ignored) {
-            return PieceFactory.none();
+            return none;
         }
     }
 
@@ -664,7 +665,6 @@ public class Board implements Cloneable {
     }
 
     public boolean isInCheck(@NotNull Side side) {
-        updatePieces();
         boolean kingIsPresent = false;
         for (Point p : pieces) {
             if (getType(p.x, p.y) == PieceType.KING && getSide(p.x, p.y) == side) {
@@ -735,6 +735,16 @@ public class Board implements Cloneable {
         while (canRedo()) {
             redo();
         }
+    }
+
+    public ArrayList<Piece> getAllPieces(Side side) {
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for (Point point : this.pieces) {
+            if (getSide(point.x, point.y) == side) {
+                pieces.add(getPiece(point.x, point.y));
+            }
+        }
+        return pieces;
     }
 
     public void saveToPGN(@NotNull String path, Setup setup) throws IOException {

@@ -31,6 +31,11 @@ public class RookType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 5;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.ROOK;
     }

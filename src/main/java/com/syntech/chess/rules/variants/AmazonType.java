@@ -35,6 +35,11 @@ public class AmazonType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 12;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.AMAZON;
     }

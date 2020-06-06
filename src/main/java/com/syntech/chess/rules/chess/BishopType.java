@@ -31,6 +31,11 @@ public class BishopType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 3;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.BISHOP;
     }

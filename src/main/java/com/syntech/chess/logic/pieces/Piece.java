@@ -76,6 +76,10 @@ public class Piece implements Cloneable {
         ).trim().replaceAll(" {2}", " ");
     }
 
+    public int getEvaluationCost() {
+        return getMovementType().getEvaluationCost();
+    }
+
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
         if (availableMovesWithoutSpecialRules == null) {
             availableMovesWithoutSpecialRules = movementType.getAvailableMovesWithoutSpecialRules(position, board);

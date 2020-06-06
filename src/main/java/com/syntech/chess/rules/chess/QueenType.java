@@ -33,6 +33,11 @@ public class QueenType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 9;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.QUEEN;
     }

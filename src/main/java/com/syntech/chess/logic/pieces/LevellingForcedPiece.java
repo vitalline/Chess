@@ -99,8 +99,8 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (levellingData.hasPower()) {
             label += '\n' + translation.get("label.power_level", ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
         }
+        label += '\n' + translation.get("label.started_on", Move.getCoordinates(initialPosition));
         if (canLevelDown()) {
-            label += '\n' + translation.get("label.started_on", Move.getCoordinates(initialPosition));
             label += '\n' + translation.get("label.will_respawn_as", ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
         }
         if (ForcedXPRules.getPieceXPWorth(getType()) != 0

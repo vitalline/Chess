@@ -28,6 +28,11 @@ public class ImmovableType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 0;
+    }
+
+    @Override
     public PieceType getType() {
         return type;
     }

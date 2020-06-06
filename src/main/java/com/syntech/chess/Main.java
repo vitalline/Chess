@@ -262,6 +262,12 @@ public class Main {
 
                         if (CellGraphics.display(imGui, "qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
                             fileName = null;
+                            /*
+                            try {
+                                AI.getBestScoreAndSaveBestMove(board, 2);
+                            } catch (CloneNotSupportedException ignored) {}
+                            board.redo();
+                             */
                             board.makeRandomMove();
                         }
 

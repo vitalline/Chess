@@ -64,7 +64,7 @@ public class CyclicBoard extends Board {
         format(availableCaptures);
     }
 
-    private void format(ArrayList<Move> moves) {
+    private void format(@NotNull ArrayList<Move> moves) {
         for (Move move : moves) {
             move.setEndCol(getColumn(move.getEndCol()));
         }
