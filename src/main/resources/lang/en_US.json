@@ -122,6 +122,7 @@
   "window.info": "Info",
   "window.error": "Error!",
   "error.generic": "Unknown error.",
+  "error.internal.setup_has_no_pieces": "Internal error: This setup has no pieces.",
   "error.pgn.large_file": "Only files no larger than %d bytes can be imported (got %d bytes).",
   "error.pgn.invalid_file": "Imported file seems to be invalid.",
   "error.pgn.invalid_variant": [

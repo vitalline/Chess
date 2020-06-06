@@ -98,14 +98,14 @@ public enum Setup {
         return translation.exists(gameType + ".info");
     }
 
-    @Nullable
+    @NotNull
     public Board getBoard() {
         if (gameType.contains("cyclic")) {
             return new CyclicBoard(pieces, true, true);
         } else if (pieces != null) {
             return new Board(pieces, true, true);
         }
-        return null;
+        return new Board("error.internal.setup_has_no_pieces");
     }
 
     public boolean isEmpty() {
