@@ -20,7 +20,6 @@ public class AI {
         }
 
         ArrayList<Move> moves = board.getAllAvailableMoves(side);
-        moves.addAll(board.getAllAvailableCaptures(side));
         for (Move ignored : moves) {
             moveScore += 1;
         }
@@ -42,7 +41,6 @@ public class AI {
                                                   int alpha, int beta) throws CloneNotSupportedException {
         Side side = board.getTurnSide();
         ArrayList<Move> moves = board.getAllAvailableMoves(side);
-        moves.addAll(board.getAllAvailableCaptures(side));
         int bestMoveScore = (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
         Move bestMove = null;
         for (Move move : moves) {

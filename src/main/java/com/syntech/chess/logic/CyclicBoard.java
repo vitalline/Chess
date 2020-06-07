@@ -42,13 +42,6 @@ public class CyclicBoard extends Board {
     }
 
     @Override
-    public ArrayList<Move> getAllAvailableCaptures(Side side) {
-        ArrayList<Move> moves = super.getAllAvailableCaptures(side);
-        format(moves);
-        return moves;
-    }
-
-    @Override
     public Board getNextTurn(Move move) {
         CyclicBoard nextTurn = new CyclicBoard(getBoard(), turn);
         if (move != null) {

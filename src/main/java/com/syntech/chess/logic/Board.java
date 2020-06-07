@@ -399,7 +399,7 @@ public class Board implements Cloneable {
 
     @Nullable
     private String getStatusConditions(Side side) {
-        if (getAllAvailableMoves(side).size() == 0 && getAllAvailableCaptures(side).size() == 0) {
+        if (getAllAvailableMoves(side).size() == 0) {
             gameEnded = true;
             if (isInCheck(side)) {
                 statusSide = side.getOpponent();
@@ -545,15 +545,6 @@ public class Board implements Cloneable {
         for (Point p : this.pieces) {
             if (getSide(p.x, p.y) == side) {
                 moves.addAll(getPiece(p.x, p.y).getAvailableMoves(this));
-            }
-        }
-        return MovePriorities.topPriorityMoves(moves);
-    }
-
-    public ArrayList<Move> getAllAvailableCaptures(Side side) {
-        ArrayList<Move> moves = new ArrayList<>();
-        for (Point p : this.pieces) {
-            if (getSide(p.x, p.y) == side) {
                 moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
             }
         }
@@ -615,8 +606,7 @@ public class Board implements Cloneable {
 
     private ArrayList<Move> topPriorityMoves(ArrayList<Move> moves, int row, int col) {
         ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
-        ArrayList<Move> allAvailableCaptures = getAllAvailableCaptures(getSide(row, col));
-        int topPriority = Math.max(MovePriorities.getTopPriority(allAvailableMoves), MovePriorities.getTopPriority(allAvailableCaptures));
+        int topPriority = MovePriorities.getTopPriority(allAvailableMoves);
         if (MovePriorities.getTopPriority(moves) < topPriority) {
             moves = new ArrayList<>();
         }

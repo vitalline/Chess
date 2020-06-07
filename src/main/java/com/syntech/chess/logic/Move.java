@@ -237,11 +237,7 @@ public class Move {
         if (!board.isFree(getEndRow(), getEndCol())) {
             isCapture = true;
         }
-        if (isCapture) {
-            moves = board.getAllAvailableCaptures(board.getSide(getStartRow(), getStartCol()));
-        } else {
-            moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
-        }
+        moves = board.getAllAvailableMoves(board.getSide(getStartRow(), getStartCol()));
         if (amount(moves, piece, getEndRow(), getEndCol(), getStartRow(), getStartCol()) > 1) {
             addCol = true;
             if (amountCol(moves, piece, getEndRow(), getEndCol(), getStartRow(), getStartCol()) > 1) {
@@ -381,11 +377,7 @@ public class Move {
             endPosition = getPosition(pgn);
 
             ArrayList<Move> moves;
-            if (isCapture) {
-                moves = board.getAllAvailableCaptures(board.getTurnSide());
-            } else {
-                moves = board.getAllAvailableMoves(board.getTurnSide());
-            }
+            moves = board.getAllAvailableMoves(board.getTurnSide());
 
             for (Move move : moves) {
                 if (move.getPiece() == piece
@@ -396,6 +388,7 @@ public class Move {
                     return move;
                 }
             }
+
         } catch (IndexOutOfBoundsException ignored) {
             return null;
         }
