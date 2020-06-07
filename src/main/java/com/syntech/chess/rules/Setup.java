@@ -39,6 +39,7 @@ public enum Setup {
     FORCED_INVOLUTION_FORCED_CHESS("chess.forced.down.telefrag", StartingPositions.forcedInvolutionForcedChess),
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
+    FORCED_CHESS_8X8("chess.forced.8x8", StartingPositions.forcedChess8x8),
     CYCLIC_CHESS_8X12("chess.cyclic.8x12", StartingPositions.chess8x12),
     CYCLIC_CHESS_8X16("chess.cyclic.8x16", StartingPositions.chess8x16),
     CREDITS("credits", null);

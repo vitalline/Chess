@@ -53,6 +53,8 @@
   "chess.forced.up.down.telefrag.name": "\"Forced Involution\" MMORPG Forced Chess",
   "chess.forced.cloning.short": "Cloning Forced Chess",
   "chess.forced.cloning.name": "Cloning Forced Chess",
+  "chess.forced.8x8.short": "Forced Chess 8x8",
+  "chess.forced.8x8.name": "Forced Chess 8x8",
   "chess.cyclic.8x12.short": "Cyclic Chess 8×12",
   "chess.cyclic.8x12.name": "Cyclic Chess 8×12",
   "chess.cyclic.8x16.short": "Cyclic Chess 8×16",
@@ -277,6 +279,9 @@
   "chess.forced.cloning.info": [
     "Any piece except for the king will clone itself before making any non-capturing move.",
     "The question of which of the two pieces actually makes the move will forever be left unanswered."
+  ],
+  "chess.forced.8x8.info": [
+    "Forced Chess but on an 8 by 8 board-- wait, this is just chess with forced captures! How boring."
   ],
   "chess.cyclic.8x12.info": [
     "Cyclic Chess but on an 8 by 12 board. Because why the heck not."
