@@ -101,6 +101,7 @@ public class Board implements Cloneable {
         clone.selectedPiece = pieceNone;
         clone.enPassantPointWhite = new Point(enPassantPointWhite);
         clone.enPassantPointBlack = new Point(enPassantPointBlack);
+        clone.moveLog = new ArrayList<>(moveLog);
         return clone;
     }
 

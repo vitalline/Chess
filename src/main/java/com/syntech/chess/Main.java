@@ -1,5 +1,6 @@
 package com.syntech.chess;
 
+import com.syntech.chess.ai.AI;
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.graphic.FileChooser;
@@ -36,6 +37,7 @@ public class Main {
             String fileName = null;
             String errorMessage = null;
             FileChooser fileChooser = null;
+            AI ai = null;
 
             boolean windowLoaded = false;
             float infoPosX = -1, infoPosY = -1;
@@ -176,6 +178,11 @@ public class Main {
 
                         if (board.display(imGui, "Board", cellSize)) {
                             fileName = null;
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                         }
 
                         imGui.begin("Game Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
@@ -184,7 +191,20 @@ public class Main {
                         if (status == null) {
                             status = translation.get("status.turn", board.getTurnSide().getTranslationString());
                         }
-
+                        if (ai != null) {
+                            if (ai.isAlive()) {
+                                String thoughts = ai.thoughts(translation);
+                                if (thoughts.isEmpty()) {
+                                    status = translation.get("status.ai_thinking.generic");
+                                } else {
+                                    status = translation.get("status.ai_thinking", ai.thoughts(translation));
+                                }
+                            } else { //this is probably the wrong place to put this but
+                                board.updateMove(ai.bestMove());
+                                board.redo();
+                                ai = null;
+                            }
+                        }
                         imGui.text(status);
                         imGui.text(translation.get("status.game", setup.getGameType()));
 
@@ -200,12 +220,22 @@ public class Main {
 
                         if (board.getPreviousBoard() != null) {
                             if (CellGraphics.display(imGui, "double_left", translation.get("action.undo_all"), cellSize, Color.WHITE, -1)) {
+                                if (ai != null) {
+                                    ai.stopEarly();
+                                    ai.interrupt();
+                                    ai = null;
+                                }
                                 fileName = saveMode ? null : fileName;
                                 board = board.getInitialBoard();
                                 board.setTranslation(translation);
                             }
                             imGui.sameLine();
                             if (CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.WHITE, -1)) {
+                                if (ai != null) {
+                                    ai.stopEarly();
+                                    ai.interrupt();
+                                    ai = null;
+                                }
                                 fileName = saveMode ? null : fileName;
                                 board = board.getPreviousBoard();
                                 board.setTranslation(translation);
@@ -220,11 +250,21 @@ public class Main {
 
                         if (board.canRedo()) {
                             if (CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.WHITE, -1)) {
+                                if (ai != null) {
+                                    ai.stopEarly();
+                                    ai.interrupt();
+                                    ai = null;
+                                }
                                 fileName = saveMode ? null : fileName;
                                 board.redo();
                             }
                             imGui.sameLine();
                             if (CellGraphics.display(imGui, "double_right", translation.get("action.redo_all"), cellSize, Color.WHITE, -1)) {
+                                if (ai != null) {
+                                    ai.stopEarly();
+                                    ai.interrupt();
+                                    ai = null;
+                                }
                                 fileName = saveMode ? null : fileName;
                                 board.redoAll();
                             }
@@ -236,7 +276,24 @@ public class Main {
 
                         imGui.sameLine();
 
+                        if (setup.gameInfoExists(translation)) {
+                            if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
+                                fileName = saveMode ? null : fileName;
+                                infoSetup = setup;
+                                showInfo = true;
+                            }
+                        } else {
+                            CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.NONE, -1);
+                        }
+
+                        imGui.sameLine();
+
                         if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                             if (saveMode) {
                                 fileName = null;
                             }
@@ -249,6 +306,11 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                             saveMode = true;
                             fileName = null;
                             blockInput = true;
@@ -261,13 +323,12 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                             fileName = null;
-                            /*
-                            try {
-                                AI.getBestScoreAndSaveBestMove(board, 2);
-                            } catch (CloneNotSupportedException ignored) {}
-                            board.redo();
-                             */
                             board.makeRandomMove();
                         }
 
@@ -289,19 +350,36 @@ public class Main {
 
                         imGui.sameLine();
 
-                        if (setup.gameInfoExists(translation)) {
-                            if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
-                                fileName = saveMode ? null : fileName;
-                                infoSetup = setup;
-                                showInfo = true;
+                        if (CellGraphics.display(imGui, "ai_start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
+                            fileName = null;
+                            try {
+                                ai = new AI(3, board);
+                                ai.start();
+                            } catch (CloneNotSupportedException e) {
+                                e.printStackTrace();
                             }
-                        } else {
-                            CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.NONE, -1);
+                        }
+
+                        imGui.sameLine();
+
+                        if (CellGraphics.display(imGui, "ai_stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                board.updateMove(ai.bestMove());
+                                board.redo();
+                                ai = null;
+                            }
                         }
 
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                             fileName = null;
                             board = setup.getBoard();
                         }
@@ -309,6 +387,11 @@ public class Main {
                         imGui.sameLine();
 
                         if (CellGraphics.display(imGui, "cross", translation.get("action.return"), cellSize, Color.CAPTURE_WHITE, -1)) {
+                            if (ai != null) {
+                                ai.stopEarly();
+                                ai.interrupt();
+                                ai = null;
+                            }
                             fileName = null;
                             board = null;
                         }
@@ -456,6 +539,10 @@ public class Main {
 
             if (fileChooser != null && fileChooser.isAlive()) {
                 fileChooser.interrupt();
+            }
+            if (ai != null && ai.isAlive()) {
+                ai.stopEarly();
+                ai.interrupt();
             }
         }
     }
