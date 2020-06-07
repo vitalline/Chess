@@ -87,6 +87,12 @@ public class AI extends Thread {
         Side side = board.getTurnSide();
         if (!shouldRun) return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
         ArrayList<Move> moves = board.getAllAvailableMoves(side);
+        if (moves.size() == 0) {
+            if (board.isInCheck(side)) {
+                return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
+            }
+            return 0;
+        }
         if (currentDepth == 0) {
             //Make a random move if stopped abruptly and no actually good moves were found (yet).
             Collections.shuffle(moves);
