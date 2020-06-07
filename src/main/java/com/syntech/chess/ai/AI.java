@@ -14,20 +14,15 @@ public class AI extends Thread {
     private static final int WIN_SCORE = Integer.MAX_VALUE;
     private final int depth;
     private Board board;
-    private Move[] bestMoves;
-    private int[] bestScores;
+    private Move bestMove;
     private Move[] currentMoves;
-    private int[] currentScores;
     private int currentDepth = -1;
     private boolean shouldRun = false;
 
     public AI(int depth, @NotNull Board board) throws CloneNotSupportedException {
         this.depth = depth;
         this.board = (Board) board.clone();
-        bestMoves = new Move[depth];
-        bestScores = new int[depth];
         currentMoves = new Move[depth];
-        currentScores = new int[depth];
     }
 
     private static int evaluateBoard(@NotNull Board board) {
@@ -64,14 +59,14 @@ public class AI extends Thread {
     public synchronized String thoughts(Translation translation) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < currentDepth + 1; i++) {
-            sb.append(bestMoves[i].toNotation(translation));
+            sb.append(currentMoves[i].toNotation(translation));
             if (i != currentDepth) sb.append(' ');
         }
         return sb.toString();
     }
 
     public synchronized Move bestMove() {
-        return bestMoves[0];
+        return bestMove;
     }
 
     @Override
@@ -113,7 +108,6 @@ public class AI extends Thread {
                 bestScore = score;
                 bestMove = move;
             }
-            currentScores[currentDepth] = score;
             if (side == Side.WHITE) {
                 alpha = Math.max(alpha, bestScore);
             } else {
@@ -125,12 +119,11 @@ public class AI extends Thread {
         }
         if (bestMove != null) {
             bestMove.setData(board);
-            if ((side == Side.WHITE) ? bestScores[currentDepth] <= bestScore : bestScores[currentDepth] >= bestScore) {
-                synchronized (this) {
-                    if (shouldRun) {
-                        System.arraycopy(currentScores, 0, bestScores, 0, currentDepth + 1);
-                        System.arraycopy(currentMoves, 0, bestMoves, 0, currentDepth + 1);
-                        this.currentDepth = currentDepth;
+            synchronized (this) {
+                if (shouldRun) {
+                    this.currentDepth = currentDepth;
+                    if (currentDepth == 0) {
+                        this.bestMove = bestMove;
                     }
                 }
             }
