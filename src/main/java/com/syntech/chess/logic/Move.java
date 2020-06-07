@@ -48,7 +48,7 @@ public class Move {
         this.power = move.power;
     }
 
-    public boolean hasDifferentMoveData(Move newMove) {
+    public boolean hasDifferentMoveData(@NotNull Move newMove) {
         return !startPosition.equals(newMove.getStartPosition())
                 || !endPosition.equals(newMove.getEndPosition());
     }

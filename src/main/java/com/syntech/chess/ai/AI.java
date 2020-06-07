@@ -19,9 +19,12 @@ public class AI extends Thread {
     private int currentDepth = -1;
     private boolean shouldRun = false;
 
-    public AI(int depth, @NotNull Board board) throws CloneNotSupportedException {
+    public AI(int depth, @NotNull Board board) {
         this.depth = depth;
-        this.board = (Board) board.clone();
+        try {
+            this.board = (Board) board.clone();
+        } catch (CloneNotSupportedException ignored) {
+        }
         currentMoves = new Move[depth];
     }
 
@@ -84,6 +87,13 @@ public class AI extends Thread {
         Side side = board.getTurnSide();
         if (!shouldRun) return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
         ArrayList<Move> moves = board.getAllAvailableMoves(side);
+        if (currentDepth == 0) {
+            //Make a random move if stopped abruptly and no actually good moves were found (yet).
+            Collections.shuffle(moves);
+            if (moves.size() > 0) {
+                this.bestMove = moves.get(0);
+            }
+        }
         Collections.shuffle(moves);
         int bestScore = (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
         Move bestMove = null;
@@ -91,6 +101,7 @@ public class AI extends Thread {
             Board copy = null;
             try {
                 copy = (Board) board.clone();
+                copy.recreateMoveLog();
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }

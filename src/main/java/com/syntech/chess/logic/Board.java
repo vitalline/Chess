@@ -101,8 +101,12 @@ public class Board implements Cloneable {
         clone.selectedPiece = pieceNone;
         clone.enPassantPointWhite = new Point(enPassantPointWhite);
         clone.enPassantPointBlack = new Point(enPassantPointBlack);
-        clone.moveLog = new ArrayList<>(moveLog);
+        //clone.moveLog = new ArrayList<>(moveLog);
         return clone;
+    }
+
+    public void recreateMoveLog() {
+        moveLog = new ArrayList<>(moveLog);
     }
 
     public Piece[][] getBoard() {
@@ -386,7 +390,7 @@ public class Board implements Cloneable {
         }
     }
 
-    private void checkStatusConditions() {
+    public void checkStatusConditions() {
         updateMovablePieces();
         status = getStatusConditions(getTurnSide());
         if (isInCheck(getTurnSide())) {
