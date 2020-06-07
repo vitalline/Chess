@@ -89,11 +89,11 @@ public class StatusWindow {
         imGui.sameLine();
         base.displayLogAndOrLogButton();
         imGui.sameLine();
-        if (CellGraphics.display(imGui, "ai_start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
+        if (CellGraphics.display(imGui, "start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
             base.startAI(3);
         }
         imGui.sameLine();
-        if (CellGraphics.display(imGui, "ai_stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
+        if (CellGraphics.display(imGui, "stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
             base.stopAI();
         }
         imGui.sameLine();

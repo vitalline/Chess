@@ -88,6 +88,8 @@ public class CellGraphics {
         loadTexture("ui", "restart");
         loadTexture("ui", "right");
         loadTexture("ui", "save");
+        loadTexture("ui", "start");
+        loadTexture("ui", "stop");
         loadTexture("ui", "up");
     }
 
