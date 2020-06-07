@@ -55,7 +55,7 @@ public class AI extends Thread {
         for (Move ignored : moves) {
             opponentMoveScore += 1;
         }
-        int score = pieceScore * 8 - opponentPieceScore * 4 + moveScore * 2 - opponentMoveScore;
+        int score = (pieceScore - opponentPieceScore) * 10 + moveScore - opponentMoveScore;
         return (side == Side.WHITE) ? score : -score;
     }
 
