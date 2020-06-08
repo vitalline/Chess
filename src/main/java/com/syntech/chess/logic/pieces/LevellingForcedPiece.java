@@ -169,6 +169,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             hasRespawned = false;
         } else {
             levelUpPowerAndResistance();
+            board.updatePieces();
             if (board.isInCheck(side.getOpponent())) {
                 addXP(ForcedXPRules.getCheckXPWorth());
                 checkHappened = true;
@@ -229,6 +230,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel + 1);
             morph(board, newPieceType, getPromotionInfo(newPieceType), xp - getMaxXP(), position);
             LevellingForcedPiece newPiece = ((LevellingForcedPiece) board.getPiece(position.x, position.y));
+            board.updatePieces();
             if (board.isInCheck(side.getOpponent()) && !checkHappened) {
                 newPiece.addXP(ForcedXPRules.getCheckXPWorth());
                 newPiece.checkHappened = true;

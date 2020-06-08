@@ -509,7 +509,7 @@ public class Board implements Cloneable {
         return (width - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
     }
 
-    private void updatePieces() {
+    public void updatePieces() {
         pieces = new ArrayList<>();
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
