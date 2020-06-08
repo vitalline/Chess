@@ -42,7 +42,7 @@ public class CyclicBoard extends Board {
     }
 
     @Override
-    public Board getNextTurn(Move move) {
+    public Board getMoveResultWithoutPromotion(Move move) {
         CyclicBoard nextTurn = new CyclicBoard(getBoard(), turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);

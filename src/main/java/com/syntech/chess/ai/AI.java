@@ -98,6 +98,7 @@ public class AI extends Thread {
             Collections.shuffle(moves);
             if (moves.size() > 0) {
                 this.bestMove = moves.get(0);
+                this.bestMove.setData(board);
             }
         }
         Collections.shuffle(moves);
@@ -113,7 +114,7 @@ public class AI extends Thread {
             }
             assert copy != null; //probably not the smartest option here tbh
             copy.updateMove(move);
-            copy.redo();
+            copy.simulatedRedo();
             currentMoves[currentDepth] = move;
             int score;
             if (maxDepth > currentDepth + 1) {
@@ -135,12 +136,12 @@ public class AI extends Thread {
             }
         }
         if (bestMove != null) {
-            bestMove.setData(board);
             synchronized (this) {
                 if (shouldRun) {
                     this.currentDepth = currentDepth;
                     if (currentDepth == 0) {
                         this.bestMove = bestMove;
+                        this.bestMove.setData(board);
                     }
                 }
             }

@@ -50,7 +50,12 @@ public class Move {
 
     public boolean hasDifferentMoveData(@NotNull Move newMove) {
         return !startPosition.equals(newMove.getStartPosition())
-                || !endPosition.equals(newMove.getEndPosition());
+                || !endPosition.equals(newMove.getEndPosition())
+                || addRow != newMove.addRow
+                || addCol != newMove.addCol
+                || (promotion != PieceType.NONE
+                && newMove.promotion != PieceType.NONE
+                && promotion != newMove.promotion);
     }
 
     @NotNull
@@ -232,7 +237,7 @@ public class Move {
         this.isGameEnd = true;
     }
 
-    public void setData(Board board) {
+    public void setData(@NotNull Board board) {
         ArrayList<Move> moves;
         if (!board.isFree(getEndRow(), getEndCol())) {
             isCapture = true;
@@ -250,18 +255,19 @@ public class Move {
         }
     }
 
-    public static void setPriority(ArrayList<Move> moves, int priority) {
+    public static void setPriority(@NotNull ArrayList<Move> moves, int priority) {
         for (Move move : moves) {
             move.setPriority(priority);
         }
     }
 
-    public static void setPower(ArrayList<Move> moves, int power) {
+    public static void setPower(@NotNull ArrayList<Move> moves, int power) {
         for (Move move : moves) {
             move.setPower(power);
         }
     }
 
+    @NotNull
     private String toInternalNotation(Translation translation) {
         if (isCastling()) {
             if (getEndCol() > getStartCol()) {

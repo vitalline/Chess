@@ -342,9 +342,9 @@ public class Board implements Cloneable {
         }
         piece.move(this, endRow, endCol);
         selectedPiece = new Point(endRow, endCol);
-        updatePieces(); //please do not remove this, even though advanceTurn() also calls it
         updateMove(move);
         if (getSelectedPiece().canBePromoted()) {
+            updatePieces();
             displayPromotionPopup = true;
         } else {
             advanceTurn();
@@ -387,6 +387,18 @@ public class Board implements Cloneable {
             }
             displayPromotionPopup = false;
             checkStatusConditions();
+        }
+    }
+
+    public void simulatedRedo() {
+        if (canRedo()) {
+            Move move = moveLog.get(turn);
+            move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted() && move.getPromotion() != PieceType.NONE) {
+                getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
+                advanceTurn();
+            }
+            displayPromotionPopup = false; //not sure if we need this, since this board shouldn't be displayed anyway
         }
     }
 
@@ -591,6 +603,7 @@ public class Board implements Cloneable {
         availableCaptures = getAvailableCaptures(row, col);
     }
 
+    @NotNull
     private ArrayList<Move> getAvailableMoves(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableMoves = getPiece(row, col).getAvailableMoves(this);
@@ -600,6 +613,7 @@ public class Board implements Cloneable {
         return new ArrayList<>();
     }
 
+    @NotNull
     private ArrayList<Move> getAvailableCaptures(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableCaptures = getPiece(row, col).getAvailableCaptures(this);
@@ -609,6 +623,7 @@ public class Board implements Cloneable {
         return new ArrayList<>();
     }
 
+    @NotNull
     private ArrayList<Move> topPriorityMoves(ArrayList<Move> moves, int row, int col) {
         ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
         int topPriority = MovePriorities.getTopPriority(allAvailableMoves);
@@ -648,15 +663,15 @@ public class Board implements Cloneable {
         deselectPiece();
         ++turn;
         turnIndicator = turnIndicator.getOpponent();
-        updatePieces(); //this is needed in case a piece has been promoted, which changes its movepool
+        updatePieces();
     }
 
-    public Board getNextTurn(Move move) {
-        Board nextTurn = new Board(board, turn);
+    public Board getMoveResultWithoutPromotion(Move move) {
+        Board moveResult = new Board(board, turn);
         if (move != null) {
-            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+            moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }
-        return nextTurn;
+        return moveResult;
     }
 
     public boolean isInCheck(@NotNull Side side) {
@@ -682,7 +697,7 @@ public class Board implements Cloneable {
     public ArrayList<Move> excludeMovesThatLeaveKingInCheck(Side side, @NotNull ArrayList<Move> moves) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (!getNextTurn(move).isInCheck(side)) {
+            if (!getMoveResultWithoutPromotion(move).isInCheck(side)) {
                 filteredMoves.add(move);
             }
         }
@@ -712,7 +727,6 @@ public class Board implements Cloneable {
     public void makeRandomMove() {
         Move move = getRandomMove();
         if (move != null) {
-            move.setData(this);
             updateMove(move);
             redo();
         }
@@ -797,7 +811,6 @@ public class Board implements Cloneable {
                 for (String moveString : moves) {
                     Move move = Move.fromPGN(moveString, board);
                     if (move != null) {
-                        move.setData(board);
                         board.updateMove(move);
                         board.redo();
                     } else {

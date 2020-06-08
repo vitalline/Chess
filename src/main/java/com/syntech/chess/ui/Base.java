@@ -148,7 +148,7 @@ public class Base {
             } else { //this is probably the wrong place to put this but
                 Move aiMove = ai.bestMove();
                 if (aiMove != null) {
-                    board.updateMove(ai.bestMove());
+                    board.updateMove(aiMove);
                     board.redo();
                 } else {
                     board.checkStatusConditions();

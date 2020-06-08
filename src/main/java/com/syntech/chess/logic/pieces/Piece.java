@@ -137,7 +137,7 @@ public class Piece implements Cloneable {
     }
 
     private boolean canBePromotedAfterMove(Move move, Board board) {
-        return board.getNextTurn(move).hasPromotion();
+        return board.getMoveResultWithoutPromotion(move).hasPromotion();
     }
 
     private ArrayList<Move> addPromotions(ArrayList<Move> moves, Board board) {
