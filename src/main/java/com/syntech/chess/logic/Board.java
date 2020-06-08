@@ -182,11 +182,9 @@ public class Board implements Cloneable {
                     getSelectedPiece().promoteTo(pieceType);
                     displayPromotionPopup = false;
                     JImGuiGen.closeCurrentPopup();
-                    Move lastMove = moveLog.get(turn);
-                    if (lastMove.getPromotion() != pieceType) {
-                        lastMove.setPromotion(pieceType);
-                        moveLog.subList(turn + 1, moveLog.size()).clear();
-                    }
+                    Move newMove = new Move(moveLog.get(turn));
+                    newMove.setPromotion(pieceType);
+                    updateMove(newMove);
                     advanceTurn();
                     checkStatusConditions();
                     break;
