@@ -324,6 +324,7 @@ public class Board implements Cloneable {
             placePiece(PieceFactory.cell(), endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
         }
         enPassantPoint = getEnPassantPoint(getTurnSide());
+        enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
         if (enPassantPiece.getType() == PieceType.EMPTY) {
             placePiece(PieceFactory.cell(), enPassantPoint);
         }
