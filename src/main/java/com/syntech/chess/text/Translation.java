@@ -54,7 +54,13 @@ public enum Translation {
 
     @NotNull
     public String get(String str, @NotNull Object... args) {
-        return String.format(get(str), args);
+        String result = get(str);
+        for (int i = 0, argsLength = args.length; i < argsLength; i++) {
+            if (args[i] instanceof String) {
+                args[i] = get((String) args[i]);
+            }
+        }
+        return String.format(result, args);
     }
 
     public boolean exists(@NotNull String str) {
