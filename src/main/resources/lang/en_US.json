@@ -135,7 +135,7 @@
     "Imported PGN contains unrecognized Variant tag.",
     "Either the application does not support this variant, or the tag is incorrect."
   ],
-  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move ##%s.",
+  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move #%s.",
   "chess.info": [
     "If you have decided to start this application, chances are, you know how to play chess.",
     "Although if you don't, may the colors help you.",
