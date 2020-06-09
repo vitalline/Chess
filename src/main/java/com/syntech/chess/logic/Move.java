@@ -53,8 +53,7 @@ public class Move {
                 || !endPosition.equals(newMove.getEndPosition())
                 || addRow != newMove.addRow
                 || addCol != newMove.addCol
-                || (promotion != PieceType.NONE
-                && newMove.promotion != PieceType.NONE
+                || (newMove.promotion != PieceType.NONE
                 && promotion != newMove.promotion);
     }
 
