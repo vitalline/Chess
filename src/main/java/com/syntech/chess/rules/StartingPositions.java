@@ -8,7 +8,12 @@ public class StartingPositions extends PieceFactory {
 
     @NotNull
     private static Piece chessPawn(Side side) {
-        return piece(PieceBaseType.PIECE, PieceType.DOUBLE_PAWN, side, new PromotionInfo(side == Side.WHITE ? 8 : 1, chessPawnPromotions()));
+        return chessPawn(PieceBaseType.PIECE, side);
+    }
+
+    @NotNull
+    private static Piece chessPawn(PieceBaseType baseType, Side side) {
+        return piece(baseType, PieceType.DOUBLE_PAWN, side, new PromotionInfo(side == Side.WHITE ? 8 : 1, chessPawnPromotions()));
     }
 
     @NotNull
@@ -69,6 +74,61 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.PIECE, PieceType.BISHOP, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.KNIGHT, Side.BLACK),
                     piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
+            }
+    };
+
+    public static final Piece[][] forcedChess8x8 = {
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_KING, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.WHITE)
+            },
+            {
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE)
+            },
+            {
+                    cell(), cell(), cell(), cell(), cell(), cell(), cell(), cell()
+            },
+            {
+                    cell(), cell(), cell(), cell(), cell(), cell(), cell(), cell()
+            },
+            {
+                    cell(), cell(), cell(), cell(), cell(), cell(), cell(), cell()
+            },
+            {
+                    cell(), cell(), cell(), cell(), cell(), cell(), cell(), cell()
+            },
+            {
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    chessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_KING, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
             }
     };
     public static final Piece[][] chess4x4 = {

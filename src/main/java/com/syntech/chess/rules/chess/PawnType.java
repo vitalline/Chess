@@ -32,6 +32,11 @@ public class PawnType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 1;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.PAWN;
     }

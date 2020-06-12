@@ -32,6 +32,11 @@ public class KnightType extends MovementType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 3;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.KNIGHT;
     }

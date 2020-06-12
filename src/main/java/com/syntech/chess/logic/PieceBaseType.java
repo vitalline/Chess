@@ -1,24 +1,30 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.NotNull;
 
 public enum PieceBaseType {
-    PIECE("type_none"),
-    FORCED_PIECE("type_forced"),
-    MODEST_FORCED_PIECE("type_modest_forced"),
-    SHOOTING_PIECE("type_none"),
-    INVINCIBLE_FORCED_PIECE("type_forced"),
-    LEVELLING_FORCED_PIECE("type_forced"),
-    CLONING_FORCED_PIECE("type_cloning_forced"),
-    NEUTRAL_PIECE("type_none");
+    PIECE("type.none"),
+    FORCED_PIECE("type.forced"),
+    MODEST_FORCED_PIECE("type.forced.modest"),
+    SHOOTING_PIECE("type.none"),
+    INVINCIBLE_FORCED_PIECE("type.forced"),
+    LEVELLING_FORCED_PIECE("type.forced"),
+    CLONING_FORCED_PIECE("type.forced.cloning"),
+    NEUTRAL_PIECE("type.none");
 
-    private final String translation_string;
+    private final String translationString;
 
-    PieceBaseType(String translation_string) {
-        this.translation_string = translation_string;
+    PieceBaseType(String translationString) {
+        this.translationString = translationString;
     }
 
-    public String getProperName(Translation translation) {
-        return translation.get(translation_string);
+    public String getTranslationString() {
+        return translationString;
+    }
+
+    @NotNull
+    public String getProperName(@NotNull Translation translation) {
+        return translation.get(translationString);
     }
 }

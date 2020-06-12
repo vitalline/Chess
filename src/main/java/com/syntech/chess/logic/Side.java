@@ -2,11 +2,12 @@ package com.syntech.chess.logic;
 
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.NotNull;
 
 public enum Side {
     NEUTRAL("neutral", ""),
-    WHITE("white", "side_white"),
-    BLACK("black", "side_black");
+    WHITE("white", "side.white"),
+    BLACK("black", "side.black");
 
     private final String textureID;
     private final String translationString;
@@ -25,7 +26,12 @@ public enum Side {
         return textureID;
     }
 
-    public String getProperName(Translation translation) {
+    public String getTranslationString() {
+        return translationString;
+    }
+
+    @NotNull
+    public String getProperName(@NotNull Translation translation) {
         return translation.get(translationString);
     }
 

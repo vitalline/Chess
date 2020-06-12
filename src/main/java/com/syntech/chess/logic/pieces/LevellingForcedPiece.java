@@ -81,33 +81,33 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     @Override
-    public String getLabel(Translation translation) {
+    public String getLabel(@NotNull Translation translation) {
         String label = super.getLabel(translation);
         if (canLevelUp()) {
-            label += '\n' + String.format(translation.get("label_xp"), xp, getMaxXP());
-            label += '\n' + String.format(translation.get("label_next_level"), ForcedXPRules.getNextLevel(getType()).getProperName(translation));
+            label += '\n' + translation.get("label.xp", xp, getMaxXP());
+            label += '\n' + translation.get("label.next_level", ForcedXPRules.getNextLevel(getType()).getTranslationString());
         }
         if (hasResistance()) {
-            label += '\n' + String.format(translation.get("label_resistance_xp"), resistanceXP, ForcedXPRules.getResistanceLevelXP(resistanceLevel));
+            label += '\n' + translation.get("label.resistance_xp", resistanceXP, ForcedXPRules.getResistanceLevelXP(resistanceLevel));
         }
         if (levellingData.hasResistance()) {
-            label += '\n' + String.format(translation.get("label_resistant_to"), ForcedXPRules.getResistedPieceList(resistanceLevel, translation));
+            label += '\n' + translation.get("label.resistant_to", ForcedXPRules.getResistedPieceList(resistanceLevel, translation));
         }
         if (hasPower()) {
-            label += '\n' + String.format(translation.get("label_power_xp"), powerXP, ForcedXPRules.getPowerLevelXP(powerLevel));
+            label += '\n' + translation.get("label.power_xp", powerXP, ForcedXPRules.getPowerLevelXP(powerLevel));
         }
         if (levellingData.hasPower()) {
-            label += '\n' + String.format(translation.get("label_power_level"), ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
+            label += '\n' + translation.get("label.power_level", ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
         }
+        label += '\n' + translation.get("label.started_on", Move.getCoordinates(initialPosition));
         if (canLevelDown()) {
-            label += '\n' + String.format(translation.get("label_started_on"), Move.getCoordinates(initialPosition));
-            label += '\n' + String.format(translation.get("label_will_respawn_as"), ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
+            label += '\n' + translation.get("label.will_respawn_as", ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
         }
         if (ForcedXPRules.getPieceXPWorth(getType()) != 0
                 && levellingData != LevellingData.NONE
                 && levellingData != LevellingData.DOWN
                 && levellingData != LevellingData.FORCE_DOWN) {
-            label += '\n' + String.format(translation.get("label_worth_xp"), ForcedXPRules.getPieceXPWorth(getType()));
+            label += '\n' + translation.get("label.worth_xp", ForcedXPRules.getPieceXPWorth(getType()));
         }
         return label;
     }
@@ -169,6 +169,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             hasRespawned = false;
         } else {
             levelUpPowerAndResistance();
+            board.updatePieces();
             if (board.isInCheck(side.getOpponent())) {
                 addXP(ForcedXPRules.getCheckXPWorth());
                 checkHappened = true;
@@ -195,6 +196,9 @@ public class LevellingForcedPiece extends ForcedPiece {
             Piece blockingPiece = board.getPiece(getInitialPosition().x, getInitialPosition().y);
             if (blockingPiece.getType() != PieceType.EMPTY) {
                 if (blockingPiece instanceof InvincibleForcedPiece) {
+                    return;
+                }
+                if (blockingPiece.getType() == PieceType.KING) {
                     return;
                 }
                 if (blockingPiece instanceof LevellingForcedPiece) {
@@ -226,6 +230,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel + 1);
             morph(board, newPieceType, getPromotionInfo(newPieceType), xp - getMaxXP(), position);
             LevellingForcedPiece newPiece = ((LevellingForcedPiece) board.getPiece(position.x, position.y));
+            board.updatePieces();
             if (board.isInCheck(side.getOpponent()) && !checkHappened) {
                 newPiece.addXP(ForcedXPRules.getCheckXPWorth());
                 newPiece.checkHappened = true;

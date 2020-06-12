@@ -1,0 +1,315 @@
+{
+  "language.code": "en_US",
+  "language.short": "ENG",
+  "language.name": "English",
+
+  "chess.short": "Regular Chess",
+  "chess.name": "Chess",
+  "chess.cyclic.short": "Cyclic Chess",
+  "chess.cyclic.name": "Cyclic Chess",
+  "chess.forced.short": "Forced Chess",
+  "chess.forced.name": "Forced Chess",
+  "chess.forced.modest.short": "Modest Forced Chess",
+  "chess.forced.modest.name": "Modest Forced Chess",
+  "chess.forced.major.short": "Force Major Chess",
+  "chess.forced.major.name": "Force Major Chess",
+  "chess.forced.minor.short": "Force Minor Chess",
+  "chess.forced.minor.name": "Force Minor Chess",
+  "chess.forced.modest.cyclic.short": "Cyclic Modest Frc. Ch.",
+  "chess.forced.modest.cyclic.name": "Cyclic Modest Forced Chess",
+  "chess.4x4.short": "Classical Chess 4×4",
+  "chess.4x4.name": "Classical Chess 4×4",
+  "chess.forced.sniper.short": "Sniper Forced Chess",
+  "chess.forced.sniper.name": "Sniper Forced Chess",
+  "chess.forced.sniper.modest.short": "Modest Sniper Frc. Ch.",
+  "chess.forced.sniper.modest.name": "Modest Sniper Forced Chess",
+  "chess.forced.reserve.short": "Reserve Forced Chess",
+  "chess.forced.reserve.name": "Reserve Forced Chess",
+  "chess.forced.reserve.modest.short": "Modest Reserve Frc. Ch.",
+  "chess.forced.reserve.modest.name": "Modest Reserve Forced Chess",
+  "chess.forced.pegasi_reserve.short": "Pegasi Reserve Frc. Ch.",
+  "chess.forced.pegasi_reserve.name": "Pegasi Reserve Forced Chess",
+  "chess.forced.sniper.reserve.short": "Sniper-Reserve Frc. Ch.",
+  "chess.forced.sniper.reserve.name": "Sniper-Reserve Forced Chess",
+  "chess.forced.sniper.pegasi_reserve.short": "Snpr.-Pgs.-Rsrv. Frc. Ch.",
+  "chess.forced.sniper.pegasi_reserve.name": "Sniper-Pegasi-Reserve Forced Chess",
+  "chess.forced.down.short": "Involution Forced Chess",
+  "chess.forced.down.name": "Involution Forced Chess",
+  "chess.forced.up.short": "MMORPG Forced Chess",
+  "chess.forced.up.name": "MMORPG Forced Chess",
+  "chess.forced.up.down.short": "Inv.-MMORPG Forced Chess",
+  "chess.forced.up.down.name": "Involution-MMORPG Forced Chess",
+  "chess.forced.up.res.short": "Resist. MMORPG Frc. Ch.",
+  "chess.forced.up.res.name": "Resistance MMORPG Forced Chess",
+  "chess.forced.up.res.pow.short": "Res.-Pow. MMORPG Frc. Ch.",
+  "chess.forced.up.res.pow.name": "Resistance-Power MMORPG Forced Chess",
+  "chess.forced.up.down.res.short": "Resist. Inv. MMORPG FC",
+  "chess.forced.up.down.res.name": "Resistance Involution-MMORPG Forced Chess",
+  "chess.forced.up.down.res.pow.short": "Res.-Pow. Inv. MMORPG FC",
+  "chess.forced.up.down.res.pow.name": "Resistance-Power Involution-MMORPG Forced Chess",
+  "chess.forced.down.telefrag.short": "\"Forced Inv.\" Frc. Ch.",
+  "chess.forced.down.telefrag.name": "\"Forced Involution\" Forced Chess",
+  "chess.forced.up.down.telefrag.short": "\"Frc. Inv.\" MMORPG FC",
+  "chess.forced.up.down.telefrag.name": "\"Forced Involution\" MMORPG Forced Chess",
+  "chess.forced.cloning.short": "Cloning Forced Chess",
+  "chess.forced.cloning.name": "Cloning Forced Chess",
+  "chess.forced.8x8.short": "Forced Chess 8x8",
+  "chess.forced.8x8.name": "Forced Chess 8x8",
+  "chess.cyclic.8x12.short": "Cyclic Chess 8×12",
+  "chess.cyclic.8x12.name": "Cyclic Chess 8×12",
+  "chess.cyclic.8x16.short": "Cyclic Chess 8×16",
+  "chess.cyclic.8x16.name": "Cyclic Chess 8×16",
+  "side.white": "White",
+  "side.black": "Black",
+  "type.none": "",
+  "type.forced": "Forced",
+  "type.forced.modest": "Modest Forced",
+  "type.forced.cloning": "Cloning Forced",
+  "piece.none": "none",
+  "piece.empty": "Empty Cell",
+  "piece.wall": "Wall",
+  "piece.pawn": "Pawn",
+  "piece.knight": "Knight",
+  "piece.pegasus": "Pegasus",
+  "piece.bishop": "Bishop",
+  "piece.sniper": "Sniper",
+  "piece.rook": "Rook",
+  "piece.queen": "Queen",
+  "piece.king": "King",
+  "piece.amazon": "Amazon",
+  "log.pawn": "",
+  "log.knight": "N",
+  "log.pegasus": "P",
+  "log.bishop": "B",
+  "log.sniper": "S",
+  "log.rook": "R",
+  "log.queen": "Q",
+  "log.king": "K",
+  "log.amazon": "A",
+  "label.name": "%s %s %s",
+  "label.xp": "[ XP: %d/%d ]",
+  "label.next_level": "Next level: %s",
+  "label.resistance_xp": "[ Res.XP: %d/%d ]",
+  "label.resistant_to": "Resistant to: %s",
+  "label.power_xp": "[ Pow.XP: %d/%d ]",
+  "label.power_level": "Power level: %s",
+  "label.started_on": "Started on %s",
+  "label.will_respawn_as": "Will respawn as %s",
+  "label.worth_xp": "Worth %d XP",
+  "label.invincible": "Invincible",
+  "status.game": "Game: %s",
+  "status.turn": "%s's Turn",
+  "status.check": "%s is in check!",
+  "status.checkmate": "Checkmate! %s wins!",
+  "status.stalemate": "%s has stalemated %s!",
+  "status.choosing_file": "Choosing file...",
+  "status.file": "File: %s",
+  "status.saved_as": "Saved as %s",
+  "status.ai_thinking": "AI is thinking... [ %s ]",
+  "status.ai_thinking.generic": "AI is thinking...",
+  "action.ok": "OK",
+  "action.undo": "Undo last move",
+  "action.redo": "Redo next move",
+  "action.undo_all": "Undo all moves",
+  "action.redo_all": "Redo all moves",
+  "action.close": "Remove board",
+  "action.next": "Next page",
+  "action.previous": "Previous page",
+  "action.log.open": "Show moves",
+  "action.log.close": "Hide moves",
+  "action.info": "Info",
+  "action.random": "Random move",
+  "action.restart": "New game",
+  "action.return": "Return to menu",
+  "action.load": "Import PGN...",
+  "action.save": "Export to PGN...",
+  "action.ai.start": "Start AI",
+  "action.ai.stop": "Stop AI",
+  "window.info": "Info",
+  "window.error": "Error!",
+  "error.generic": "Unknown error.",
+  "error.internal.setup_has_no_pieces": "Internal error: This setup has no pieces.",
+  "error.pgn.large_file": "Only files no larger than %d bytes can be imported (got %d bytes).",
+  "error.pgn.invalid_file": "Imported file seems to be invalid.",
+  "error.pgn.invalid_variant": [
+    "Imported PGN contains unrecognized Variant tag.",
+    "Either the application does not support this variant, or the tag is incorrect."
+  ],
+  "error.pgn.invalid_move": "Imported PGN contains an invalid or incorrect move #%s.",
+  "chess.info": [
+    "If you have decided to start this application, chances are, you know how to play chess.",
+    "Although if you don't, may the colors help you.",
+    "Select a movable piece to see where it can move (highlighted by green) or capture (red).",
+    "If you aren't sure which pieces can move, click an empty space.",
+    "The movable pieces will have a yellow highlight.",
+    "",
+    "This also applies to every other mode out there, simply because it's convenient.",
+    "So if you are confused, you can always rely on it. (Probably.)"
+  ],
+  "chess.cyclic.info": [
+    "It's the same as regular chess, but the left and right edges are considered adjacent.",
+    "Everything else works as you'd expect - it's just the fact that the edges are connected."
+  ],
+  "chess.forced.info": [
+    "The classical Forced Chess. For when you don't have time for regular chess.",
+    "The main differences are as follows:",
+    "1. Capturing is not optional anymore. You have to capture, even if it puts you in a bad position.",
+    "2. Pawns can only move one space ahead, not two.",
+    "3. Moves like castling and en passant are not allowed, simply because of the space limitations.",
+    "4. Pawns can't be promoted into knights or bishops."
+  ],
+  "chess.forced.modest.info": [
+    "Same as Forced Chess, but you have to capture the least powerful piece if you have a choice.",
+    "Pawns are considered the least powerful piece, queens being the most powerful. Rooks are in between."
+  ],
+  "chess.forced.major.info": [
+    "Same as Forced Chess, but every piece (except the kings) is a queen.",
+    "The sheer amount of power coming from the board is unexpectedly high."
+  ],
+  "chess.forced.minor.info": [
+    "Same as Forced Chess, but every piece (except the kings) is a pawn.",
+    "Well, at least they can be promoted."
+  ],
+  "chess.forced.modest.cyclic.info": [
+    "Modest Forced Chess but on a cyclic board.",
+    "Regular Forced Chess on a cyclic board wasn't included because of the white player's unfair advantage."
+  ],
+  "chess.4x4.info": [
+    "Ever wondered why does Forced Chess have that mandatory capturing rule? ...no?..",
+    "In any case, here's a variant of Forced Chess without the mandatory capturing rule."
+  ],
+  "chess.forced.sniper.info": [
+    "In this variant, the board has 4 additional \"towers\" housing the 4 snipers.",
+    "Snipers look and capture like bishops, but don't move (even when capturing).",
+    "They can, however, check (and possibly even checkmate) the other king.",
+    "Capturing by a sniper is mandatory whenever possible, even when another capture is available.",
+    "(This also applies to Modest Sniper Forced Chess.)",
+    "A sniper can (and must) capture the other sniper once the diagonal is free.",
+    "The towers aren't there just for the snipers - kings (and queens) can also hide in there.",
+    "Oh, and pawns promote on the 3rd and 6th rows respectively and cannot promote into a sniper."
+  ],
+  "chess.forced.sniper.modest.info": [
+    "Sniper Forced Chess. But modest. Sniper capturing is still mandatory."
+  ],
+  "chess.forced.reserve.info": [
+    "In this variant, the board has an additional \"reserve\" with 8 knights.",
+    "These are just your normal everyday chess knights, and can step in and out of the central square.",
+    "Like in Sniper Chess, pawns promote on the 3rd and 6th rows respectively and can't promote into a knight."
+  ],
+  "chess.forced.reserve.modest.info": [
+    "Nothing new to say about this one.",
+    "Like in regular chess, knights are considered more powerful than a pawn but less powerful than a rook."
+  ],
+  "chess.forced.pegasi_reserve.info": [
+    "Knights have been replaced with invincible Pegasi in this one.",
+    "It's impossible to capture a Pegasus, no matter how hard you try."
+  ],
+  "chess.forced.sniper.reserve.info": [
+    "Snipers AND knights. Pretty self-explanatory."
+  ],
+  "chess.forced.sniper.pegasi_reserve.info": [
+    "Everything you know and love, with an additional rule: snipers can capture Pegasi."
+  ],
+  "chess.forced.down.info": [
+    "Any captured piece will respawn as a weaker piece on its starting position.",
+    "The order of respawning is as follows: Queen > Rook > Bishop > Knight > Pawn.",
+    "Pieces are unable to respawn if their starting position is taken by another piece.",
+    "Pawns can't respawn at all, but they can promote into a knight or a bishop.",
+    "Note that sometimes a capture can't be made because the respawned piece would check the king."
+  ],
+  "chess.forced.up.info": [
+    "Any piece (except for the kings) gains experience points (XP) and can level up into a stronger piece.",
+    "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
+    "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
+    "XP can be gained as follows:",
+    " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
+    " - A capturing move gives XP depending on the captured piece:",
+    "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
+    " - If a check happened after a capturing move, it gives 2 extra XP.",
+    " - If a check happened after levelling up but not before levelling up, it gives 2 extra XP.",
+    " - If a check happened before levelling up but went away after levelling up, no XP will be taken away."
+  ],
+  "chess.forced.up.down.info": [
+    "Here, pieces both level up and respawn. All earned XP resets after respawning.",
+    "This one got the name Forever Alone Forced Chess because of the sheer amount of work that's needed",
+    "to properly calculate everything and the difficulty of finding an actual partner for this variant."
+  ],
+  "chess.forced.up.res.info": [
+    "In this variant, in addition to levelling up, the pieces can also gain resistance to other pieces.",
+    "If a piece has resistance to a certain piece type, then that piece type cannot capture said piece.",
+    "Each resistance level also grants resistance bonuses of all previous levels.",
+    "This also applies to kings. It's impossible to check (or checkmate) a king with a piece it has resistance to.",
+    "Resistance levels and the amounts of XP needed to get one are as follows:",
+    "Level 1: Resistance to pawns (2 XP);",
+    "Level 2: Resistance to knights (3 XP);",
+    "Level 3: Resistance to bishops (5 XP);",
+    "Level 4: Resistance to rooks (8 XP);",
+    "Level 5: Resistance to queens (13 XP);",
+    "Level 6: Resistance to kings (21 XP);",
+    "Level 7: Resistance to amazons (34 XP)."
+  ],
+  "chess.forced.up.res.pow.info": [
+    "In this variant, in addition to levelling up and gaining resistance, the pieces can also upgrade their power.",
+    "If a piece has upgraded its power by 1, it can capture pieces that have resistance to its initial type.",
+    "Upgrading power by 2 grants the ability to capture pieces of the next resistance level, and so on.",
+    "The amounts of XP needed to upgrade power are as follows:",
+    "Power +1: 6 XP;",
+    "Power +2: 15 XP;",
+    "Power +3: 28 XP;",
+    "Power +4: 45 XP;",
+    "Power +5: 66 XP;",
+    "Power +6: 91 XP.",
+    "This sums up to a total of 251 XP, which should not be a problem for a true hardcore chess gamer."
+  ],
+  "chess.forced.up.down.res.info": [
+    "Levelling up, respawning and resistance. Respawning drops resistance level by 1."
+  ],
+  "chess.forced.up.down.res.pow.info": [
+    "Everything related to levels, plus respawning (which decreases both resistance level and power bonus by 1)."
+  ],
+  "chess.forced.down.telefrag.info": [
+    "Here, pieces are able to respawn even if their starting position is taken by another piece.",
+    "The piece that took the starting position would then respawn as well.",
+    "Capturing a piece on its starting position would respawn both pieces immediately.",
+    "The only exception is that pieces cannot respawn if their starting position is taken by a king."
+  ],
+  "chess.forced.up.down.telefrag.info": [
+    "Both levelling up and forced respawning."
+  ],
+  "chess.forced.cloning.info": [
+    "Any piece except for the king will clone itself before making any non-capturing move.",
+    "The question of which of the two pieces actually makes the move will forever be left unanswered."
+  ],
+  "chess.forced.8x8.info": [
+    "Forced Chess but on an 8 by 8 board-- wait, this is just chess with forced captures! How boring."
+  ],
+  "chess.cyclic.8x12.info": [
+    "Cyclic Chess but on an 8 by 12 board. Because why the heck not."
+  ],
+  "chess.cyclic.8x16.info": [
+    "Cyclic Chess but on an 8 by 16 board. Yes please."
+  ],
+  "credits.name": "Credits",
+  "credits.info": [
+    "========================================================",
+    "Created by:                                             ",
+    " . . . . . . . . . . . . . . . . .  Archie the Architect",
+    "========================================================",
+    "With contributions and ideas by:                        ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    "========================================================",
+    "Testers:                                                ",
+    " . . . . . . . . . . . . . . . . . . . . . Jakub the OwO",
+    " . . . . . . . . . . . . . . . . . . . . greenTransistor",
+    "========================================================",
+    "Forced Chess original idea:                             ",
+    " . . . . . . . . . . . . . . . . . . . . . . . Unnamed55",
+    "========================================================",
+    "PureProg 12 (the font) by:                              ",
+    " . . . . . . . . . . . . . . . . Timo Acker (Handfratze)",
+    "========================================================",
+    "                       THANKS FOR                       ",
+    "                        PLAYING!                        ",
+    ""
+  ]
+}

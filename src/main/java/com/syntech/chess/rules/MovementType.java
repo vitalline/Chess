@@ -32,4 +32,6 @@ public abstract class MovementType implements Cloneable {
     public abstract ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board);
 
     public abstract ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board);
+
+    public abstract int getEvaluationCost();
 }

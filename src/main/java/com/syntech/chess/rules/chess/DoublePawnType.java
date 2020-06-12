@@ -32,6 +32,11 @@ public class DoublePawnType extends SpecialFirstMoveType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 1;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.PAWN;
     }

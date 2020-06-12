@@ -68,12 +68,16 @@ public class Piece implements Cloneable {
         return getSide().getTextureID() + getType().getTextureID();
     }
 
-    public String getLabel(Translation translation) {
-        String baseType = getBaseType().getProperName(translation);
-        String side = getSide().getProperName(translation);
-        String type = getType().getProperName(translation);
-        String label = String.format(translation.get("label_name"), baseType, side, type).trim().replaceAll(" {2}", " ");
-        return label;
+    public String getLabel(@NotNull Translation translation) {
+        return translation.get("label.name",
+                getBaseType().getTranslationString(),
+                getSide().getTranslationString(),
+                getType().getTranslationString()
+        ).trim().replaceAll(" {2}", " ");
+    }
+
+    public int getEvaluationCost() {
+        return getMovementType().getEvaluationCost();
     }
 
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
@@ -133,7 +137,7 @@ public class Piece implements Cloneable {
     }
 
     private boolean canBePromotedAfterMove(Move move, Board board) {
-        return board.getNextTurn(move).hasPromotion();
+        return board.getMoveResultWithoutPromotion(move).hasPromotion();
     }
 
     private ArrayList<Move> addPromotions(ArrayList<Move> moves, Board board) {

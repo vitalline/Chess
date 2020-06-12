@@ -31,6 +31,11 @@ public class CastlingRookType extends SpecialFirstMoveType {
     }
 
     @Override
+    public int getEvaluationCost() {
+        return 5;
+    }
+
+    @Override
     public PieceType getType() {
         return PieceType.ROOK;
     }

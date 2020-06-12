@@ -5,7 +5,7 @@ plugins {
     id 'application'
 }
 
-version '1.0-SNAPSHOT'
+version '0.2-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -29,6 +29,9 @@ repositories {
 
 dependencies {
     String jimgui_version = 'v0.9'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.10.1'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
     compile "org.ice1000.jimgui:core:$jimgui_version"
     compile "org.ice1000.jimgui:extension:$jimgui_version"
     compile "org.ice1000.jimgui:kotlin-dsl:$jimgui_version"
