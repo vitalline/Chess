@@ -261,6 +261,7 @@ public class Base {
         resetAI();
         filename = null;
         board = null;
+        setup = null;
     }
 
     void lockInput() {
