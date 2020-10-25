@@ -37,8 +37,17 @@ public class BaseUI {
     private String errorMessage = null;
     private FileChooser fileChooser = null;
     private AI ai = null;
+    private int aiTurns = 3;
+    private int aiSeconds = 5;
+    private AIMode aiMode = AIMode.TURNS;
     private MenuWindow menuWindow = new MenuWindow(this);
     private StatusWindow statusWindow = new StatusWindow(this);
+
+    enum AIMode {
+        NONE,
+        TURNS,
+        SECONDS
+    }
 
     public BaseUI(int width, int height) {
         this.width = width;
@@ -65,13 +74,13 @@ public class BaseUI {
         this.infoSetup = infoSetup;
     }
 
-    void startAI(int depth) {
+    private void startRegularAI(int depth) {
         resetFilename();
         ai = new AI(depth, board);
         ai.start();
     }
 
-    void startTimedAI(int seconds) {
+    private void startTimedAI(int seconds) {
         resetFilename();
         ai = new AI(10, board);
         ai.start();
@@ -86,6 +95,17 @@ public class BaseUI {
             }
         }, seconds, TimeUnit.SECONDS);
         executor.shutdown();
+    }
+
+    void startAI() {
+        switch (aiMode) {
+            case TURNS:
+                startRegularAI(aiTurns);
+                break;
+            case SECONDS:
+                startTimedAI(aiSeconds);
+                break;
+        }
     }
 
     void stopAI() {
@@ -406,31 +426,32 @@ public class BaseUI {
 
             int[] aiSettings = new int[1];
 
-            if (CellGraphics.display("ai_turns", translation.get("settings.ai.turns"), cellSize * 2,
-                    (statusWindow.aiMode == StatusWindow.AIMode.TURNS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
-                statusWindow.aiMode = StatusWindow.AIMode.TURNS;
+            if (CellGraphics.display("ai_turns", translation.get("settings.ai.mode.turns"), cellSize * 2,
+                    (aiMode == AIMode.TURNS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
+                aiMode = AIMode.TURNS;
             }
 
             ImGui.sameLine();
 
-            if (CellGraphics.display("ai_seconds", translation.get("settings.ai.seconds"), cellSize * 2,
-                    (statusWindow.aiMode == StatusWindow.AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
-                statusWindow.aiMode = StatusWindow.AIMode.SECONDS;
+            if (CellGraphics.display("ai_seconds", translation.get("settings.ai.mode.seconds"), cellSize * 2,
+                    (aiMode == AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
+                aiMode = AIMode.SECONDS;
             }
 
             ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
 
-            switch (statusWindow.aiMode) {
+            switch (aiMode) {
                 case TURNS:
-                    aiSettings[0] = statusWindow.aiTurns;
-                    if (ImGui.sliderInt("", aiSettings, 1, 5)) {
-                        statusWindow.aiTurns = aiSettings[0];
+                    aiSettings[0] = aiTurns;
+                    if (ImGui.sliderInt("", aiSettings, 1, 5,
+                            translation.get("settings.ai.turns." + ((aiTurns == 1) ? "singular" : "plural")))) {
+                        aiTurns = aiSettings[0];
                     }
                     break;
                 case SECONDS:
-                    aiSettings[0] = statusWindow.aiSeconds;
-                    if (ImGui.sliderInt("", aiSettings, 1, 10)) {
-                        statusWindow.aiSeconds = aiSettings[0];
+                    aiSettings[0] = aiSeconds;
+                    if (ImGui.sliderInt("", aiSettings, 1, 10, translation.get("settings.ai.seconds"))) {
+                        aiSeconds = aiSettings[0];
                     }
                     break;
             }

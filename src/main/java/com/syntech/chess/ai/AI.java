@@ -179,6 +179,9 @@ public class AI extends Thread {
                     if (currentDepth == 0) {
                         this.bestMove = bestMove;
                         this.bestMove.setData(board);
+                        if (Math.abs(bestScore) == WIN_SCORE) {
+                            shouldRun = false;
+                        }
                     }
                 }
             }
