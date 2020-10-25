@@ -30,6 +30,16 @@ public class CyclicBoard extends Board {
     }
 
     @Override
+    public Side getSide(int row, int col) {
+        return super.getSide(row, getColumn(col));
+    }
+
+    @Override
+    public PieceType getType(int row, int col) {
+        return super.getType(row, getColumn(col));
+    }
+
+    @Override
     public void placePiece(Piece piece, int row, int col) {
         super.placePiece(piece, row, getColumn(col));
     }

@@ -81,47 +81,32 @@ public class Piece implements Cloneable {
     }
 
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
-        if (availableMovesWithoutSpecialRules == null) {
-            availableMovesWithoutSpecialRules = movementType.getAvailableMovesWithoutSpecialRules(position, board);
-        }
+        availableMovesWithoutSpecialRules = movementType.getAvailableMovesWithoutSpecialRules(position, board);
         return availableMovesWithoutSpecialRules;
     }
 
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board) {
-        if (availableCapturesWithoutSpecialRules == null) {
-            availableCapturesWithoutSpecialRules = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
-            for (Move move : availableCapturesWithoutSpecialRules) {
-                move.setCaptureFlag();
-            }
+        availableCapturesWithoutSpecialRules = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
+        for (Move move : availableCapturesWithoutSpecialRules) {
+            move.setCaptureFlag();
         }
         return availableCapturesWithoutSpecialRules;
     }
 
     public ArrayList<Move> getAvailableMoves(Board board) {
-        if (availableMoves == null) {
-            availableMoves = getAvailableMovesWithoutSpecialRules(board);
-            availableMoves = addPromotions(availableMoves, board);
-            availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
-            availableMoves = MovePriorities.topPriorityMoves(availableMoves);
-        }
+        availableMoves = getAvailableMovesWithoutSpecialRules(board);
+        availableMoves = addPromotions(availableMoves, board);
+        availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
+        availableMoves = MovePriorities.topPriorityMoves(availableMoves);
         return availableMoves;
     }
 
     public ArrayList<Move> getAvailableCaptures(Board board) {
-        if (availableCaptures == null) {
-            availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
-            availableCaptures = addPromotions(availableCaptures, board);
-            availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
-            availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
-        }
+        availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
+        availableCaptures = addPromotions(availableCaptures, board);
+        availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
+        availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
         return availableCaptures;
-    }
-
-    public void resetMoveCache() {
-        availableMovesWithoutSpecialRules = null;
-        availableCapturesWithoutSpecialRules = null;
-        availableMoves = null;
-        availableCaptures = null;
     }
 
     public void move(@NotNull Board board, int row, int col) {
@@ -136,14 +121,15 @@ public class Piece implements Cloneable {
         return promotionInfo != null && promotionInfo.canBePromoted(position.x);
     }
 
-    private boolean canBePromotedAfterMove(Move move, Board board) {
-        return board.getMoveResultWithoutPromotion(move).hasPromotion();
+    private boolean canBePromotedAfterMove(Move move) {
+        return promotionInfo != null && promotionInfo.canBePromoted(move.getEndRow());
     }
 
-    private ArrayList<Move> addPromotions(ArrayList<Move> moves, Board board) {
+    @NotNull
+    private ArrayList<Move> addPromotions(@NotNull ArrayList<Move> moves, Board board) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (canBePromotedAfterMove(move, board)) {
+            if (canBePromotedAfterMove(move)) {
                 for (PieceType type : getPromotionTypes()) {
                     Move newMove = new Move(move);
                     newMove.setPromotion(type);

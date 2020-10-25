@@ -5,7 +5,7 @@ plugins {
     id 'application'
 }
 
-version '0.2-SNAPSHOT'
+version '0.2.5-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -68,7 +68,5 @@ dependencies {
 }
 
 run {
-    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
-        jvmArgs "-XstartOnFirstThread"
-    }
+    // jvmArgs ""
 }
