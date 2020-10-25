@@ -14,15 +14,15 @@ public enum Color {
     BACKGROUND(0.47f, 0.86f, 0.4f),
     BUTTON(0.07f, 0.27f, 0.07f, 0.17f, 0.37f, 0.17f, 0.27f, 0.47f, 0.27f),
     WHITE(0.8f, 0.8f, 0.8f, 0.85f, 0.85f, 0.85f, 0.825f, 0.825f, 0.825f),
-    BLACK(0.3f, 0.3f, 0.3f, 0.35f, 0.35f, 0.35f, 0.325f, 0.325f, 0.325f),
+    BLACK(0.35f, 0.35f, 0.35f, 0.4f, 0.4f, 0.4f, 0.375f, 0.375f, 0.375f),
     MOVABLE_WHITE(0.875f, 0.875f, 0.725f, 0.925f, 0.925f, 0.775f, 0.9f, 0.9f, 0.8f),
-    MOVABLE_BLACK(0.375f, 0.375f, 0.225f, 0.425f, 0.425f, 0.275f, 0.4f, 0.4f, 0.3f),
+    MOVABLE_BLACK(0.425f, 0.425f, 0.275f, 0.475f, 0.475f, 0.325f, 0.45f, 0.45f, 0.35f),
     SELECTED_WHITE(0.9f, 0.9f, 0.7f, 0.95f, 0.95f, 0.75f, 0.925f, 0.925f, 0.725f),
-    SELECTED_BLACK(0.4f, 0.4f, 0.2f, 0.45f, 0.45f, 0.25f, 0.425f, 0.425f, 0.225f),
+    SELECTED_BLACK(0.45f, 0.45f, 0.25f, 0.5f, 0.5f, 0.3f, 0.475f, 0.475f, 0.275f),
     MOVE_WHITE(0.7f, 0.9f, 0.7f, 0.75f, 0.95f, 0.75f, 0.725f, 0.925f, 0.725f),
-    MOVE_BLACK(0.2f, 0.4f, 0.2f, 0.25f, 0.45f, 0.25f, 0.225f, 0.425f, 0.225f),
+    MOVE_BLACK(0.25f, 0.45f, 0.25f, 0.3f, 0.5f, 0.3f, 0.275f, 0.475f, 0.275f),
     CAPTURE_WHITE(0.9f, 0.7f, 0.7f, 0.95f, 0.75f, 0.75f, 0.925f, 0.725f, 0.725f),
-    CAPTURE_BLACK(0.4f, 0.2f, 0.2f, 0.45f, 0.25f, 0.25f, 0.425f, 0.225f, 0.225f);
+    CAPTURE_BLACK(0.45f, 0.25f, 0.25f, 0.5f, 0.3f, 0.3f, 0.475f, 0.275f, 0.275f);
 
     private final int color, hoveredColor, activeColor;
 

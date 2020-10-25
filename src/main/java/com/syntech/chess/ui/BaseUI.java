@@ -406,25 +406,25 @@ public class BaseUI {
 
             int[] aiSettings = new int[1];
 
-            if (CellGraphics.display("depth", translation.get("settings.ai.depth"), cellSize * 2,
-                    (statusWindow.aiMode == StatusWindow.AIMode.DEPTH) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
-                statusWindow.aiMode = StatusWindow.AIMode.DEPTH;
+            if (CellGraphics.display("ai_turns", translation.get("settings.ai.turns"), cellSize * 2,
+                    (statusWindow.aiMode == StatusWindow.AIMode.TURNS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
+                statusWindow.aiMode = StatusWindow.AIMode.TURNS;
             }
 
             ImGui.sameLine();
 
-            if (CellGraphics.display("seconds", translation.get("settings.ai.seconds"), cellSize * 2,
-                    (statusWindow.aiMode == StatusWindow.AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -2)) { //TODO: change to -1
+            if (CellGraphics.display("ai_seconds", translation.get("settings.ai.seconds"), cellSize * 2,
+                    (statusWindow.aiMode == StatusWindow.AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
                 statusWindow.aiMode = StatusWindow.AIMode.SECONDS;
             }
 
             ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
 
             switch (statusWindow.aiMode) {
-                case DEPTH:
-                    aiSettings[0] = statusWindow.aiDepth;
+                case TURNS:
+                    aiSettings[0] = statusWindow.aiTurns;
                     if (ImGui.sliderInt("", aiSettings, 1, 5)) {
-                        statusWindow.aiDepth = aiSettings[0];
+                        statusWindow.aiTurns = aiSettings[0];
                     }
                     break;
                 case SECONDS:

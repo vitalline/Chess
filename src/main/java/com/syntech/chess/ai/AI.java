@@ -20,8 +20,6 @@ public class AI extends Thread {
     private Move[] currentMoves;
     private ArrayList<Hashtable<Move, Integer>> deepMoveScores;
     private ArrayList<Hashtable<Move, Integer>> deepMoveCounts;
-    //private ArrayList<Move> moves = null;
-    //private ArrayList<Integer> scores = null;
     private int currentDepth = -1;
     private boolean shouldRun = false;
 
@@ -63,7 +61,7 @@ public class AI extends Thread {
             }
             return 0;
         }
-        moves = board.getAllAvailableMoves(side.getOpponent()); // no moves !!!
+        moves = board.getAllAvailableMoves(side.getOpponent());
         for (Move ignored : moves) {
             opponentMoveScore += 1;
         }
@@ -73,10 +71,11 @@ public class AI extends Thread {
 
     public synchronized String thoughts(Translation translation) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < currentDepth + 1; i++) {
+        for (int i = 0; i < currentDepth - 1; i++) {
             sb.append(currentMoves[i].toNotation(translation));
-            if (i != currentDepth) sb.append(' ');
+            sb.append(' ');
         }
+        sb.append('…');
         return sb.toString();
     }
 

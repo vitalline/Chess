@@ -77,6 +77,8 @@ public class CellGraphics {
      * Loads all the UI textures.
      */
     private static void loadUITextures() throws IOException {
+        loadTexture("ui", "ai_seconds");
+        loadTexture("ui", "ai_turns");
         loadTexture("ui", "cross");
         loadTexture("ui", "double_left");
         loadTexture("ui", "double_right");
@@ -90,6 +92,7 @@ public class CellGraphics {
         loadTexture("ui", "restart");
         loadTexture("ui", "right");
         loadTexture("ui", "save");
+        loadTexture("ui", "settings");
         loadTexture("ui", "start");
         loadTexture("ui", "stop");
         loadTexture("ui", "up");

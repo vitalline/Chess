@@ -11,16 +11,16 @@ public class StatusWindow {
 
     enum AIMode {
         NONE,
-        DEPTH,
+        TURNS,
         SECONDS
     }
 
     private BaseUI baseUI;
     private int windowHeight;
 
-    int aiDepth = 4;
+    int aiTurns = 4;
     int aiSeconds = 5;
-    AIMode aiMode = AIMode.DEPTH;
+    AIMode aiMode = AIMode.TURNS;
 
     public StatusWindow(BaseUI baseUI) {
         this.baseUI = baseUI;
@@ -97,15 +97,15 @@ public class StatusWindow {
         baseUI.displayLogAndOrLogButton();
         ImGui.sameLine();
         if (CellGraphics.display("start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
-            if (aiMode == AIMode.DEPTH) baseUI.startAI(aiDepth);
+            if (aiMode == AIMode.TURNS) baseUI.startAI(aiTurns);
             if (aiMode == AIMode.SECONDS) baseUI.startTimedAI(aiSeconds);
         }
         ImGui.sameLine();
-        if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
+        if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.SELECTED_WHITE, -1)) {
             baseUI.stopAI();
         }
         ImGui.sameLine();
-        if (CellGraphics.display("settings", translation.get("action.settings"), cellSize, Color.WHITE, -1)) {
+        if (CellGraphics.display("settings", translation.get("action.settings"), cellSize, Color.MOVABLE_WHITE, -1)) {
             baseUI.enableSettingsWindow();
         }
         ImGui.sameLine();

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -162,7 +163,11 @@ public final class Main {
         final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
 
         // Glyphs could be added per-font as well as per config used globally like here
-        fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
+        short[] glyphRangesExtra = new short[]{'…', '…'};
+        short[] glyphRangesCyrillic = fontAtlas.getGlyphRangesCyrillic();
+        short[] glyphRanges = Arrays.copyOf(glyphRangesExtra, glyphRangesExtra.length + glyphRangesCyrillic.length);
+        System.arraycopy(glyphRangesCyrillic, 0, glyphRanges, glyphRangesExtra.length, glyphRangesCyrillic.length);
+        fontConfig.setGlyphRanges(glyphRanges);
 
         /*
 
