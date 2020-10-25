@@ -8,11 +8,9 @@ import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Hashtable;
 
 public class AI extends Thread {
     private static final int WIN_SCORE = Integer.MAX_VALUE;
@@ -20,8 +18,10 @@ public class AI extends Thread {
     private Board board;
     private Move bestMove;
     private Move[] currentMoves;
-    private ArrayList<Move> moves = null;
-    private ArrayList<Integer> scores = null;
+    private ArrayList<Hashtable<Move, Integer>> deepMoveScores;
+    private ArrayList<Hashtable<Move, Integer>> deepMoveCounts;
+    //private ArrayList<Move> moves = null;
+    //private ArrayList<Integer> scores = null;
     private int currentDepth = -1;
     private boolean shouldRun = false;
 
@@ -32,6 +32,12 @@ public class AI extends Thread {
         } catch (CloneNotSupportedException ignored) {
         }
         currentMoves = new Move[depth];
+        deepMoveScores = new ArrayList<>();
+        deepMoveCounts = new ArrayList<>();
+        for (int i = 0; i < depth; i++) {
+            deepMoveScores.add(new Hashtable<>());
+            deepMoveCounts.add(new Hashtable<>());
+        }
     }
 
     private static int evaluateBoard(@NotNull Board board) {
@@ -92,14 +98,7 @@ public class AI extends Thread {
     private int run(@NotNull Board board, int maxDepth, int currentDepth, int alpha, int beta) {
         Side side = board.getTurnSide();
         if (!shouldRun) return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
-        ArrayList<Move> moves = this.moves;
-        if (currentDepth != 0 || this.moves == null) {
-            moves = board.getAllAvailableMoves(side);
-            if (this.moves == null) {
-                Collections.shuffle(moves);
-                this.moves = moves;
-            }
-        }
+        ArrayList<Move> moves = board.getAllAvailableMoves(side);
         if (moves.size() == 0) {
             if (board.isInCheck(side)) {
                 return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
@@ -125,12 +124,19 @@ public class AI extends Thread {
             }
             run(copy, maxDepth - 1, 0, alpha, beta);
         }
+        Hashtable<Move, Integer> finalMoveScores = deepMoveScores.get(currentDepth);
+        Hashtable<Move, Integer> finalMoveCounts = deepMoveCounts.get(currentDepth);
+        moves.sort(Comparator.comparingDouble(move ->
+                ((double) finalMoveScores.getOrDefault(move, 0))
+                        / finalMoveCounts.getOrDefault(move, 1)
+                        * ((side == Side.WHITE) ? -1 : 1)));
         if (currentDepth == 0) {
-            moves = this.moves;
-            this.scores = new ArrayList<>(Arrays.asList(new Integer[moves.size()]));
+            for (int i = 1 - maxDepth % 2; i < depth; i += 2) {
+                deepMoveScores.set(i, new Hashtable<>());
+                deepMoveCounts.set(i, new Hashtable<>());
+            }
         }
         Move bestMove = this.bestMove;
-        int currentMoveIndex = 0;
         for (Move move : moves) {
             Board copy = board;
             try {
@@ -148,11 +154,12 @@ public class AI extends Thread {
             } else {
                 score = evaluateBoard(copy);
             }
-            if (currentDepth == 0) {
-                this.moves.set(currentMoveIndex, move);
-                this.scores.set(currentMoveIndex, score);
-            }
-            currentMoveIndex++;
+            Hashtable<Move, Integer> moveScores = deepMoveScores.get(currentDepth);
+            Hashtable<Move, Integer> moveCounts = deepMoveCounts.get(currentDepth);
+            Integer oldScore = moveScores.getOrDefault(move, 0);
+            Integer oldCount = moveCounts.getOrDefault(move, 0);
+            moveScores.put(move, score + oldScore);
+            moveCounts.put(move, ++oldCount);
             if ((side == Side.WHITE) ? bestScore < score : bestScore > score) {
                 bestScore = score;
                 bestMove = move;
@@ -171,11 +178,6 @@ public class AI extends Thread {
                 if (shouldRun) {
                     this.currentDepth = currentDepth;
                     if (currentDepth == 0) {
-                        this.moves = (ArrayList<Move>)
-                                IntStream.range(0, this.scores.size()).boxed()
-                                        .sorted(Comparator.comparingInt(i -> -scores.get(i)))
-                                        .map(i -> this.moves.get(i))
-                                        .collect(Collectors.toList());
                         this.bestMove = bestMove;
                         this.bestMove.setData(board);
                     }

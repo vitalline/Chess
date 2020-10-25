@@ -8,8 +8,19 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 
 public class StatusWindow {
+
+    enum AIMode {
+        NONE,
+        DEPTH,
+        SECONDS
+    }
+
     private BaseUI baseUI;
     private int windowHeight;
+
+    int aiDepth = 4;
+    int aiSeconds = 5;
+    AIMode aiMode = AIMode.DEPTH;
 
     public StatusWindow(BaseUI baseUI) {
         this.baseUI = baseUI;
@@ -59,7 +70,6 @@ public class StatusWindow {
             if (CellGraphics.display("info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
                 baseUI.resetFilenameIfGameWasSaved();
                 baseUI.enableInfoWindow();
-
             }
         } else {
             CellGraphics.display("info", translation.get("action.info"), cellSize, Color.NONE, -1);
@@ -67,7 +77,6 @@ public class StatusWindow {
         ImGui.sameLine();
         if (CellGraphics.display("load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
             baseUI.resetAI();
-            baseUI.enableInfoWindow();
             baseUI.lockInput();
             baseUI.enableFileChooser(false);
         }
@@ -79,8 +88,8 @@ public class StatusWindow {
             baseUI.enableFileChooser(true);
         }
 
-        baseUI.displayStatusIndicator();
-        ImGui.sameLine();
+        //baseUI.displayStatusIndicator();
+        //ImGui.sameLine();
         if (CellGraphics.display("qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
             baseUI.makeRandomMove();
         }
@@ -88,11 +97,16 @@ public class StatusWindow {
         baseUI.displayLogAndOrLogButton();
         ImGui.sameLine();
         if (CellGraphics.display("start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
-            baseUI.startAI(5);
+            if (aiMode == AIMode.DEPTH) baseUI.startAI(aiDepth);
+            if (aiMode == AIMode.SECONDS) baseUI.startTimedAI(aiSeconds);
         }
         ImGui.sameLine();
         if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
             baseUI.stopAI();
+        }
+        ImGui.sameLine();
+        if (CellGraphics.display("settings", translation.get("action.settings"), cellSize, Color.WHITE, -1)) {
+            baseUI.enableSettingsWindow();
         }
         ImGui.sameLine();
         if (CellGraphics.display("restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {

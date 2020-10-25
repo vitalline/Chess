@@ -19,24 +19,26 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class BaseUI {
     private static final int MAX_PGN_SIZE = 10240;
     private int width, height;
     private final int cellSize = 50, margin = 10, speed = 65;
     private boolean windowLoaded = false;
-    private float infoPosX = -1, infoPosY = -1;
+    private float posX = -1, posY = -1;
     private Translation translation = Translation.EN_US;
     private Board board = null;
     private Setup setup = null, infoSetup = null;
-    private boolean showLog = false, showInfo = false, showErrorMessage = false, saveMode = false, lockInput = false;
+    private boolean showLog = false, showInfo = false, showSettings = false, showErrorMessage = false, saveMode = false, lockInput = false;
     private String filename = null;
     private String errorMessage = null;
     private FileChooser fileChooser = null;
     private AI ai = null;
     private MenuWindow menuWindow = new MenuWindow(this);
     private StatusWindow statusWindow = new StatusWindow(this);
-    //private NativeBool alwaysTrue; //This is needed for the popups to work. Don't ask.
 
     public BaseUI(int width, int height) {
         this.width = width;
@@ -69,6 +71,23 @@ public class BaseUI {
         ai.start();
     }
 
+    void startTimedAI(int seconds) {
+        resetFilename();
+        ai = new AI(10, board);
+        ai.start();
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+        executor.schedule(() -> {
+            if (ai != null) {
+                ai.stopEarly();
+                ai.interrupt();
+                board.updateMove(ai.bestMove());
+                board.redo();
+                ai = null;
+            }
+        }, seconds, TimeUnit.SECONDS);
+        executor.shutdown();
+    }
+
     void stopAI() {
         if (ai != null) {
             ai.stopEarly();
@@ -84,6 +103,15 @@ public class BaseUI {
             this.infoSetup = setup;
         }
         this.showInfo = true;
+    }
+
+    void enableSettingsWindow() {
+        if (ai != null) {
+            ai.stopEarly();
+            ai.interrupt();
+            ai = null;
+        }
+        this.showSettings = true;
     }
 
     boolean gameInfoExists() {
@@ -223,8 +251,8 @@ public class BaseUI {
 
     private void resetInfoPopupPosition() {
         windowLoaded = false;
-        infoPosX = -1;
-        infoPosY = -1;
+        posX = -1;
+        posY = -1;
     }
 
     void removeBoard() {
@@ -297,6 +325,9 @@ public class BaseUI {
             if (infoSetup != null && showInfo) {
                 ImGui.openPopup(translation.get("window.info"));
             }
+            if (showSettings) {
+                ImGui.openPopup(translation.get("window.settings"));
+            }
             ImGui.popStyleColor();
         } else if (fileChooser != null) {
             try {
@@ -308,6 +339,7 @@ public class BaseUI {
             ImGui.openPopup(translation.get("window.error"));
         }
         displayInfoPopupIfNeeded();
+        displaySettingsPopupIfNeeded();
         displayErrorPopupIfNeeded();
 
         ImGui.render();
@@ -333,16 +365,16 @@ public class BaseUI {
                 next = true;
             }
             if (windowLoaded) {
-                infoPosX = tweakCoordinate(infoPosX, (width - ImGui.getWindowWidth()) / 2, speed);
-                infoPosY = tweakCoordinate(infoPosY, (height - ImGui.getWindowHeight()) / 2, speed);
-                ImGui.setWindowPos(translation.get("window.info"), infoPosX, infoPosY);
-            } else if (infoPosX == -1 && infoPosY == -1) {
-                infoPosX = (width - ImGui.getWindowWidth()) / 2;
-                infoPosY = (height - ImGui.getWindowHeight()) / 2;
+                posX = tweakCoordinate(posX, (width - ImGui.getWindowWidth()) / 2, speed);
+                posY = tweakCoordinate(posY, (height - ImGui.getWindowHeight()) / 2, speed);
+                ImGui.setWindowPos(translation.get("window.info"), posX, posY);
+            } else if (posX == -1 && posY == -1) {
+                posX = (width - ImGui.getWindowWidth()) / 2;
+                posY = (height - ImGui.getWindowHeight()) / 2;
             } else {
                 windowLoaded = true;
-                infoPosX = (width - ImGui.getWindowWidth()) / 2;
-                infoPosY = (height - ImGui.getWindowHeight()) / 2;
+                posX = (width - ImGui.getWindowWidth()) / 2;
+                posY = (height - ImGui.getWindowHeight()) / 2;
             }
             ImGui.endPopup();
         }
@@ -350,8 +382,8 @@ public class BaseUI {
         if (!ImGui.isPopupOpen(translation.get("window.info")) && !prev && !next) {
             showInfo = false;
             windowLoaded = false;
-            infoPosX = -1;
-            infoPosY = -1;
+            posX = -1;
+            posY = -1;
         }
 
         if (infoSetup != null) {
@@ -366,6 +398,62 @@ public class BaseUI {
                     infoSetup = infoSetup.getNext();
                 }
             }
+        }
+    }
+
+    private void displaySettingsPopupIfNeeded() {
+        if (ImGui.beginPopupModal(translation.get("window.settings"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize)) {
+
+            int[] aiSettings = new int[1];
+
+            if (CellGraphics.display("depth", translation.get("settings.ai.depth"), cellSize * 2,
+                    (statusWindow.aiMode == StatusWindow.AIMode.DEPTH) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
+                statusWindow.aiMode = StatusWindow.AIMode.DEPTH;
+            }
+
+            ImGui.sameLine();
+
+            if (CellGraphics.display("seconds", translation.get("settings.ai.seconds"), cellSize * 2,
+                    (statusWindow.aiMode == StatusWindow.AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -2)) { //TODO: change to -1
+                statusWindow.aiMode = StatusWindow.AIMode.SECONDS;
+            }
+
+            ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
+
+            switch (statusWindow.aiMode) {
+                case DEPTH:
+                    aiSettings[0] = statusWindow.aiDepth;
+                    if (ImGui.sliderInt("", aiSettings, 1, 5)) {
+                        statusWindow.aiDepth = aiSettings[0];
+                    }
+                    break;
+                case SECONDS:
+                    aiSettings[0] = statusWindow.aiSeconds;
+                    if (ImGui.sliderInt("", aiSettings, 1, 10)) {
+                        statusWindow.aiSeconds = aiSettings[0];
+                    }
+                    break;
+            }
+
+            ImGui.endPopup();
+        }
+
+        if (windowLoaded) {
+            ImGui.setWindowPos(translation.get("window.settings"), posX, posY);
+        } else if (posX == -1 && posY == -1) {
+            posX = (width - ImGui.getWindowWidth()) / 2;
+            posY = (height - ImGui.getWindowHeight()) / 2;
+        } else {
+            windowLoaded = true;
+            posX = (width - ImGui.getWindowWidth()) / 2;
+            posY = (height - ImGui.getWindowHeight()) / 2;
+        }
+
+        if (!ImGui.isPopupOpen(translation.get("window.settings"))) {
+            showSettings = false;
+            windowLoaded = false;
+            posX = -1;
+            posY = -1;
         }
     }
 
