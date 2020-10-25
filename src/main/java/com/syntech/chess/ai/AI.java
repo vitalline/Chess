@@ -21,6 +21,7 @@ public class AI extends Thread {
     private ArrayList<Hashtable<Move, Integer>> deepMoveScores;
     private ArrayList<Hashtable<Move, Integer>> deepMoveCounts;
     private int currentDepth = -1;
+    private static final int MAX_DISPLAYED_DEPTH = 3;
     private boolean shouldRun = false;
 
     public AI(int depth, @NotNull Board board) {
@@ -70,12 +71,14 @@ public class AI extends Thread {
     }
 
     public synchronized String thoughts(Translation translation) {
+        if (currentDepth == 0) return "";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < currentDepth - 1; i++) {
+        for (int i = 0; i < MAX_DISPLAYED_DEPTH; i++) {
             sb.append(currentMoves[i].toNotation(translation));
+            if (i == currentDepth - 1) break;
             sb.append(' ');
+            if (i == MAX_DISPLAYED_DEPTH - 1 && i < currentDepth - 1) sb.append('…');
         }
-        sb.append('…');
         return sb.toString();
     }
 

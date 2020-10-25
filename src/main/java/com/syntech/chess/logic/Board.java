@@ -575,6 +575,7 @@ public class Board implements Cloneable {
                 moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
             }
         }
+        moves = MovePriorities.topPriorityMoves(moves);
         if (side == Side.WHITE) allAvailableWhiteMoves = moves;
         if (side == Side.BLACK) allAvailableBlackMoves = moves;
         return moves;

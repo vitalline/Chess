@@ -82,7 +82,7 @@ public class BaseUI {
 
     private void startTimedAI(int seconds) {
         resetFilename();
-        ai = new AI(10, board);
+        ai = new AI(25, board);
         ai.start();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.schedule(() -> {
@@ -443,8 +443,7 @@ public class BaseUI {
             switch (aiMode) {
                 case TURNS:
                     aiSettings[0] = aiTurns;
-                    if (ImGui.sliderInt("", aiSettings, 1, 5,
-                            translation.get("settings.ai.turns." + ((aiTurns == 1) ? "singular" : "plural")))) {
+                    if (ImGui.sliderInt("", aiSettings, 1, 5, translation.get("settings.ai.turns"))) {
                         aiTurns = aiSettings[0];
                     }
                     break;
