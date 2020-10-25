@@ -3,17 +3,16 @@ package com.syntech.chess.ui;
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.text.Translation;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
-import org.ice1000.jimgui.NativeBool;
-import org.ice1000.jimgui.flag.JImWindowFlags;
+import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 
 public class StatusWindow {
-    private Base base;
+    private BaseUI baseUI;
     private int windowHeight;
 
-    public StatusWindow(Base base) {
-        this.base = base;
+    public StatusWindow(BaseUI baseUI) {
+        this.baseUI = baseUI;
     }
 
     int getWindowHeight() {
@@ -21,92 +20,91 @@ public class StatusWindow {
     }
 
     public void display() {
-        JImGui imGui = base.getImGui();
-        Translation translation = base.getTranslation();
-        int cellSize = base.getCellSize();
+        Translation translation = baseUI.getTranslation();
+        int cellSize = baseUI.getCellSize();
 
-        imGui.begin("Game Status", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+        ImGui.begin("Game Status", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
 
-        base.displayStatusText();
+        baseUI.displayStatusText();
 
-        if (base.canUndo()) {
-            if (CellGraphics.display(imGui, "double_left", translation.get("action.undo_all"), cellSize, Color.WHITE, -1)) {
-                base.undoAll();
+        if (baseUI.canUndo()) {
+            if (CellGraphics.display("double_left", translation.get("action.undo_all"), cellSize, Color.WHITE, -1)) {
+                baseUI.undoAll();
             }
-            imGui.sameLine();
-            if (CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.WHITE, -1)) {
-                base.undo();
-            }
-        } else {
-            CellGraphics.display(imGui, "double_left", translation.get("action.undo_all"), cellSize, Color.NONE, -1);
-            imGui.sameLine();
-            CellGraphics.display(imGui, "left", translation.get("action.undo"), cellSize, Color.NONE, -1);
-        }
-        imGui.sameLine();
-        if (base.canRedo()) {
-            if (CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.WHITE, -1)) {
-                base.redo();
-            }
-            imGui.sameLine();
-            if (CellGraphics.display(imGui, "double_right", translation.get("action.redo_all"), cellSize, Color.WHITE, -1)) {
-                base.redoAll();
+            ImGui.sameLine();
+            if (CellGraphics.display("left", translation.get("action.undo"), cellSize, Color.WHITE, -1)) {
+                baseUI.undo();
             }
         } else {
-            CellGraphics.display(imGui, "right", translation.get("action.redo"), cellSize, Color.NONE, -1);
-            imGui.sameLine();
-            CellGraphics.display(imGui, "double_right", translation.get("action.redo_all"), cellSize, Color.NONE, -1);
+            CellGraphics.display("double_left", translation.get("action.undo_all"), cellSize, Color.NONE, -1);
+            ImGui.sameLine();
+            CellGraphics.display("left", translation.get("action.undo"), cellSize, Color.NONE, -1);
         }
-        imGui.sameLine();
-        if (base.gameInfoExists()) {
-            if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
-                base.resetFilenameIfGameWasSaved();
-                base.enableInfoWindow();
+        ImGui.sameLine();
+        if (baseUI.canRedo()) {
+            if (CellGraphics.display("right", translation.get("action.redo"), cellSize, Color.WHITE, -1)) {
+                baseUI.redo();
+            }
+            ImGui.sameLine();
+            if (CellGraphics.display("double_right", translation.get("action.redo_all"), cellSize, Color.WHITE, -1)) {
+                baseUI.redoAll();
+            }
+        } else {
+            CellGraphics.display("right", translation.get("action.redo"), cellSize, Color.NONE, -1);
+            ImGui.sameLine();
+            CellGraphics.display("double_right", translation.get("action.redo_all"), cellSize, Color.NONE, -1);
+        }
+        ImGui.sameLine();
+        if (baseUI.gameInfoExists()) {
+            if (CellGraphics.display("info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
+                baseUI.resetFilenameIfGameWasSaved();
+                baseUI.enableInfoWindow();
 
             }
         } else {
-            CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.NONE, -1);
+            CellGraphics.display("info", translation.get("action.info"), cellSize, Color.NONE, -1);
         }
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
-            base.resetAI();
-            base.enableInfoWindow();
-            base.lockInput();
-            base.enableFileChooser(false);
+        ImGui.sameLine();
+        if (CellGraphics.display("load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+            baseUI.resetAI();
+            baseUI.enableInfoWindow();
+            baseUI.lockInput();
+            baseUI.enableFileChooser(false);
         }
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
-            base.resetAI();
-            base.lockInput();
-            base.resetFilename();
-            base.enableFileChooser(true);
-        }
-
-        base.displayStatusIndicator();
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
-            base.makeRandomMove();
-        }
-        imGui.sameLine();
-        base.displayLogAndOrLogButton();
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
-            base.startAI(3);
-        }
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
-            base.stopAI();
-        }
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {
-            base.resetBoard();
-        }
-        imGui.sameLine();
-        if (CellGraphics.display(imGui, "cross", translation.get("action.return"), cellSize, Color.CAPTURE_WHITE, -1)) {
-            base.removeBoard();
+        ImGui.sameLine();
+        if (CellGraphics.display("save", translation.get("action.save"), cellSize, Color.WHITE, -1)) {
+            baseUI.resetAI();
+            baseUI.lockInput();
+            baseUI.resetFilename();
+            baseUI.enableFileChooser(true);
         }
 
-        windowHeight = (int) JImGuiGen.getWindowHeight();
+        baseUI.displayStatusIndicator();
+        ImGui.sameLine();
+        if (CellGraphics.display("qmark", translation.get("action.random"), cellSize, Color.WHITE, -1)) {
+            baseUI.makeRandomMove();
+        }
+        ImGui.sameLine();
+        baseUI.displayLogAndOrLogButton();
+        ImGui.sameLine();
+        if (CellGraphics.display("start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
+            baseUI.startAI(3);
+        }
+        ImGui.sameLine();
+        if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {
+            baseUI.stopAI();
+        }
+        ImGui.sameLine();
+        if (CellGraphics.display("restart", translation.get("action.restart"), cellSize, Color.CAPTURE_WHITE, -1)) {
+            baseUI.resetBoard();
+        }
+        ImGui.sameLine();
+        if (CellGraphics.display("cross", translation.get("action.return"), cellSize, Color.CAPTURE_WHITE, -1)) {
+            baseUI.removeBoard();
+        }
 
-        JImGuiGen.end();
+        windowHeight = (int) ImGui.getWindowHeight();
+
+        ImGui.end();
     }
 }

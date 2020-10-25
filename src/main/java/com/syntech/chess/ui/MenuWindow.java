@@ -5,69 +5,67 @@ import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.Board;
 import com.syntech.chess.rules.Setup;
 import com.syntech.chess.text.Translation;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
-import org.ice1000.jimgui.NativeBool;
-import org.ice1000.jimgui.flag.JImWindowFlags;
+import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 
 public class MenuWindow {
-    private Base base;
+    private BaseUI baseUI;
     private int menuPage = 0;
     private static final int MENU_BUTTON_AMOUNT = 15;
 
-    public MenuWindow(Base base) {
-        this.base = base;
+    public MenuWindow(BaseUI baseUI) {
+        this.baseUI = baseUI;
     }
 
     public void display() {
-        JImGui imGui = base.getImGui();
-        Translation translation = base.getTranslation();
-        int cellSize = base.getCellSize();
+        Translation translation = baseUI.getTranslation();
+        int cellSize = baseUI.getCellSize();
 
-        imGui.begin("Menu", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
+        ImGui.begin("Menu", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
 
         for (int i = menuPage * MENU_BUTTON_AMOUNT; i < (menuPage + 1) * MENU_BUTTON_AMOUNT && i < Setup.values().length; i++) {
             if (!Setup.values()[i].isEmpty()) {
-                Board newBoard = Setup.values()[i].boardButton(imGui, translation);
+                Board newBoard = Setup.values()[i].boardButton(translation);
                 if (newBoard != null) {
-                    base.setSetup(Setup.values()[i]);
-                    base.setBoard(newBoard);
+                    baseUI.setSetup(Setup.values()[i]);
+                    baseUI.setBoard(newBoard);
                 }
             }
         }
 
         if (menuPage > 0) {
-            if (CellGraphics.display(imGui, "left", translation.get("action.previous"), cellSize, Color.WHITE, -2)) {
+            if (CellGraphics.display("left", translation.get("action.previous"), cellSize, Color.WHITE, -2)) {
                 --menuPage;
             }
         } else {
-            CellGraphics.display(imGui, "left", translation.get("action.previous"), cellSize, Color.NONE, -2);
+            CellGraphics.display("left", translation.get("action.previous"), cellSize, Color.NONE, -2);
         }
 
-        imGui.sameLine();
+        ImGui.sameLine();
 
         if (menuPage < Setup.values().length / MENU_BUTTON_AMOUNT) {
-            if (CellGraphics.display(imGui, "right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
+            if (CellGraphics.display("right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
                 ++menuPage;
             }
         } else {
-            CellGraphics.display(imGui, "right", translation.get("action.next"), cellSize, Color.NONE, -2);
+            CellGraphics.display("right", translation.get("action.next"), cellSize, Color.NONE, -2);
         }
 
-        imGui.sameLine();
+        ImGui.sameLine();
 
-        if (CellGraphics.display(imGui, "info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
-            base.setInfo(Setup.CREDITS);
-            base.enableInfoWindow();
+        if (CellGraphics.display("info", translation.get("action.info"), cellSize, Color.WHITE, -1)) {
+            baseUI.setInfo(Setup.CREDITS);
+            baseUI.enableInfoWindow();
         }
 
-        imGui.sameLine();
+        ImGui.sameLine();
 
-        if (CellGraphics.display(imGui, "load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
-            base.lockInput();
-            base.enableFileChooser(false);
+        if (CellGraphics.display("load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
+            baseUI.lockInput();
+            baseUI.enableFileChooser(false);
         }
 
-        JImGuiGen.end();
+        ImGui.end();
     }
 }

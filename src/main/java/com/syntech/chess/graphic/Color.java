@@ -1,28 +1,44 @@
 package com.syntech.chess.graphic;
 
 import com.syntech.chess.logic.Side;
-import org.ice1000.jimgui.JImVec4;
-import org.jetbrains.annotations.NotNull;
+import imgui.ImColor;
+import imgui.ImVec4;
 
 /**
  * The enumerator of all possible colors used by the app.
  */
 
 public enum Color {
-    NONE,
-    BORDER,
-    BACKGROUND,
-    BUTTON,
-    WHITE,
-    BLACK,
-    MOVABLE_WHITE,
-    MOVABLE_BLACK,
-    SELECTED_WHITE,
-    SELECTED_BLACK,
-    MOVE_WHITE,
-    MOVE_BLACK,
-    CAPTURE_WHITE,
-    CAPTURE_BLACK;
+    NONE(0.5f, 0.5f, 0.5f),
+    BORDER(0.27f, 0.66f, 0.2f),
+    BACKGROUND(0.47f, 0.86f, 0.4f),
+    BUTTON(0.07f, 0.27f, 0.07f, 0.17f, 0.37f, 0.17f, 0.27f, 0.47f, 0.27f),
+    WHITE(0.8f, 0.8f, 0.8f, 0.85f, 0.85f, 0.85f, 0.825f, 0.825f, 0.825f),
+    BLACK(0.3f, 0.3f, 0.3f, 0.35f, 0.35f, 0.35f, 0.325f, 0.325f, 0.325f),
+    MOVABLE_WHITE(0.875f, 0.875f, 0.725f, 0.925f, 0.925f, 0.775f, 0.9f, 0.9f, 0.8f),
+    MOVABLE_BLACK(0.375f, 0.375f, 0.225f, 0.425f, 0.425f, 0.275f, 0.4f, 0.4f, 0.3f),
+    SELECTED_WHITE(0.9f, 0.9f, 0.7f, 0.95f, 0.95f, 0.75f, 0.925f, 0.925f, 0.725f),
+    SELECTED_BLACK(0.4f, 0.4f, 0.2f, 0.45f, 0.45f, 0.25f, 0.425f, 0.425f, 0.225f),
+    MOVE_WHITE(0.7f, 0.9f, 0.7f, 0.75f, 0.95f, 0.75f, 0.725f, 0.925f, 0.725f),
+    MOVE_BLACK(0.2f, 0.4f, 0.2f, 0.25f, 0.45f, 0.25f, 0.225f, 0.425f, 0.225f),
+    CAPTURE_WHITE(0.9f, 0.7f, 0.7f, 0.95f, 0.75f, 0.75f, 0.925f, 0.725f, 0.725f),
+    CAPTURE_BLACK(0.4f, 0.2f, 0.2f, 0.45f, 0.25f, 0.25f, 0.425f, 0.225f, 0.225f);
+
+    private final int color, hoveredColor, activeColor;
+
+    public static final ImVec4 backgroundColor = new ImVec4(0.47f, 0.86f, 0.4f, 1.0f);
+
+    Color(float r, float g, float b) {
+        color = ImColor.floatToColor(r, g, b);
+        hoveredColor = ImColor.floatToColor(r, g, b);
+        activeColor = ImColor.floatToColor(r, g, b);
+    }
+
+    Color(float r, float g, float b, float hr, float hg, float hb, float ar, float ag, float ab) {
+        color = ImColor.floatToColor(r, g, b);
+        hoveredColor = ImColor.floatToColor(hr, hg, hb);
+        activeColor = ImColor.floatToColor(ar, ag, ab);
+    }
 
     /**
      * Converts a color to the side it belongs to.
@@ -49,103 +65,21 @@ public enum Color {
     /**
      * Returns the "default" button color.
      */
-    @NotNull
-    public JImVec4 getColor() {
-        switch (this) {
-            case WHITE:
-                return new JImVec4(0.8f, 0.8f, 0.8f, 1.0f);
-            case BLACK:
-                return new JImVec4(0.3f, 0.3f, 0.3f, 1.0f);
-            case MOVABLE_WHITE:
-                return new JImVec4(0.875f, 0.875f, 0.725f, 1.0f);
-            case MOVABLE_BLACK:
-                return new JImVec4(0.375f, 0.375f, 0.225f, 1.0f);
-            case SELECTED_WHITE:
-                return new JImVec4(0.9f, 0.9f, 0.7f, 1.0f);
-            case SELECTED_BLACK:
-                return new JImVec4(0.4f, 0.4f, 0.2f, 1.0f);
-            case MOVE_WHITE:
-                return new JImVec4(0.7f, 0.9f, 0.7f, 1.0f);
-            case MOVE_BLACK:
-                return new JImVec4(0.2f, 0.4f, 0.2f, 1.0f);
-            case CAPTURE_WHITE:
-                return new JImVec4(0.9f, 0.7f, 0.7f, 1.0f);
-            case CAPTURE_BLACK:
-                return new JImVec4(0.4f, 0.2f, 0.2f, 1.0f);
-            case BORDER:
-                return new JImVec4(0.27f, 0.66f, 0.2f, 1.0f);
-            case BACKGROUND:
-                return new JImVec4(0.47f, 0.86f, 0.4f, 1.0f);
-            case BUTTON:
-                return new JImVec4(0.07f, 0.27f, 0.07f, 1.0f);
-            default:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-        }
+    public int getColor() {
+        return color;
     }
 
     /**
      * Returns the "hovered" button color.
      */
-    @NotNull
-    public JImVec4 getHoveredColor() {
-        switch (this) {
-            case WHITE:
-                return new JImVec4(0.85f, 0.85f, 0.85f, 1.0f);
-            case BLACK:
-                return new JImVec4(0.35f, 0.35f, 0.35f, 1.0f);
-            case MOVABLE_WHITE:
-                return new JImVec4(0.925f, 0.925f, 0.775f, 1.0f);
-            case MOVABLE_BLACK:
-                return new JImVec4(0.425f, 0.425f, 0.275f, 1.0f);
-            case SELECTED_WHITE:
-                return new JImVec4(0.95f, 0.95f, 0.75f, 1.0f);
-            case SELECTED_BLACK:
-                return new JImVec4(0.45f, 0.45f, 0.25f, 1.0f);
-            case MOVE_WHITE:
-                return new JImVec4(0.75f, 0.95f, 0.75f, 1.0f);
-            case MOVE_BLACK:
-                return new JImVec4(0.25f, 0.45f, 0.25f, 1.0f);
-            case CAPTURE_WHITE:
-                return new JImVec4(0.95f, 0.75f, 0.75f, 1.0f);
-            case CAPTURE_BLACK:
-                return new JImVec4(0.45f, 0.25f, 0.25f, 1.0f);
-            case BUTTON:
-                return new JImVec4(0.17f, 0.37f, 0.17f, 1.0f);
-            default:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-        }
+    public int getHoveredColor() {
+        return hoveredColor;
     }
 
     /**
      * Returns the "active" button color.
      */
-    @NotNull
-    public JImVec4 getActiveColor() {
-        switch (this) {
-            case WHITE:
-                return new JImVec4(0.825f, 0.825f, 0.825f, 1.0f);
-            case BLACK:
-                return new JImVec4(0.325f, 0.325f, 0.325f, 1.0f);
-            case MOVABLE_WHITE:
-                return new JImVec4(0.9f, 0.9f, 0.8f, 1.0f);
-            case MOVABLE_BLACK:
-                return new JImVec4(0.4f, 0.4f, 0.3f, 1.0f);
-            case SELECTED_WHITE:
-                return new JImVec4(0.925f, 0.925f, 0.725f, 1.0f);
-            case SELECTED_BLACK:
-                return new JImVec4(0.425f, 0.425f, 0.225f, 1.0f);
-            case MOVE_WHITE:
-                return new JImVec4(0.725f, 0.925f, 0.725f, 1.0f);
-            case MOVE_BLACK:
-                return new JImVec4(0.225f, 0.425f, 0.225f, 1.0f);
-            case CAPTURE_WHITE:
-                return new JImVec4(0.925f, 0.725f, 0.725f, 1.0f);
-            case CAPTURE_BLACK:
-                return new JImVec4(0.425f, 0.225f, 0.225f, 1.0f);
-            case BUTTON:
-                return new JImVec4(0.27f, 0.47f, 0.27f, 1.0f);
-            default:
-                return new JImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-        }
+    public int getActiveColor() {
+        return activeColor;
     }
 }

@@ -4,20 +4,22 @@ import com.syntech.chess.Main;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
-import org.apache.commons.io.IOUtils;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
-import org.ice1000.jimgui.JImStyleColors;
-import org.ice1000.jimgui.JImTextureID;
+import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL32.*;
 
 /**
  * Class with a bunch of static methods used to draw square cells with various textures on top.
@@ -31,7 +33,7 @@ public class CellGraphics {
     /**
      * The list of textures used.
      */
-    private static ArrayList<JImTextureID> textures;
+    private static ArrayList<Integer> textures;
 
     /**
      * The list of texture IDs. Used when calling <tt>display</tt>.
@@ -93,6 +95,36 @@ public class CellGraphics {
         loadTexture("ui", "up");
     }
 
+    private static int loadTexture(@NotNull final BufferedImage image) {
+        final int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+
+        final ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4); // 4 for RGBA, 3 for RGB
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                final int pixel = pixels[y * image.getWidth() + x];
+                buffer.put((byte) ((pixel >> 16) & 0xFF));
+                buffer.put((byte) ((pixel >> 8) & 0xFF));
+                buffer.put((byte) (pixel & 0xFF));
+                buffer.put((byte) ((pixel >> 24) & 0xFF));
+            }
+        }
+        buffer.flip();
+
+        final int textureID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+        return textureID;
+    }
+
     /**
      * Loads a single texture from the following path:
      * <tt>textures/(folder)/(name).png</tt>
@@ -102,7 +134,7 @@ public class CellGraphics {
         String texturePath = String.format("textures/%s/%s.png", folder, name);
         InputStream textureInput = Main.class.getClassLoader().getResourceAsStream(texturePath);
         if (textureInput != null) {
-            textures.add(JImTextureID.fromBytes(IOUtils.toByteArray(textureInput)));
+            textures.add(loadTexture(ImageIO.read(textureInput)));
             ids.add(name);
         }
     }
@@ -131,7 +163,7 @@ public class CellGraphics {
                     graphics.drawImage(barTexture, 0, 0, null);
                     ByteArrayOutputStream textureOutput = new ByteArrayOutputStream();
                     ImageIO.write(texture, "png", textureOutput);
-                    textures.add(JImTextureID.fromBytes(textureOutput.toByteArray()));
+                    textures.add(loadTexture(ImageIO.read(new ByteArrayInputStream(textureOutput.toByteArray()))));
                     ids.add(String.format("%s%d", getName(side, type), i));
                 }
             }
@@ -169,8 +201,7 @@ public class CellGraphics {
     /**
      * Returns a texture by its ID.
      */
-    @NotNull
-    private static JImTextureID getTexture(String textureID) {
+    private static int getTexture(String textureID) {
         int index = ids.indexOf(textureID);
         if (index >= 0) {
             return textures.get(index);
@@ -191,11 +222,10 @@ public class CellGraphics {
     /**
      * Displays a square cell with a texture given by ID.
      * <p>
-     * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
-     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * Internally, all the cells are handled as ImGui buttons to allow player input by clicking.
+     * The return value of the {@link ImGui#imageButton(int, float, float) imageButton}
      * function is then passed over to check if the cell has been pressed.
      *
-     * @param imGui     the JImGui object to pass the graphics to
      * @param textureID the desired texture ID
      * @param label     the label to be displayed when hovering over the cell
      * @param size      the width and height of the cell (in pixels)
@@ -205,20 +235,20 @@ public class CellGraphics {
      *                  buttons that look the same)
      * @return <tt>true</tt> if the button has been pressed
      */
-    public static boolean display(@NotNull JImGui imGui, String textureID, String label, float size,
+    public static boolean display(String textureID, String label, float size,
                                   @NotNull Color color, int buttonID) {
-        imGui.pushStyleColor(JImStyleColors.Button, color.getColor());
-        imGui.pushStyleColor(JImStyleColors.ButtonHovered, color.getHoveredColor());
-        imGui.pushStyleColor(JImStyleColors.ButtonActive, color.getActiveColor());
-        JImGui.pushID(buttonID);
-        boolean result = imGui.imageButton(getTexture(textureID), size, size);
-        if (imGui.isItemHovered()) {
-            JImGuiGen.beginTooltip();
-            imGui.text(label);
-            JImGuiGen.endTooltip();
+        ImGui.pushStyleColor(ImGuiCol.Button, color.getColor());
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color.getHoveredColor());
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color.getActiveColor());
+        ImGui.pushID(buttonID);
+        boolean result = ImGui.imageButton(getTexture(textureID), size, size);
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            ImGui.text(label);
+            ImGui.endTooltip();
         }
-        JImGuiGen.popID();
-        JImGuiGen.popStyleColor(3);
+        ImGui.popID();
+        ImGui.popStyleColor(3);
         return result;
     }
 
@@ -226,10 +256,9 @@ public class CellGraphics {
      * Displays a square cell with a chess piece given by its side and type.
      * <p>
      * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
-     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * The return value of the {@link ImGui#imageButton(int, float, float) imageButton}
      * function is then passed over to check if the cell has been pressed.
      *
-     * @param imGui    the JImGui object to pass the graphics to
      * @param side     the side of the piece
      * @param type     the type of the piece
      * @param label    the label to be displayed when hovering over the cell
@@ -240,19 +269,18 @@ public class CellGraphics {
      *                 buttons that look the same)
      * @return <tt>true</tt> if the button has been pressed
      */
-    public static boolean display(JImGui imGui, @NotNull Side side, @NotNull PieceType type, String label, float size,
+    public static boolean display(@NotNull Side side, @NotNull PieceType type, String label, float size,
                                   @NotNull Color color, int buttonID) {
-        return display(imGui, getName(side, type), label, size, color, buttonID);
+        return display(getName(side, type), label, size, color, buttonID);
     }
 
     /**
      * Displays a square cell with a certain chess piece.
      * <p>
      * Internally, all the cells are handled as JImGui buttons to allow player input by clicking.
-     * The return value of the {@link JImGui#imageButton(JImTextureID, float, float) imageButton}
+     * The return value of the {@link ImGui#imageButton(int, float, float) imageButton}
      * function is then passed over to check if the cell has been pressed.
      *
-     * @param imGui    the JImGui object to pass the graphics to
      * @param piece    the piece to be displayed
      * @param label    the label to be displayed when hovering over the cell
      * @param size     the width and height of the cell (in pixels)
@@ -262,8 +290,8 @@ public class CellGraphics {
      *                 buttons that look the same)
      * @return <tt>true</tt> if the button has been pressed
      */
-    public static boolean display(JImGui imGui, @NotNull Piece piece, String label, float size,
+    public static boolean display(@NotNull Piece piece, String label, float size,
                                   @NotNull Color color, int buttonID) {
-        return display(imGui, piece.getTextureID(), label, size, color, buttonID);
+        return display(piece.getTextureID(), label, size, color, buttonID);
     }
 }

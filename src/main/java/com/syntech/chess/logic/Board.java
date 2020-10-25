@@ -8,11 +8,10 @@ import com.syntech.chess.rules.MovementRules;
 import com.syntech.chess.rules.Setup;
 import com.syntech.chess.rules.chess.DoublePawnType;
 import com.syntech.chess.text.Translation;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
-import org.ice1000.jimgui.JImStyleColors;
-import org.ice1000.jimgui.NativeBool;
-import org.ice1000.jimgui.flag.JImWindowFlags;
+import imgui.ImGui;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,58 +129,54 @@ public class Board implements Cloneable {
         status = getStatusConditions(getTurnSide());
     }
 
-    public boolean display(@NotNull JImGui imGui, String name, float size) {
+    public boolean display(String name, float size) {
 
-        float spacingX = imGui.getStyle().getItemSpacingX();
-        float spacingY = imGui.getStyle().getItemSpacingY();
-        float paddingX = imGui.getStyle().getFramePaddingX();
-        float paddingY = imGui.getStyle().getFramePaddingY();
+        float spacingX = ImGui.getStyle().getItemSpacingX();
+        float spacingY = ImGui.getStyle().getItemSpacingY();
+        float paddingX = ImGui.getStyle().getFramePaddingX();
+        float paddingY = ImGui.getStyle().getFramePaddingY();
 
-        imGui.getStyle().setItemSpacingX(0);
-        imGui.getStyle().setItemSpacingY(0);
-        imGui.getStyle().setFramePaddingX(0);
-        imGui.getStyle().setFramePaddingY(0);
+        ImGui.getStyle().setItemSpacing(0, 0);
+        ImGui.getStyle().setFramePadding(0, 0);
 
         boolean inputReceived = false;
 
-        imGui.begin(name, new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.AlwaysAutoResize);
-        displayLabelRow(imGui, size, 0);
+        ImGui.begin(name, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
+        displayLabelRow(size, 0);
         for (int row = height - 1; row >= 0; row--) {
-            displayLabel(imGui, Move.getRow(row), size / 2, size, 0);
-            imGui.sameLine();
+            displayLabel(Move.getRow(row), size / 2, size, 0);
+            ImGui.sameLine();
             for (int col = 0; col < width; col++) {
-                if (displayCell(imGui, size, row, col)) {
+                if (displayCell(size, row, col)) {
                     inputReceived = true;
                 }
-                imGui.sameLine();
+                ImGui.sameLine();
             }
-            displayLabel(imGui, Move.getRow(row), size / 2, size, 1);
+            displayLabel(Move.getRow(row), size / 2, size, 1);
         }
-        displayLabelRow(imGui, size, 1);
-        windowWidth = JImGuiGen.getWindowWidth();
-        windowHeight = JImGuiGen.getWindowHeight();
-        JImGuiGen.end();
+        displayLabelRow(size, 1);
+        windowWidth = ImGui.getWindowWidth();
+        windowHeight = ImGui.getWindowHeight();
+        ImGui.end();
 
-        imGui.getStyle().setItemSpacingX(spacingX);
-        imGui.getStyle().setItemSpacingY(spacingY);
-        imGui.getStyle().setFramePaddingX(paddingX);
-        imGui.getStyle().setFramePaddingY(paddingY);
+        ImGui.getStyle().setItemSpacing(spacingX, spacingY);
+        ImGui.getStyle().setFramePadding(paddingX, paddingY);
 
         if (displayPromotionPopup) {
-            imGui.openPopup("Promote");
+            ImGui.openPopup("Promote");
         }
 
         if (displayResultPopup) {
-            imGui.openPopup("Result");
+            ImGui.openPopup("Result");
         }
 
-        if (imGui.beginPopup("Promote", JImWindowFlags.AlwaysAutoResize)) {
+        if (ImGui.beginPopup("Promote", ImGuiWindowFlags.AlwaysAutoResize)) {
             for (PieceType pieceType : getSelectedPiece().getPromotionTypes()) {
-                if (CellGraphics.display(imGui, getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
+                if (CellGraphics.display(getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
                         size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
                     displayPromotionPopup = false;
-                    JImGuiGen.closeCurrentPopup();
+                    ImGui.closeCurrentPopup();
                     Move newMove = new Move(moveLog.get(turn));
                     newMove.setPromotion(pieceType);
                     updateMove(newMove);
@@ -190,55 +185,55 @@ public class Board implements Cloneable {
                     break;
                 }
             }
-            JImGuiGen.endPopup();
+            ImGui.endPopup();
         }
 
-        if (imGui.beginPopup("Result", JImWindowFlags.AlwaysAutoResize)) {
-            imGui.text(status);
-            if (imGui.button(translation.get("action.ok"))) {
+        if (ImGui.beginPopup("Result", ImGuiWindowFlags.AlwaysAutoResize)) {
+            ImGui.text(status);
+            if (ImGui.button(translation.get("action.ok"))) {
                 displayResultPopup = false;
-                JImGuiGen.closeCurrentPopup();
+                ImGui.closeCurrentPopup();
             }
-            JImGuiGen.endPopup();
+            ImGui.endPopup();
         }
 
         return inputReceived;
     }
 
-    private boolean displayCell(JImGui imGui, float size, int row, int col) {
-        if (CellGraphics.display(imGui, getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
+    private boolean displayCell(float size, int row, int col) {
+        if (CellGraphics.display(getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
             analyzeInput(row, col);
             return true;
         }
         return false;
     }
 
-    private void displayLabel(@NotNull JImGui imGui, String label, float x, float y, int id) {
-        imGui.pushStyleColor(JImStyleColors.Button, Color.NONE.getColor());
-        imGui.pushStyleColor(JImStyleColors.ButtonHovered, Color.NONE.getColor());
-        imGui.pushStyleColor(JImStyleColors.ButtonActive, Color.NONE.getColor());
-        JImGui.pushID(id);
-        imGui.button(label, x, y);
-        JImGuiGen.popID();
-        JImGuiGen.popStyleColor(3);
+    private void displayLabel(String label, float x, float y, int id) {
+        ImGui.pushStyleColor(ImGuiCol.Button, Color.NONE.getColor());
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, Color.NONE.getColor());
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, Color.NONE.getColor());
+        ImGui.pushID(id);
+        ImGui.button(label, x, y);
+        ImGui.popID();
+        ImGui.popStyleColor(3);
     }
 
-    private void displayLabelRow(JImGui imGui, float size, int id) {
-        displayLabel(imGui, "", size / 2, size / 2, id * 2);
-        imGui.sameLine();
-        JImGui.pushID(id);
+    private void displayLabelRow(float size, int id) {
+        displayLabel("", size / 2, size / 2, id * 2);
+        ImGui.sameLine();
+        ImGui.pushID(id);
         for (int col = 0; col < width; col++) {
-            displayLabel(imGui, "" + Move.getColumn(col), size, size / 2, id);
-            imGui.sameLine();
+            displayLabel("" + Move.getColumn(col), size, size / 2, id);
+            ImGui.sameLine();
         }
-        JImGuiGen.popID();
-        displayLabel(imGui, "", size / 2, size / 2, id * 2 + 1);
+        ImGui.popID();
+        displayLabel("", size / 2, size / 2, id * 2 + 1);
     }
 
-    public void displayLog(@NotNull JImGui imGui, float width, float height, float posX, float posY, int characterWidth) {
-        imGui.setWindowSize("Turn Info", width, height);
-        imGui.setWindowPos("Turn Info", posX, posY);
-        imGui.begin("Turn Info", new NativeBool(), JImWindowFlags.NoMove | JImWindowFlags.NoTitleBar | JImWindowFlags.NoResize);
+    public void displayLog(float width, float height, float posX, float posY, int characterWidth) {
+        ImGui.setWindowSize("Turn Info", width, height);
+        ImGui.setWindowPos("Turn Info", posX, posY);
+        ImGui.begin("Turn Info", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < turn; i++) {
             String move = moveLog.get(i).toNotation(translation);
@@ -275,8 +270,8 @@ public class Board implements Cloneable {
                 sb.append(result);
             }
         }
-        imGui.text(sb.toString());
-        JImGuiGen.end();
+        ImGui.text(sb.toString());
+        ImGui.end();
     }
 
     public float getWindowWidth() {

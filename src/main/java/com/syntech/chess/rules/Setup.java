@@ -5,8 +5,7 @@ import com.syntech.chess.logic.CyclicBoard;
 import com.syntech.chess.logic.LevellingData;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.text.Translation;
-import org.ice1000.jimgui.JImGui;
-import org.ice1000.jimgui.JImGuiGen;
+import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,20 +112,20 @@ public enum Setup {
         return pieces == null;
     }
 
-    public Board boardButton(@NotNull JImGui imGui, @NotNull Translation translation) {
+    public Board boardButton(@NotNull Translation translation) {
         Board board = null;
-        if (imGui.button(translation.get(gameType + ".short"))) {
+        if (ImGui.button(translation.get(gameType + ".short"))) {
             board = getBoard();
         }
-        displayTooltip(imGui, translation);
+        displayTooltip(translation);
         return board;
     }
 
-    private void displayTooltip(@NotNull JImGui imGui, Translation translation) {
-        if (imGui.isItemHovered()) {
-            JImGuiGen.beginTooltip();
-            imGui.text(getGameType(translation));
-            JImGuiGen.endTooltip();
+    private void displayTooltip(Translation translation) {
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            ImGui.text(getGameType(translation));
+            ImGui.endTooltip();
         }
     }
 
