@@ -1,11 +1,13 @@
 package com.syntech.chess.logic;
 
 import com.syntech.chess.text.Translation;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Move {
     private PieceType piece;
@@ -18,7 +20,6 @@ public class Move {
     private boolean isCheck = false;
     private boolean isGameEnd = false;
     private int priority = 0;
-    private int power = 0;
 
     public Move(PieceType piece, int startRow, int startCol, int endRow, int endCol) {
         this(piece, new Point(startRow, startCol), endRow, endCol);
@@ -34,7 +35,8 @@ public class Move {
         this.endPosition = endPosition;
     }
 
-    public Move(Move move) {
+    @Contract(pure = true)
+    public Move(@NotNull Move move) {
         this.piece = move.piece;
         this.addRow = move.addRow;
         this.addCol = move.addCol;
@@ -45,7 +47,6 @@ public class Move {
         this.isCheck = move.isCheck;
         this.isGameEnd = move.isGameEnd;
         this.priority = move.priority;
-        this.power = move.power;
     }
 
     public boolean hasDifferentMoveData(@NotNull Move newMove) {
@@ -107,12 +108,8 @@ public class Move {
     }
 
     public static boolean contains(@NotNull ArrayList<Move> moves, int endRow, int endCol) {
-        return containsWithPowerAtLeast(moves, endRow, endCol, 0);
-    }
-
-    public static boolean containsWithPowerAtLeast(@NotNull ArrayList<Move> moves, int endRow, int endCol, int power) {
         for (Move move : moves) {
-            if (move.getEndRow() == endRow && move.getEndCol() == endCol && move.getPower() >= power) {
+            if (move.getEndRow() == endRow && move.getEndCol() == endCol) {
                 return true;
             }
         }
@@ -204,16 +201,8 @@ public class Move {
         return priority;
     }
 
-    public int getPower() {
-        return power;
-    }
-
     public void setPriority(int priority) {
         this.priority = priority;
-    }
-
-    public void setPower(int power) {
-        this.power = power;
     }
 
     public PieceType getPromotion() {
@@ -257,12 +246,6 @@ public class Move {
     public static void setPriority(@NotNull ArrayList<Move> moves, int priority) {
         for (Move move : moves) {
             move.setPriority(priority);
-        }
-    }
-
-    public static void setPower(@NotNull ArrayList<Move> moves, int power) {
-        for (Move move : moves) {
-            move.setPower(power);
         }
     }
 
@@ -342,7 +325,7 @@ public class Move {
             PieceType promotion = PieceType.NONE;
             Point startPosition = new Point(-1, -1);
             Point endPosition;
-            boolean isCapture = false, addRow = false, addCol = false;
+            boolean addRow = false, addCol = false;
 
             if (getType(pgn.substring(0, 1)) != PieceType.NONE) {
                 piece = getType(pgn.substring(0, 1));
@@ -374,7 +357,6 @@ public class Move {
                 }
 
                 if (pgn.charAt(0) == 'x') {
-                    isCapture = true;
                     pgn = pgn.substring(1);
                 }
             }
@@ -398,5 +380,27 @@ public class Move {
             return null;
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return addRow == move.addRow &&
+                addCol == move.addCol &&
+                isCapture == move.isCapture &&
+                isCheck == move.isCheck &&
+                isGameEnd == move.isGameEnd &&
+                priority == move.priority &&
+                piece == move.piece &&
+                startPosition.equals(move.startPosition) &&
+                endPosition.equals(move.endPosition) &&
+                promotion == move.promotion;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(piece, addRow, addCol, startPosition, endPosition, isCapture, promotion, isCheck, isGameEnd, priority);
     }
 }

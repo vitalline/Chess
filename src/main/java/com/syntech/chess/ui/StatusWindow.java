@@ -88,7 +88,7 @@ public class StatusWindow {
         baseUI.displayLogAndOrLogButton();
         ImGui.sameLine();
         if (CellGraphics.display("start", translation.get("action.ai.start"), cellSize, Color.MOVE_WHITE, -1)) {
-            baseUI.startAI(3);
+            baseUI.startAI(5);
         }
         ImGui.sameLine();
         if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.MOVABLE_WHITE, -2)) {

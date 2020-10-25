@@ -8,7 +8,11 @@ import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AI extends Thread {
     private static final int WIN_SCORE = Integer.MAX_VALUE;
@@ -16,6 +20,8 @@ public class AI extends Thread {
     private Board board;
     private Move bestMove;
     private Move[] currentMoves;
+    private ArrayList<Move> moves = null;
+    private ArrayList<Integer> scores = null;
     private int currentDepth = -1;
     private boolean shouldRun = false;
 
@@ -51,7 +57,7 @@ public class AI extends Thread {
             }
             return 0;
         }
-        moves = board.getAllAvailableMoves(side.getOpponent());
+        moves = board.getAllAvailableMoves(side.getOpponent()); // no moves !!!
         for (Move ignored : moves) {
             opponentMoveScore += 1;
         }
@@ -86,22 +92,28 @@ public class AI extends Thread {
     private int run(@NotNull Board board, int maxDepth, int currentDepth, int alpha, int beta) {
         Side side = board.getTurnSide();
         if (!shouldRun) return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
-        ArrayList<Move> moves = board.getAllAvailableMoves(side);
+        ArrayList<Move> moves = this.moves;
+        if (currentDepth != 0 || this.moves == null) {
+            moves = board.getAllAvailableMoves(side);
+            if (this.moves == null) {
+                Collections.shuffle(moves);
+                this.moves = moves;
+            }
+        }
         if (moves.size() == 0) {
             if (board.isInCheck(side)) {
                 return (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
             }
             return 0;
         }
+        //Make a random move if stopped abruptly and no actually good moves were found (yet).
+        Collections.shuffle(moves);
         if (currentDepth == 0) {
-            //Make a random move if stopped abruptly and no actually good moves were found (yet).
-            Collections.shuffle(moves);
             if (moves.size() > 0) {
                 this.bestMove = moves.get(0);
                 this.bestMove.setData(board);
             }
         }
-        Collections.shuffle(moves);
         int bestScore = (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
         if (maxDepth > 1 && currentDepth == 0) {
             Board copy = board;
@@ -113,7 +125,12 @@ public class AI extends Thread {
             }
             run(copy, maxDepth - 1, 0, alpha, beta);
         }
+        if (currentDepth == 0) {
+            moves = this.moves;
+            this.scores = new ArrayList<>(Arrays.asList(new Integer[moves.size()]));
+        }
         Move bestMove = this.bestMove;
+        int currentMoveIndex = 0;
         for (Move move : moves) {
             Board copy = board;
             try {
@@ -131,6 +148,11 @@ public class AI extends Thread {
             } else {
                 score = evaluateBoard(copy);
             }
+            if (currentDepth == 0) {
+                this.moves.set(currentMoveIndex, move);
+                this.scores.set(currentMoveIndex, score);
+            }
+            currentMoveIndex++;
             if ((side == Side.WHITE) ? bestScore < score : bestScore > score) {
                 bestScore = score;
                 bestMove = move;
@@ -149,6 +171,11 @@ public class AI extends Thread {
                 if (shouldRun) {
                     this.currentDepth = currentDepth;
                     if (currentDepth == 0) {
+                        this.moves = (ArrayList<Move>)
+                                IntStream.range(0, this.scores.size()).boxed()
+                                        .sorted(Comparator.comparingInt(i -> -scores.get(i)))
+                                        .map(i -> this.moves.get(i))
+                                        .collect(Collectors.toList());
                         this.bestMove = bestMove;
                         this.bestMove.setData(board);
                     }
