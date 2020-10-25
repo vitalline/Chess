@@ -103,16 +103,25 @@ public class AI extends Thread {
         }
         Collections.shuffle(moves);
         int bestScore = (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
-        Move bestMove = null;
-        for (Move move : moves) {
-            Board copy = null;
+        if (maxDepth > 1 && currentDepth == 0) {
+            Board copy = board;
             try {
                 copy = (Board) board.clone();
                 copy.recreateMoveLog();
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
-            assert copy != null; //probably not the smartest option here tbh
+            run(copy, maxDepth - 1, 0, alpha, beta);
+        }
+        Move bestMove = this.bestMove;
+        for (Move move : moves) {
+            Board copy = board;
+            try {
+                copy = (Board) board.clone();
+                copy.recreateMoveLog();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
             copy.updateMove(move);
             copy.simulatedRedo();
             currentMoves[currentDepth] = move;
