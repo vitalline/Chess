@@ -20,7 +20,7 @@ public class AI extends Thread {
     private Move[] currentMoves;
     private ArrayList<Hashtable<Move, Integer>> deepMoveScores;
     private ArrayList<Hashtable<Move, Integer>> deepMoveCounts;
-    private int currentDepth = -1;
+    private int currentDepth = 0;
     private static final int MAX_DISPLAYED_DEPTH = 3;
     private boolean shouldRun = false;
 
