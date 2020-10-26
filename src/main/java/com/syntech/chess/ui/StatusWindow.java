@@ -24,7 +24,7 @@ public class StatusWindow {
         Translation translation = baseUI.getTranslation();
         int cellSize = baseUI.getCellSize();
 
-        ImGui.begin("Game Status", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
+        ImGui.begin(BaseUI.STATUS_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
 
         baseUI.displayStatusText();
 

@@ -25,6 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseUI {
     private static final int MAX_PGN_SIZE = 10240;
+    static final String BOARD_WINDOW_NAME = "Board";
+    static final String MENU_WINDOW_NAME = "Menu";
+    static final String STATUS_WINDOW_NAME = "Game Status";
     private int width, height;
     private final int cellSize = 50, margin = 10, speed = 65;
     private boolean windowLoaded = false;
@@ -189,7 +192,7 @@ public class BaseUI {
 
     void displayLogAndOrLogButton() {
         if (showLog) {
-            board.displayLog(width - 2 * margin, height - board.getWindowHeight() - 3 * margin,
+            displayLog(board, width - 2 * margin, height - board.getWindowHeight() - 3 * margin,
                     margin, board.getWindowHeight() + 2 * margin, width * 4 / cellSize);
             if (CellGraphics.display("log_opened", translation.get("action.log.close"), cellSize, Color.WHITE, -1)) {
                 filename = saveMode ? null : filename;
@@ -201,6 +204,50 @@ public class BaseUI {
                 showLog = true;
             }
         }
+    }
+
+    public void displayLog(@NotNull Board board, float width, float height, float posX, float posY, int characterWidth) {
+        ImGui.setWindowSize("Turn Info", width, height);
+        ImGui.setWindowPos("Turn Info", posX, posY);
+        ImGui.begin("Turn Info", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < board.getTurn(); i++) {
+            String move = board.getMoveLog().get(i).toNotation(translation);
+            String paddedMove;
+            if (i % 2 == 0) {
+                move = String.format("%d. ", i / 2 + 1) + move;
+            }
+            paddedMove = move;
+            if (i != 0) {
+                if (i % 2 == 0) {
+                    paddedMove = "   " + paddedMove;
+                } else {
+                    paddedMove = " " + paddedMove;
+                }
+            }
+            if (sb.length() - sb.lastIndexOf("\n") + paddedMove.length() > characterWidth) {
+                sb.append("\n");
+                sb.append(move);
+            } else {
+                sb.append(paddedMove);
+            }
+        }
+        String result = board.getResultString();
+        if (result.length() > 1) {
+            if (board.getTurn() % 2 == 0) {
+                result = "   " + result;
+            } else {
+                result = " " + result;
+            }
+            if (sb.length() - sb.lastIndexOf("\n") + result.length() > characterWidth) {
+                sb.append("\n");
+                sb.append(board.getResultString());
+            } else {
+                sb.append(result);
+            }
+        }
+        ImGui.text(sb.toString());
+        ImGui.end();
     }
 
     boolean canUndo() {
@@ -321,22 +368,24 @@ public class BaseUI {
             if (setup == null || board == null) {
                 menuWindow.display();
             }
-            ImGui.setWindowPos("Menu", margin, margin);
+            ImGui.setWindowPos(MENU_WINDOW_NAME, margin, margin);
             displayLanguageWindow();
             ImGui.popStyleColor(3);
             if (setup != null && board != null) {
                 if (board.getTranslation() != translation) {
                     board.setTranslation(translation);
                 }
-                if (board.display("Board", cellSize)) {
+                if (board.display(BOARD_WINDOW_NAME, cellSize)) {
                     resetFilename();
                     resetAI();
                 }
-                ImGui.setWindowPos("Board", margin, margin);
+                ImGui.setWindowPos(BOARD_WINDOW_NAME, margin, margin);
                 statusWindow.display();
                 if (board != null) {
-                    if (board.getWindowHeight() > cellSize && board.getWindowWidth() > cellSize) {
-                        ImGui.setWindowPos("Game Status",
+                    if (board.getWindowWidth() > cellSize * 10 && board.getWindowHeight() < cellSize * 8) {
+                        ImGui.setWindowPos(STATUS_WINDOW_NAME, margin, board.getWindowHeight() + 2 * margin);
+                    } else {
+                        ImGui.setWindowPos(STATUS_WINDOW_NAME,
                                 board.getWindowWidth() + 2 * margin,
                                 board.getWindowHeight() - statusWindow.getWindowHeight() + margin);
                     }

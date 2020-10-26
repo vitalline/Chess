@@ -1015,4 +1015,18 @@ public class StartingPositions extends PieceFactory {
                 }
         };
     }
+
+    public static final Piece[][] forcedChess3D = {
+            {},
+            {},
+            {},
+            {}
+    };
+
+    public static final Piece[][] modestForcedChess3D = {
+            {},
+            {},
+            {},
+            {}
+    };
 }

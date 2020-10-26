@@ -1,6 +1,7 @@
 package com.syntech.chess.rules;
 
 import com.syntech.chess.logic.Board;
+import com.syntech.chess.logic.Board3D;
 import com.syntech.chess.logic.CyclicBoard;
 import com.syntech.chess.logic.LevellingData;
 import com.syntech.chess.logic.pieces.Piece;
@@ -38,6 +39,8 @@ public enum Setup {
     FORCED_INVOLUTION_FORCED_CHESS("chess.forced.down.telefrag", StartingPositions.forcedInvolutionForcedChess),
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
+    FORCED_CHESS_3D("chess.forced.3d", StartingPositions.forcedChess3D),
+    MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
     FORCED_CHESS_8X8("chess.forced.8x8", StartingPositions.forcedChess8x8),
     CYCLIC_CHESS_8X12("chess.cyclic.8x12", StartingPositions.chess8x12),
     CYCLIC_CHESS_8X16("chess.cyclic.8x16", StartingPositions.chess8x16),
@@ -100,16 +103,20 @@ public enum Setup {
 
     @NotNull
     public Board getBoard() {
-        if (gameType.contains("cyclic")) {
-            return new CyclicBoard(pieces, true, true);
-        } else if (pieces != null) {
-            return new Board(pieces, true, true);
+        if (!isEmpty()) {
+            if (gameType.contains("cyclic")) {
+                return new CyclicBoard(pieces, true, true);
+            } else if (gameType.contains("3d")) {
+                return new Board3D(pieces, 4, true, true);
+            } else {
+                return new Board(pieces, true, true);
+            }
         }
         return new Board("error.internal.setup_has_no_pieces");
     }
 
     public boolean isEmpty() {
-        return pieces == null;
+        return pieces == null || pieces.length == 0 || pieces[0].length == 0;
     }
 
     public Board boardButton(@NotNull Translation translation) {

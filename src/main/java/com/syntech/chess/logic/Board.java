@@ -155,22 +155,10 @@ public class Board implements Cloneable {
         ImGui.getStyle().setItemSpacing(0, 0);
         ImGui.getStyle().setFramePadding(0, 0);
 
-        boolean inputReceived = false;
-
         ImGui.begin(name, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
-        displayLabelRow(size, 0);
-        for (int row = height - 1; row >= 0; row--) {
-            displayLabel(Move.getRow(row), size / 2, size, 0);
-            ImGui.sameLine();
-            for (int col = 0; col < width; col++) {
-                if (displayCell(size, row, col)) {
-                    inputReceived = true;
-                }
-                ImGui.sameLine();
-            }
-            displayLabel(Move.getRow(row), size / 2, size, 1);
-        }
-        displayLabelRow(size, 1);
+
+        boolean inputReceived = displayBoard(size);
+
         windowWidth = ImGui.getWindowWidth();
         windowHeight = ImGui.getWindowHeight();
         ImGui.end();
@@ -216,15 +204,36 @@ public class Board implements Cloneable {
         return inputReceived;
     }
 
-    private boolean displayCell(float size, int row, int col) {
-        if (CellGraphics.display(getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * height + row)) {
+    protected boolean displayBoard(float size) {
+
+        boolean inputReceived = false;
+
+        displayLabelRow(size, 0);
+        for (int row = getHeight() - 1; row >= 0; row--) {
+            displayLabel(Move.getRow(row), size / 2, size, 0);
+            ImGui.sameLine();
+            for (int col = 0; col < getWidth(); col++) {
+                if (displayCell(size, row, col)) {
+                    inputReceived = true;
+                }
+                ImGui.sameLine();
+            }
+            displayLabel(Move.getRow(row), size / 2, size, 1);
+        }
+        displayLabelRow(size, 1);
+
+        return inputReceived;
+    }
+
+    protected boolean displayCell(float size, int row, int col) {
+        if (CellGraphics.display(getPiece(row, col), getLabel(row, col), size, getColor(row, col), col * getHeight() + row)) {
             analyzeInput(row, col);
             return true;
         }
         return false;
     }
 
-    private void displayLabel(String label, float x, float y, int id) {
+    protected void displayLabel(String label, float x, float y, int id) {
         ImGui.pushStyleColor(ImGuiCol.Button, Color.NONE.getColor());
         ImGui.pushStyleColor(ImGuiCol.ButtonHovered, Color.NONE.getColor());
         ImGui.pushStyleColor(ImGuiCol.ButtonActive, Color.NONE.getColor());
@@ -234,60 +243,14 @@ public class Board implements Cloneable {
         ImGui.popStyleColor(3);
     }
 
-    private void displayLabelRow(float size, int id) {
+    protected void displayLabelRow(float size, int id) {
         displayLabel("", size / 2, size / 2, id * 2);
         ImGui.sameLine();
-        ImGui.pushID(id);
-        for (int col = 0; col < width; col++) {
+        for (int col = 0; col < getWidth(); col++) {
             displayLabel("" + Move.getColumn(col), size, size / 2, id);
             ImGui.sameLine();
         }
-        ImGui.popID();
         displayLabel("", size / 2, size / 2, id * 2 + 1);
-    }
-
-    public void displayLog(float width, float height, float posX, float posY, int characterWidth) {
-        ImGui.setWindowSize("Turn Info", width, height);
-        ImGui.setWindowPos("Turn Info", posX, posY);
-        ImGui.begin("Turn Info", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < turn; i++) {
-            String move = moveLog.get(i).toNotation(translation);
-            String paddedMove;
-            if (i % 2 == 0) {
-                move = String.format("%d. ", i / 2 + 1) + move;
-            }
-            paddedMove = move;
-            if (i != 0) {
-                if (i % 2 == 0) {
-                    paddedMove = "   " + paddedMove;
-                } else {
-                    paddedMove = " " + paddedMove;
-                }
-            }
-            if (sb.length() - sb.lastIndexOf("\n") + paddedMove.length() > characterWidth) {
-                sb.append("\n");
-                sb.append(move);
-            } else {
-                sb.append(paddedMove);
-            }
-        }
-        String result = getResultString();
-        if (result.length() > 1) {
-            if (turn % 2 == 0) {
-                result = "   " + result;
-            } else {
-                result = " " + result;
-            }
-            if (sb.length() - sb.lastIndexOf("\n") + result.length() > characterWidth) {
-                sb.append("\n");
-                sb.append(getResultString());
-            } else {
-                sb.append(result);
-            }
-        }
-        ImGui.text(sb.toString());
-        ImGui.end();
     }
 
     public float getWindowWidth() {
@@ -452,7 +415,7 @@ public class Board implements Cloneable {
     }
 
     @NotNull
-    private String getResultString() {
+    public String getResultString() {
         if (gameEnded) {
             if (isInCheck(getTurnSide())) {
                 if (getTurnSide() == Side.WHITE) {
@@ -505,23 +468,23 @@ public class Board implements Cloneable {
 
     private Color getColor(int row, int col) {
         if (nothingIsSelected()) {
-            return (width - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+            return (getWidth() - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
         } else if (!selectedPieceIsValid() && movablePieces.contains(new Point(row, col))) {
-            return (width - col + row) % 2 != 0 ? Color.MOVABLE_WHITE : Color.MOVABLE_BLACK;
+            return (getWidth() - col + row) % 2 != 0 ? Color.MOVABLE_WHITE : Color.MOVABLE_BLACK;
         } else if (isSelected(row, col)) {
-            return (width - col + row) % 2 != 0 ? Color.SELECTED_WHITE : Color.SELECTED_BLACK;
+            return (getWidth() - col + row) % 2 != 0 ? Color.SELECTED_WHITE : Color.SELECTED_BLACK;
         } else if (Move.contains(availableMoves, row, col)) {
-            return (width - col + row) % 2 != 0 ? Color.MOVE_WHITE : Color.MOVE_BLACK;
+            return (getWidth() - col + row) % 2 != 0 ? Color.MOVE_WHITE : Color.MOVE_BLACK;
         } else if (Move.contains(availableCaptures, row, col)) {
-            return (width - col + row) % 2 != 0 ? Color.CAPTURE_WHITE : Color.CAPTURE_BLACK;
+            return (getWidth() - col + row) % 2 != 0 ? Color.CAPTURE_WHITE : Color.CAPTURE_BLACK;
         }
-        return (width - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+        return (getWidth() - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
     }
 
     public void updatePieces() {
         pieces = new ArrayList<>();
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
+        for (int row = 0; row < getHeight(); row++) {
+            for (int col = 0; col < getWidth(); col++) {
                 Piece piece = getPiece(row, col);
                 sideCache[row][col] = piece.getSide();
                 typeCache[row][col] = piece.getType();
@@ -774,6 +737,10 @@ public class Board implements Cloneable {
             }
         }
         return pieces;
+    }
+
+    public ArrayList<Move> getMoveLog() {
+        return new ArrayList<>(moveLog);
     }
 
     public void saveToPGN(@NotNull String path, Setup setup) throws IOException {

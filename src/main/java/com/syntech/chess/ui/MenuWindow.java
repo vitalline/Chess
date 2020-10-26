@@ -22,7 +22,7 @@ public class MenuWindow {
         Translation translation = baseUI.getTranslation();
         int cellSize = baseUI.getCellSize();
 
-        ImGui.begin("Menu", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
+        ImGui.begin(BaseUI.MENU_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
 
         for (int i = menuPage * MENU_BUTTON_AMOUNT; i < (menuPage + 1) * MENU_BUTTON_AMOUNT && i < Setup.values().length; i++) {
             if (!Setup.values()[i].isEmpty()) {
