@@ -19,18 +19,18 @@ public class AmazonType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalMovement(position, board, moves);
-        MovementRules.addDiagonalMovement(position, board, moves);
-        MovementRules.addLeapingMovement(position, board, 1, 2, moves);
+        MovementRules.addOrthogonalMovement(moves, position, board);
+        MovementRules.addDiagonalMovement(moves, position, board);
+        MovementRules.addLeapingMovement(moves, position, board, 1, 2);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalCapturing(position, board, moves);
-        MovementRules.addDiagonalCapturing(position, board, moves);
-        MovementRules.addLeapingCapturing(position, board, 1, 2, moves);
+        MovementRules.addOrthogonalCapturing(moves, position, board);
+        MovementRules.addDiagonalCapturing(moves, position, board);
+        MovementRules.addLeapingCapturing(moves, position, board, 1, 2);
         return moves;
     }
 

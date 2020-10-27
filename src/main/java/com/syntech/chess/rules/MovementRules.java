@@ -10,166 +10,100 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class MovementRules {
-    public static void addDiagonalMovement(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
-        PieceType type = board.getType(pos.x, pos.y);
+
+    private static void addDirectionalMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, PieceType type, int sx, int sy, int maxDistance) {
         int d = 1;
-        while (board.isFree(pos.x + d, pos.y + d)) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y + d));
-            d++;
-        }
-        d = 1;
-        while (board.isFree(pos.x + d, pos.y - d)) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y - d));
-            d++;
-        }
-        d = 1;
-        while (board.isFree(pos.x - d, pos.y + d)) {
-            moves.add(new Move(type, pos, pos.x - d, pos.y + d));
-            d++;
-        }
-        d = 1;
-        while (board.isFree(pos.x - d, pos.y - d)) {
-            moves.add(new Move(type, pos, pos.x - d, pos.y - d));
+        while (board.isFree(pos.x + sx * d, pos.y + sy * d) && d <= maxDistance) {
+            moves.add(new Move(type, pos, pos.x + sx * d, pos.y + sy * d));
             d++;
         }
     }
 
-    public static void addDiagonalCapturing(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
-        PieceType type = board.getType(pos.x, pos.y);
-        Side side = board.getSide(pos.x, pos.y);
+
+    private static void addDirectionalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, PieceType type, Side side, int sx, int sy, int maxDistance) {
         int d = 1;
-        while (board.isFree(pos.x + d, pos.y + d)) {
+        while (board.isFree(pos.x + sx * d, pos.y + sy * d)) {
             d++;
         }
-        if (board.getSide(pos.x + d, pos.y + d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y + d));
-        }
-        d = 1;
-        while (board.isFree(pos.x + d, pos.y - d)) {
-            d++;
-        }
-        if (board.getSide(pos.x + d, pos.y - d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y - d));
-        }
-        d = 1;
-        while (board.isFree(pos.x - d, pos.y + d)) {
-            d++;
-        }
-        if (board.getSide(pos.x - d, pos.y + d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - d, pos.y + d));
-        }
-        d = 1;
-        while (board.isFree(pos.x - d, pos.y - d)) {
-            d++;
-        }
-        if (board.getSide(pos.x - d, pos.y - d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - d, pos.y - d));
+        if (board.getSide(pos.x + sx * d, pos.y + sy * d) == side.getOpponent() && d <= maxDistance) {
+            moves.add(new Move(type, pos, pos.x + sx * d, pos.y + sy * d));
         }
     }
 
-    public static void addOrthogonalMovement(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
+    public static void addOrthogonalMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int maxDistance) {
         PieceType type = board.getType(pos.x, pos.y);
-        int d = 0;
-        while (board.isFree(pos.x + ++d, pos.y)) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y));
-        }
-        d = 0;
-        while (board.isFree(pos.x + --d, pos.y)) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y));
-        }
-        d = 0;
-        while (board.isFree(pos.x, pos.y + ++d)) {
-            moves.add(new Move(type, pos, pos.x, pos.y + d));
-        }
-        d = 0;
-        while (board.isFree(pos.x, pos.y + --d)) {
-            moves.add(new Move(type, pos, pos.x, pos.y + d));
+        for (int n = 0; n < 2; n++) {
+            for (int i : new int[]{-1, 1}) {
+                int sx = n > 0 ? i : 0;
+                int sy = n > 0 ? 0 : i;
+                addDirectionalMovement(moves, pos, board, type, sx, sy, maxDistance);
+            }
         }
     }
 
-    public static void addOrthogonalCapturing(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
+    public static void addOrthogonalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int maxDistance) {
         PieceType type = board.getType(pos.x, pos.y);
         Side side = board.getSide(pos.x, pos.y);
-        int d = 0;
-        while (board.isFree(pos.x + ++d, pos.y)) {
-        }
-        if (board.getSide(pos.x + d, pos.y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y));
-        }
-        d = 0;
-        while (board.isFree(pos.x + --d, pos.y)) {
-        }
-        if (board.getSide(pos.x + d, pos.y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + d, pos.y));
-        }
-        d = 0;
-        while (board.isFree(pos.x, pos.y + ++d)) {
-        }
-        if (board.getSide(pos.x, pos.y + d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x, pos.y + d));
-        }
-        d = 0;
-        while (board.isFree(pos.x, pos.y + --d)) {
-        }
-        if (board.getSide(pos.x, pos.y + d) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x, pos.y + d));
+        for (int n = 0; n < 2; n++) {
+            for (int i : new int[]{-1, 1}) {
+                int sx = n > 0 ? i : 0;
+                int sy = n > 0 ? 0 : i;
+                addDirectionalCapturing(moves, pos, board, type, side, sx, sy, maxDistance);
+            }
         }
     }
 
-    public static void addLeapingMovement(@NotNull Point pos, @NotNull Board board, int x, int y, ArrayList<Move> moves) {
+    public static void addDiagonalMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int maxDistance) {
         PieceType type = board.getType(pos.x, pos.y);
-        if (board.isFree(pos.x + x, pos.y + y)) {
-            moves.add(new Move(type, pos, pos.x + x, pos.y + y));
-        }
-        if (board.isFree(pos.x + y, pos.y + x)) {
-            moves.add(new Move(type, pos, pos.x + y, pos.y + x));
-        }
-        if (board.isFree(pos.x - x, pos.y + y)) {
-            moves.add(new Move(type, pos, pos.x - x, pos.y + y));
-        }
-        if (board.isFree(pos.x - y, pos.y + x)) {
-            moves.add(new Move(type, pos, pos.x - y, pos.y + x));
-        }
-        if (board.isFree(pos.x + x, pos.y - y)) {
-            moves.add(new Move(type, pos, pos.x + x, pos.y - y));
-        }
-        if (board.isFree(pos.x + y, pos.y - x)) {
-            moves.add(new Move(type, pos, pos.x + y, pos.y - x));
-        }
-        if (board.isFree(pos.x - x, pos.y - y)) {
-            moves.add(new Move(type, pos, pos.x - x, pos.y - y));
-        }
-        if (board.isFree(pos.x - y, pos.y - x)) {
-            moves.add(new Move(type, pos, pos.x - y, pos.y - x));
+        for (int i : new int[]{-1, 1}) {
+            for (int j : new int[]{-1, 1}) {
+                addDirectionalMovement(moves, pos, board, type, i, j, maxDistance);
+            }
         }
     }
 
-    public static void addLeapingCapturing(@NotNull Point pos, @NotNull Board board, int x, int y, ArrayList<Move> moves) {
+    public static void addDiagonalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int maxDistance) {
         PieceType type = board.getType(pos.x, pos.y);
         Side side = board.getSide(pos.x, pos.y);
-        if (board.getSide(pos.x + x, pos.y + y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + x, pos.y + y));
+        for (int i : new int[]{-1, 1}) {
+            for (int j : new int[]{-1, 1}) {
+                addDirectionalCapturing(moves, pos, board, type, side, i, j, maxDistance);
+            }
         }
-        if (board.getSide(pos.x + y, pos.y + x) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + y, pos.y + x));
+    }
+
+    public static void addLeapingMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int a, int b) {
+        PieceType type = board.getType(pos.x, pos.y);
+        for (int n = 0; n < 2; n++) {
+            for (int i : new int[]{-1, 1}) {
+                for (int j : new int[]{-1, 1}) {
+                    int dx = i * (n > 0 ? a : b);
+                    int dy = j * (n > 0 ? b : a);
+                    if (dx == 0 && i == 1) continue;
+                    if (dy == 0 && j == 1) continue;
+                    if (board.isFree(pos.x + dx, pos.y + dy)) {
+                        moves.add(new Move(type, pos, pos.x + dx, pos.y + dy));
+                    }
+                }
+            }
         }
-        if (board.getSide(pos.x - x, pos.y + y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - x, pos.y + y));
-        }
-        if (board.getSide(pos.x - y, pos.y + x) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - y, pos.y + x));
-        }
-        if (board.getSide(pos.x + x, pos.y - y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + x, pos.y - y));
-        }
-        if (board.getSide(pos.x + y, pos.y - x) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x + y, pos.y - x));
-        }
-        if (board.getSide(pos.x - x, pos.y - y) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - x, pos.y - y));
-        }
-        if (board.getSide(pos.x - y, pos.y - x) == side.getOpponent()) {
-            moves.add(new Move(type, pos, pos.x - y, pos.y - x));
+    }
+
+    public static void addLeapingCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, int a, int b) {
+        PieceType type = board.getType(pos.x, pos.y);
+        Side side = board.getSide(pos.x, pos.y);
+        for (int n = 0; n < 2; n++) {
+            for (int i : new int[]{-1, 1}) {
+                for (int j : new int[]{-1, 1}) {
+                    int dx = i * (n > 0 ? a : b);
+                    int dy = j * (n > 0 ? b : a);
+                    if (dx == 0 && i == 1) continue;
+                    if (dy == 0 && j == 1) continue;
+                    if (board.getSide(pos.x + dx, pos.y + dy) == side.getOpponent()) {
+                        moves.add(new Move(type, pos, pos.x + dx, pos.y + dy));
+                    }
+                }
+            }
         }
     }
 
@@ -177,7 +111,7 @@ public class MovementRules {
         return side == Side.WHITE ? 1 : -1;
     }
 
-    public static void addPawnLikeMovement(@NotNull Point pos, @NotNull Board board, boolean hasNotMoved, ArrayList<Move> moves) {
+    public static void addPawnLikeMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board, boolean hasNotMoved) {
         PieceType type = board.getType(pos.x, pos.y);
         Side side = board.getSide(pos.x, pos.y);
         int moveDirection = getPawnMoveDirection(side);
@@ -190,7 +124,7 @@ public class MovementRules {
         }
     }
 
-    public static void addPawnLikeCapturing(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
+    public static void addPawnLikeCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
         PieceType type = board.getType(pos.x, pos.y);
         Side side = board.getSide(pos.x, pos.y);
         int moveDirection = getPawnMoveDirection(side);
@@ -202,27 +136,20 @@ public class MovementRules {
         }
     }
 
-    public static void addKingLikeMovement(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
-        PieceType type = board.getType(pos.x, pos.y);
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (board.isFree(pos.x + i, pos.y + j)) {
-                    moves.add(new Move(type, pos, pos.x + i, pos.y + j));
-                }
-            }
-        }
+    public static void addDiagonalMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
+        addDiagonalMovement(moves, pos, board, Integer.MAX_VALUE);
     }
 
-    public static void addKingLikeCapturing(@NotNull Point pos, @NotNull Board board, ArrayList<Move> moves) {
-        PieceType type = board.getType(pos.x, pos.y);
-        Side side = board.getSide(pos.x, pos.y);
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (board.getSide(pos.x + i, pos.y + j) == side.getOpponent()) {
-                    moves.add(new Move(type, pos, pos.x + i, pos.y + j));
-                }
-            }
-        }
+    public static void addDiagonalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
+        addDiagonalCapturing(moves, pos, board, Integer.MAX_VALUE);
+    }
+
+    public static void addOrthogonalMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
+        addOrthogonalMovement(moves, pos, board, Integer.MAX_VALUE);
+    }
+
+    public static void addOrthogonalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
+        addOrthogonalCapturing(moves, pos, board, Integer.MAX_VALUE);
     }
 
 }

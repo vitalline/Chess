@@ -972,6 +972,11 @@ public class StartingPositions extends PieceFactory {
     }
 
     @NotNull
+    private static Piece forcedChessPawn3D(PieceBaseType baseType, Side side) {
+        return piece(baseType, PieceType.PAWN_3D, side, new PromotionInfo(side == Side.WHITE ? 4 : 1, forcedChessPawn3DPromotions()), LevellingData.NONE);
+    }
+
+    @NotNull
     private static PieceType[] chessPawnPromotions() {
         return new PieceType[]{PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN};
     }
@@ -979,6 +984,11 @@ public class StartingPositions extends PieceFactory {
     @NotNull
     private static PieceType[] forcedChessPawnPromotions() {
         return new PieceType[]{PieceType.ROOK, PieceType.QUEEN};
+    }
+
+    @NotNull
+    private static PieceType[] forcedChessPawn3DPromotions() {
+        return new PieceType[]{PieceType.KNIGHT_3D, PieceType.BISHOP_3D, PieceType.ROOK_3D, PieceType.CARDINAL_3D, PieceType.QUEEN_3D};
     }
 
     @NotNull
@@ -1017,16 +1027,153 @@ public class StartingPositions extends PieceFactory {
     }
 
     public static final Piece[][] forcedChess3D = {
-            {},
-            {},
-            {},
-            {}
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CARDINAL_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CARDINAL_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CARDINAL_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CARDINAL_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK)
+            }
     };
 
+
     public static final Piece[][] modestForcedChess3D = {
-            {},
-            {},
-            {},
-            {}
+            {
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.QUEEN_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.CARDINAL_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.QUEEN_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.CARDINAL_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.CARDINAL_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KING_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.CARDINAL_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KING_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK)
+            },
+            {
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.WHITE),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn3D(PieceBaseType.MODEST_FORCED_PIECE, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.KNIGHT_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.BISHOP_3D, Side.BLACK),
+                    piece(PieceBaseType.MODEST_FORCED_PIECE, PieceType.ROOK_3D, Side.BLACK)
+            }
     };
 }

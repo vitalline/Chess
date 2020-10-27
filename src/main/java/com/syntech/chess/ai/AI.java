@@ -108,11 +108,16 @@ public class AI extends Thread {
             return 0;
         }
         //Make a random move if stopped abruptly and no actually good moves were found (yet).
-        Collections.shuffle(moves);
-        if (currentDepth == 0) {
-            if (moves.size() > 0) {
-                this.bestMove = moves.get(0);
-                this.bestMove.setData(board);
+        synchronized (this) {
+            Collections.shuffle(moves);
+            if (currentDepth == 0) {
+                if (moves.size() > 0) {
+                    this.bestMove = moves.get(0);
+                    this.bestMove.setData(board);
+                }
+                if (moves.size() == 1) {
+                    shouldRun = false;
+                }
             }
         }
         int bestScore = (side == Side.WHITE) ? -WIN_SCORE : WIN_SCORE;
@@ -149,7 +154,9 @@ public class AI extends Thread {
             }
             copy.updateMove(move);
             copy.simulatedRedo();
-            currentMoves[currentDepth] = move;
+            synchronized (this) {
+                currentMoves[currentDepth] = move;
+            }
             int score;
             if (maxDepth > currentDepth + 1) {
                 score = run(copy, maxDepth, currentDepth + 1, alpha, beta);

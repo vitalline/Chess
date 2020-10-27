@@ -182,6 +182,7 @@ public class CellGraphics {
         loadTexture(side, PieceType.KNIGHT);
         loadTexture(side, PieceType.BISHOP);
         loadTexture(side, PieceType.ROOK);
+        loadTexture(side, PieceType.CARDINAL);
         loadTexture(side, PieceType.QUEEN);
         loadTexture(side, PieceType.AMAZON);
         loadTexture(side, PieceType.KING);
@@ -196,6 +197,7 @@ public class CellGraphics {
         loadXPTextures(side, PieceType.KNIGHT);
         loadXPTextures(side, PieceType.BISHOP);
         loadXPTextures(side, PieceType.ROOK);
+        loadXPTextures(side, PieceType.CARDINAL);
         loadXPTextures(side, PieceType.QUEEN);
         loadXPTextures(side, PieceType.AMAZON);
         loadXPTextures(side, PieceType.KING);

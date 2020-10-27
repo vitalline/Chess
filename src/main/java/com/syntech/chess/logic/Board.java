@@ -319,7 +319,7 @@ public class Board implements Cloneable {
         piece.move(this, endRow, endCol);
         selectedPiece = new Point(endRow, endCol);
         updateMove(move);
-        if (getSelectedPiece().canBePromoted()) {
+        if (getSelectedPiece().canBePromoted(this)) {
             updatePieces();
             displayPromotionPopup = true;
         } else {
@@ -353,7 +353,7 @@ public class Board implements Cloneable {
         if (canRedo()) {
             Move move = moveLog.get(turn);
             move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol());
-            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted() && move.getPromotion() != PieceType.NONE) {
+            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
                 getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
                 advanceTurn();
             }
@@ -366,7 +366,7 @@ public class Board implements Cloneable {
         if (canRedo()) {
             Move move = moveLog.get(turn);
             move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
-            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted() && move.getPromotion() != PieceType.NONE) {
+            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
                 getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
                 advanceTurn();
             }
@@ -378,10 +378,10 @@ public class Board implements Cloneable {
         updateMovablePieces();
         status = getStatusConditions(getTurnSide());
         if (isInCheck(getTurnSide())) {
-            moveLog.get(turn - 1).setCheckFlag();
+            if (!moveLog.isEmpty()) moveLog.get(turn - 1).setCheckFlag();
         }
         if (gameEnded) {
-            moveLog.get(turn - 1).setGameEndFlag();
+            if (!moveLog.isEmpty()) moveLog.get(turn - 1).setGameEndFlag();
             displayResultPopup = true;
         }
     }
@@ -466,19 +466,23 @@ public class Board implements Cloneable {
         placePiece(piece, pos.x, pos.y);
     }
 
+    protected boolean cellColorIsWhite(int row, int col) {
+        return (getWidth() - col + row) % 2 != 0;
+    }
+
     private Color getColor(int row, int col) {
         if (nothingIsSelected()) {
-            return (getWidth() - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+            return cellColorIsWhite(row, col) ? Color.WHITE : Color.BLACK;
         } else if (!selectedPieceIsValid() && movablePieces.contains(new Point(row, col))) {
-            return (getWidth() - col + row) % 2 != 0 ? Color.MOVABLE_WHITE : Color.MOVABLE_BLACK;
+            return cellColorIsWhite(row, col) ? Color.MOVABLE_WHITE : Color.MOVABLE_BLACK;
         } else if (isSelected(row, col)) {
-            return (getWidth() - col + row) % 2 != 0 ? Color.SELECTED_WHITE : Color.SELECTED_BLACK;
+            return cellColorIsWhite(row, col) ? Color.SELECTED_WHITE : Color.SELECTED_BLACK;
         } else if (Move.contains(availableMoves, row, col)) {
-            return (getWidth() - col + row) % 2 != 0 ? Color.MOVE_WHITE : Color.MOVE_BLACK;
+            return cellColorIsWhite(row, col) ? Color.MOVE_WHITE : Color.MOVE_BLACK;
         } else if (Move.contains(availableCaptures, row, col)) {
-            return (getWidth() - col + row) % 2 != 0 ? Color.CAPTURE_WHITE : Color.CAPTURE_BLACK;
+            return cellColorIsWhite(row, col) ? Color.CAPTURE_WHITE : Color.CAPTURE_BLACK;
         }
-        return (getWidth() - col + row) % 2 != 0 ? Color.WHITE : Color.BLACK;
+        return cellColorIsWhite(row, col) ? Color.WHITE : Color.BLACK;
     }
 
     public void updatePieces() {
@@ -499,7 +503,7 @@ public class Board implements Cloneable {
         allAvailableBlackMoves = null;
     }
 
-    private void updateMovablePieces() {
+    protected void updateMovablePieces() {
         movablePieces = new ArrayList<>();
         for (Point p : this.pieces) {
             if (getSide(p.x, p.y) == getTurnSide()) {
@@ -655,6 +659,10 @@ public class Board implements Cloneable {
             moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }
         return moveResult;
+    }
+
+    public int getPromotionCoordinate(@NotNull Point position) {
+        return position.x;
     }
 
     public boolean isInCheck(@NotNull Side side) {

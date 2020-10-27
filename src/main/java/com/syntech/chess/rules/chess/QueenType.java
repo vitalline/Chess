@@ -19,16 +19,16 @@ public class QueenType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalMovement(position, board, moves);
-        MovementRules.addDiagonalMovement(position, board, moves);
+        MovementRules.addOrthogonalMovement(moves, position, board);
+        MovementRules.addDiagonalMovement(moves, position, board);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalCapturing(position, board, moves);
-        MovementRules.addDiagonalCapturing(position, board, moves);
+        MovementRules.addOrthogonalCapturing(moves, position, board);
+        MovementRules.addDiagonalCapturing(moves, position, board);
         return moves;
     }
 

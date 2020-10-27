@@ -4,12 +4,17 @@ import com.syntech.chess.logic.pieces.Piece;
 import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+
 public class Board3D extends Board {
     private int boardWidth;
 
     public Board3D(@NotNull Piece[][] board, int boardWidth, boolean initialize, boolean update) {
-        super(board, initialize, update);
+        super(board, initialize, false);
         this.boardWidth = boardWidth;
+        if (update) {
+            updateMovablePieces();
+        }
     }
 
     public Board3D(@NotNull Piece[][] board, int boardWidth, int turn) {
@@ -17,6 +22,7 @@ public class Board3D extends Board {
         this.boardWidth = boardWidth;
     }
 
+    @Override
     protected boolean displayBoard(float size) {
 
         boolean inputReceived = false;
@@ -40,6 +46,7 @@ public class Board3D extends Board {
         return inputReceived;
     }
 
+    @Override
     protected void displayLabelRow(float size, int id) {
         for (int col = 0; col < getWidth(); col++) {
             if (getBoard(col) > getBoard(col - 1)) {
@@ -50,6 +57,25 @@ public class Board3D extends Board {
             ImGui.sameLine();
         }
         displayLabel("", size / 2, size / 2, id * (getBoardAmount() + 1) + getBoardAmount());
+    }
+
+    @Override
+    public int getPromotionCoordinate(@NotNull Point position) {
+        return getBoard(position.y);
+    }
+
+    @Override
+    public Board getMoveResultWithoutPromotion(Move move) {
+        Board3D nextTurn = new Board3D(getBoard(), boardWidth, turn);
+        if (move != null) {
+            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+        }
+        return nextTurn;
+    }
+
+    @Override
+    protected boolean cellColorIsWhite(int row, int col) {
+        return (getWidth() - col + row + getBoardAmount() - getBoard(col)) % 2 == 0;
     }
 
     public int getBoardAmount() {
@@ -69,6 +95,8 @@ public class Board3D extends Board {
     }
 
     public int getInternalCol(int col, int board) {
-        return board * getBoardWidth() + col;
+        if (board >= 0 && board < getBoardAmount() && col >= 0 && col < getBoardWidth())
+            return board * getBoardWidth() + col;
+        return -1;
     }
 }

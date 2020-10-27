@@ -19,14 +19,16 @@ public class KingType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeMovement(position, board, moves);
+        MovementRules.addOrthogonalMovement(moves, position, board, 1);
+        MovementRules.addDiagonalMovement(moves, position, board, 1);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeCapturing(position, board, moves);
+        MovementRules.addOrthogonalCapturing(moves, position, board, 1);
+        MovementRules.addDiagonalCapturing(moves, position, board, 1);
         return moves;
     }
 

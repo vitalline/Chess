@@ -193,8 +193,13 @@ public class BaseUI {
 
     void displayLogAndOrLogButton() {
         if (showLog) {
-            displayLog(board, width - 2 * margin, height - board.getWindowHeight() - 3 * margin,
-                    margin, board.getWindowHeight() + 2 * margin, width * 4 / cellSize);
+            float logHeight = height - board.getWindowHeight() - 3 * margin;
+            float posY = board.getWindowHeight() + 2 * margin;
+            if (board.getWindowWidth() > cellSize * 10 && board.getWindowHeight() < cellSize * 8) {
+                logHeight -= statusWindow.getWindowHeight() + margin;
+                posY += statusWindow.getWindowHeight() + margin;
+            }
+            displayLog(board, width - 2 * margin, logHeight, margin, posY, width * 4 / cellSize);
             if (CellGraphics.display("log_opened", translation.get("action.log.close"), cellSize, Color.WHITE, -1)) {
                 filename = saveMode ? null : filename;
                 showLog = false;

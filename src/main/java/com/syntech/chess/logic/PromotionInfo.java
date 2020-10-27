@@ -1,11 +1,11 @@
 package com.syntech.chess.logic;
 
 public class PromotionInfo implements Cloneable {
-    private int promotionRow;
+    private int promotionCoordinate;
     private PieceType[] possiblePromotionPieces;
 
-    public PromotionInfo(int promotionRow, PieceType... pieces) {
-        this.promotionRow = promotionRow;
+    public PromotionInfo(int promotionCoordinate, PieceType... pieces) {
+        this.promotionCoordinate = promotionCoordinate;
         this.possiblePromotionPieces = pieces;
     }
 
@@ -20,7 +20,7 @@ public class PromotionInfo implements Cloneable {
         return possiblePromotionPieces;
     }
 
-    public boolean canBePromoted(int row) {
-        return (row == promotionRow - 1);
+    public boolean canBePromoted(int coordinate) {
+        return (coordinate == promotionCoordinate - 1);
     }
 }

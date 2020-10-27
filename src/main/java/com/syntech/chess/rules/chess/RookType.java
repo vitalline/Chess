@@ -19,14 +19,14 @@ public class RookType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalMovement(position, board, moves);
+        MovementRules.addOrthogonalMovement(moves, position, board);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addOrthogonalCapturing(position, board, moves);
+        MovementRules.addOrthogonalCapturing(moves, position, board);
         return moves;
     }
 

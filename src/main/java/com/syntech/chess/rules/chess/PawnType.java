@@ -20,14 +20,14 @@ public class PawnType extends MovementType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeMovement(position, board, false, moves);
+        MovementRules.addPawnLikeMovement(moves, position, board, false);
         return moves;
     }
 
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Point position, @NotNull Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addPawnLikeCapturing(position, board, moves);
+        MovementRules.addPawnLikeCapturing(moves, position, board);
         return moves;
     }
 

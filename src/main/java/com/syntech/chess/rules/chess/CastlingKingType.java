@@ -19,7 +19,8 @@ public class CastlingKingType extends SpecialFirstMoveType {
     @Override
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeMovement(position, board, moves);
+        MovementRules.addOrthogonalMovement(moves, position, board, 1);
+        MovementRules.addDiagonalMovement(moves, position, board, 1);
         moves = board.excludeMovesThatLeaveKingInCheck(side, moves);
         if (hasNotMoved()
                 && Move.contains(moves, position.x, position.y + 1)
@@ -46,7 +47,8 @@ public class CastlingKingType extends SpecialFirstMoveType {
     @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        MovementRules.addKingLikeCapturing(position, board, moves);
+        MovementRules.addOrthogonalCapturing(moves, position, board, 1);
+        MovementRules.addDiagonalCapturing(moves, position, board, 1);
         return moves;
     }
 
