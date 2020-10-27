@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class BaseUI {
     private static final int MAX_PGN_SIZE = 10240;
     static final String BOARD_WINDOW_NAME = "Board";
+    static final String LOG_WINDOW_NAME = "Turn Info";
     static final String MENU_WINDOW_NAME = "Menu";
     static final String STATUS_WINDOW_NAME = "Game Status";
     private int width, height;
@@ -207,9 +208,9 @@ public class BaseUI {
     }
 
     public void displayLog(@NotNull Board board, float width, float height, float posX, float posY, int characterWidth) {
-        ImGui.setWindowSize("Turn Info", width, height);
-        ImGui.setWindowPos("Turn Info", posX, posY);
-        ImGui.begin("Turn Info", new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
+        ImGui.setWindowSize(LOG_WINDOW_NAME, width, height);
+        ImGui.setWindowPos(LOG_WINDOW_NAME, posX, posY);
+        ImGui.begin(LOG_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < board.getTurn(); i++) {
             String move = board.getMoveLog().get(i).toNotation(translation);
@@ -407,14 +408,14 @@ public class BaseUI {
         if (showErrorMessage) {
             ImGui.openPopup(translation.get("window.error"));
         }
-        displayInfoPopupIfNeeded();
-        displaySettingsPopupIfNeeded();
-        displayErrorPopupIfNeeded();
+        if (showInfo) displayInfoPopup();
+        if (showSettings) displaySettingsPopup();
+        if (showErrorMessage) displayErrorPopup();
 
         ImGui.render();
     }
 
-    private void displayInfoPopupIfNeeded() {
+    private void displayInfoPopup() {
         boolean prev = false, next = false;
 
         if (ImGui.beginPopupModal(translation.get("window.info"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize)) {
@@ -470,7 +471,7 @@ public class BaseUI {
         }
     }
 
-    private void displaySettingsPopupIfNeeded() {
+    private void displaySettingsPopup() {
         if (ImGui.beginPopupModal(translation.get("window.settings"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize)) {
 
             int[] aiSettings = new int[1];
@@ -507,26 +508,12 @@ public class BaseUI {
             ImGui.endPopup();
         }
 
-        if (windowLoaded) {
-            ImGui.setWindowPos(translation.get("window.settings"), posX, posY);
-        } else if (posX == -1 && posY == -1) {
-            posX = (width - ImGui.getWindowWidth()) / 2;
-            posY = (height - ImGui.getWindowHeight()) / 2;
-        } else {
-            windowLoaded = true;
-            posX = (width - ImGui.getWindowWidth()) / 2;
-            posY = (height - ImGui.getWindowHeight()) / 2;
-        }
-
         if (!ImGui.isPopupOpen(translation.get("window.settings"))) {
             showSettings = false;
-            windowLoaded = false;
-            posX = -1;
-            posY = -1;
         }
     }
 
-    private void displayErrorPopupIfNeeded() {
+    private void displayErrorPopup() {
         if (ImGui.beginPopupModal(translation.get("window.error"), new ImBoolean(true), ImGuiWindowFlags.AlwaysAutoResize)) {
             if (errorMessage != null) {
                 ImGui.text(errorMessage);
