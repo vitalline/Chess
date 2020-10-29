@@ -44,7 +44,7 @@ public class MenuWindow {
 
         ImGui.sameLine();
 
-        if (menuPage < Setup.values().length / MENU_BUTTON_AMOUNT) {
+        if (menuPage < (Setup.values().length - 2) / MENU_BUTTON_AMOUNT) {
             if (CellGraphics.display("right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
                 ++menuPage;
             }
