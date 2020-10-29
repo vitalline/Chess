@@ -20,6 +20,7 @@ public enum Setup {
     MODEST_FORCED_CHESS("chess.forced.modest", StartingPositions.modestForcedChess),
     FORCE_MAJOR_CHESS("chess.forced.major", StartingPositions.forceMajorChess),
     FORCE_MINOR_CHESS("chess.forced.minor", StartingPositions.forceMinorChess),
+    CYCLIC_FORCED_CHESS("chess.forced.cyclic", StartingPositions.forcedChess),
     CYCLIC_MODEST_FORCED_CHESS("chess.forced.modest.cyclic", StartingPositions.modestForcedChess),
     CHESS_4x4("chess.4x4", StartingPositions.chess4x4),
     SNIPER_FORCED_CHESS("chess.forced.sniper", StartingPositions.sniperChess),
@@ -42,6 +43,7 @@ public enum Setup {
     FORCED_CHESS_3D("chess.forced.3d", StartingPositions.forcedChess3D),
     MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
     FORCED_CHESS_8X8("chess.forced.8x8", StartingPositions.forcedChess8x8),
+    CYCLIC_FORCED_CHESS_8X8("chess.forced.cyclic.8x8", StartingPositions.forcedChess8x8),
     CYCLIC_CHESS_8X12("chess.cyclic.8x12", StartingPositions.chess8x12),
     CYCLIC_CHESS_8X16("chess.cyclic.8x16", StartingPositions.chess8x16),
     CREDITS("credits", null);

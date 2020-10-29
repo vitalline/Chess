@@ -15,6 +15,8 @@
   "chess.forced.major.name": "Force Major Chess",
   "chess.forced.minor.short": "Force Minor Chess",
   "chess.forced.minor.name": "Force Minor Chess",
+  "chess.forced.cyclic.short": "Cyclic Forced Chess",
+  "chess.forced.cyclic.name": "Cyclic Forced Chess",
   "chess.forced.modest.cyclic.short": "Cyclic Modest Frc. Ch.",
   "chess.forced.modest.cyclic.name": "Cyclic Modest Forced Chess",
   "chess.4x4.short": "Classical Chess 4×4",
@@ -59,6 +61,8 @@
   "chess.forced.3d.modest.name": "Modest Forced Chess 3D",
   "chess.forced.8x8.short": "Forced Chess 8×8",
   "chess.forced.8x8.name": "Forced Chess 8×8",
+  "chess.forced.cyclic.8x8.short": "Cyclic Forced Chess 8×8",
+  "chess.forced.cyclic.8x8.name": "Cyclic Forced Chess 8×8",
   "chess.cyclic.8x12.short": "Cyclic Chess 8×12",
   "chess.cyclic.8x12.name": "Cyclic Chess 8×12",
   "chess.cyclic.8x16.short": "Cyclic Chess 8×16",
@@ -182,12 +186,15 @@
     "Same as Forced Chess, but every piece (except the kings) is a pawn.",
     "Well, at least they can be promoted."
   ],
+  "chess.forced.cyclic.info": [
+    "Forced Chess... on a cyclic board.",
+    "Just like in regular Cyclic Chess, the edges are connected."
+  ],
   "chess.forced.modest.cyclic.info": [
-    "Modest Forced Chess but on a cyclic board.",
-    "Regular Forced Chess on a cyclic board wasn't included because of the white player's unfair advantage."
+    "Modest Forced Chess on a cyclic board."
   ],
   "chess.4x4.info": [
-    "Ever wondered why does Forced Chess have that mandatory capturing rule? …no?..",
+    "Ever wondered why does Forced Chess have that mandatory capturing rule? …no?",
     "In any case, here's a variant of Forced Chess without the mandatory capturing rule."
   ],
   "chess.forced.sniper.info": [
@@ -292,8 +299,29 @@
     "Any piece except for the king will clone itself before making any non-capturing move.",
     "The question of which of the two pieces actually makes the move will forever be left unanswered."
   ],
+  "chess.forced.3d.info": [
+    "Forced Chess 3D: a game for chess players who don't like to think in just two dimensions.",
+    "Diagonals in Forced Chess 3D are divided into 2 types: flat, which lie completely",
+    "in one of the planes, and spatial - going at a 45° angle to all planes.",
+    "The pieces move like this:",
+    "Pawn - moves 1 square vertically, captures 1 square up (white) or down (black) on a flat diagonal.",
+    "Knight - moves and captures 2 squares in one direction and 1 square in another,",
+    "         through four-dimensional space (by jumping \"through\" the pieces).",
+    "Bishop - moves and captures only on flat diagonals.",
+    "Cardinal - moves and captures both on flat and spatial diagonals.",
+    "Rook - moves and captures in parallel to any of the 3 cardinal directions.",
+    "Queen - moves and captures like a rook and a cardinal combined.",
+    "King - moves and captures like a queen, but only for 1 square."
+  ],
+  "chess.forced.3d.modest.info": [
+    "Modest Forced Chess 3D. Notice that the rook is considered",
+    "more powerful than the bishop, but less powerful than the cardinal."
+  ],
   "chess.forced.8x8.info": [
     "Forced Chess but on an 8 by 8 board-- wait, this is just chess with forced captures! How boring."
+  ],
+  "chess.forced.cyclic.8x8.info": [
+    "Cyclic Forced Chess but on an 8 by 8 board. Just to spice things up."
   ],
   "chess.cyclic.8x12.info": [
     "Cyclic Chess but on an 8 by 12 board. Because why the heck not."

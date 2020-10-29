@@ -107,8 +107,8 @@ public class AI extends Thread {
             }
             return 0;
         }
-        //Make a random move if stopped abruptly and no actually good moves were found (yet).
         synchronized (this) {
+            //Make a random move if stopped abruptly and no actually good moves were found (yet).
             Collections.shuffle(moves);
             if (currentDepth == 0) {
                 if (moves.size() > 0) {
@@ -117,6 +117,7 @@ public class AI extends Thread {
                 }
                 if (moves.size() == 1) {
                     shouldRun = false;
+                    return 0;
                 }
             }
         }

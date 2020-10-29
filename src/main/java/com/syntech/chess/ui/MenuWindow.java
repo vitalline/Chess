@@ -12,7 +12,7 @@ import imgui.type.ImBoolean;
 public class MenuWindow {
     private BaseUI baseUI;
     private int menuPage = 0;
-    private static final int MENU_BUTTON_AMOUNT = 15;
+    private static final int MENU_BUTTON_AMOUNT = 16;
 
     public MenuWindow(BaseUI baseUI) {
         this.baseUI = baseUI;
