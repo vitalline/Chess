@@ -49,13 +49,17 @@ public class Move {
         this.priority = move.priority;
     }
 
+    public boolean hasPromotion(@NotNull PieceType promotion) {
+        return this.promotion.getTextureID().equals(promotion.getTextureID());
+    }
+
     public boolean hasDifferentMoveData(@NotNull Move newMove) {
         return !startPosition.equals(newMove.getStartPosition())
                 || !endPosition.equals(newMove.getEndPosition())
                 || addRow != newMove.addRow
                 || addCol != newMove.addCol
                 || (newMove.promotion != PieceType.NONE
-                && promotion != newMove.promotion);
+                && !hasPromotion(newMove.promotion));
     }
 
     @NotNull
@@ -370,7 +374,7 @@ public class Move {
                         && (!addRow || move.getStartRow() == startPosition.x)
                         && (!addCol || move.getStartCol() == startPosition.y)
                         && move.getEndPosition().equals(endPosition)
-                        && (move.getPromotion() == promotion)) {
+                        && move.hasPromotion(promotion)) {
                     return move;
                 }
             }
