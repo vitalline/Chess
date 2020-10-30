@@ -29,17 +29,17 @@ public class Board3D extends Board {
 
         displayLabelRow(size, 0);
         for (int row = getHeight() - 1; row >= 0; row--) {
+            displayLabel(Move.getRow(row), size / 2, size, 0);
             for (int col = 0; col < getWidth(); col++) {
-                if (getBoard(col) > getBoard(col - 1)) {
-                    displayLabel(Move.getRow(row), size / 2, size, getBoard(col));
-                    ImGui.sameLine();
-                }
+                ImGui.sameLine();
                 if (displayCell(size, row, col)) {
                     inputReceived = true;
                 }
-                ImGui.sameLine();
+                if (getBoard(col + 1) > getBoard(col)) {
+                    ImGui.sameLine();
+                    displayLabel(Move.getRow(row), size / 2, size, getBoard(col));
+                }
             }
-            displayLabel(Move.getRow(row), size / 2, size, getBoardAmount());
         }
         displayLabelRow(size, 1);
 
@@ -48,15 +48,15 @@ public class Board3D extends Board {
 
     @Override
     protected void displayLabelRow(float size, int id) {
+        displayLabel("", size / 2, size / 2, id * (getBoardAmount() + 1));
         for (int col = 0; col < getWidth(); col++) {
-            if (getBoard(col) > getBoard(col - 1)) {
-                displayLabel("", size / 2, size / 2, id * (getBoardAmount() + 1) + getBoard(col));
-                ImGui.sameLine();
-            }
-            displayLabel("" + Move.getColumn(col), size, size / 2, id);
             ImGui.sameLine();
+            displayLabel("" + Move.getColumn(col), size, size / 2, id);
+            if (getBoard(col + 1) > getBoard(col)) {
+                ImGui.sameLine();
+                displayLabel("", size / 2, size / 2, id * (getBoardAmount() + 1) + getBoard(col));
+            }
         }
-        displayLabel("", size / 2, size / 2, id * (getBoardAmount() + 1) + getBoardAmount());
     }
 
     @Override
