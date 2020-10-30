@@ -97,6 +97,8 @@ public class Move {
             return PieceType.SNIPER;
         } else if (notation.equals(Translation.EN_US.get("log.rook"))) {
             return PieceType.ROOK;
+        } else if (notation.equals(Translation.EN_US.get("log.cardinal"))) {
+            return PieceType.CARDINAL;
         } else if (notation.equals(Translation.EN_US.get("log.queen"))) {
             return PieceType.QUEEN;
         } else if (notation.equals(Translation.EN_US.get("log.king"))) {
