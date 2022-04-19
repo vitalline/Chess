@@ -10,7 +10,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 
 public class MenuWindow {
-    private BaseUI baseUI;
+    private final BaseUI baseUI;
     private int menuPage = 0;
     private static final int MENU_BUTTON_AMOUNT = 16;
 
@@ -25,7 +25,7 @@ public class MenuWindow {
         ImGui.begin(BaseUI.MENU_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.AlwaysAutoResize);
 
         for (int i = menuPage * MENU_BUTTON_AMOUNT; i < (menuPage + 1) * MENU_BUTTON_AMOUNT && i < Setup.values().length; i++) {
-            if (!Setup.values()[i].isEmpty()) {
+            if (Setup.values()[i].isValid()) {
                 Board newBoard = Setup.values()[i].boardButton(translation);
                 if (newBoard != null) {
                     baseUI.setSetup(Setup.values()[i]);

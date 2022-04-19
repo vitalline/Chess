@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ImmovableType extends MovementType {
 
-    private PieceType type;
+    private final PieceType type;
 
     public ImmovableType(PieceType type) {
         this.type = type;

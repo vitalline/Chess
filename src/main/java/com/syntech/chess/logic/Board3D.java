@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 
 public class Board3D extends Board {
-    private int boardWidth;
+    private final int boardWidth;
 
     public Board3D(@NotNull Piece[][] board, int boardWidth, boolean initialize, boolean update) {
         super(board, initialize, false);

@@ -44,8 +44,8 @@ public class BaseUI {
     private int aiTurns = 3;
     private int aiSeconds = 5;
     private AIMode aiMode = AIMode.TURNS;
-    private MenuWindow menuWindow = new MenuWindow(this);
-    private StatusWindow statusWindow = new StatusWindow(this);
+    private final MenuWindow menuWindow = new MenuWindow(this);
+    private final StatusWindow statusWindow = new StatusWindow(this);
 
     enum AIMode {
         NONE,

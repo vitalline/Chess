@@ -105,7 +105,7 @@ public enum Setup {
 
     @NotNull
     public Board getBoard() {
-        if (!isEmpty()) {
+        if (isValid()) {
             if (gameType.contains("cyclic")) {
                 return new CyclicBoard(pieces, true, true);
             } else if (gameType.contains("3d")) {
@@ -117,8 +117,8 @@ public enum Setup {
         return new Board("error.internal.setup_has_no_pieces");
     }
 
-    public boolean isEmpty() {
-        return pieces == null || pieces.length == 0 || pieces[0].length == 0;
+    public boolean isValid() {
+        return pieces != null && pieces.length != 0 && pieces[0].length != 0;
     }
 
     public Board boardButton(@NotNull Translation translation) {

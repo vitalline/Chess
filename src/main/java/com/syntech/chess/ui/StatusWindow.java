@@ -8,8 +8,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 
 public class StatusWindow {
-
-    private BaseUI baseUI;
+    private final BaseUI baseUI;
     private int windowHeight;
 
     public StatusWindow(BaseUI baseUI) {

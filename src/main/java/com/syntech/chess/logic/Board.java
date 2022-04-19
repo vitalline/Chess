@@ -779,7 +779,7 @@ public class Board implements Cloneable {
         if (result.length() > 1) {
             sb.append(result);
         }
-        printWriter.print(sb.toString());
+        printWriter.print(sb);
         printWriter.close();
     }
 
