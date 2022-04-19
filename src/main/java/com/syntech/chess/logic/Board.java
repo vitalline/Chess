@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
-    private int width, height;
+    private final int width, height;
     private ArrayList<Point> pieces;
     private ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Board implements Cloneable {
     private Object[] errorArguments = null;
     private static final Piece none = PieceFactory.none();
 
-    private Board(@NotNull Piece[][] board, boolean initialize, boolean update, int turn) {
+    private Board(@NotNull Piece @NotNull [] @NotNull [] board, boolean initialize, boolean update, int turn) {
         this.translation = Translation.EN_US;
         this.turn = turn;
         height = board.length;
@@ -297,7 +297,8 @@ public class Board implements Cloneable {
         if (enPassantPoint.x == endRow && enPassantPoint.y == endCol
                 && (piece.getType() == PieceType.PAWN)
                 && startCol != endCol) {
-            placePiece(PieceFactory.cell(), endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
+            Point captured = new Point(endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
+            placePiece(PieceFactory.cell(), captured);
             move.setCaptureFlag();
         }
         enPassantPoint = getEnPassantPoint(getTurnSide());
@@ -458,6 +459,7 @@ public class Board implements Cloneable {
         try {
             board[row][col] = piece;
             getPiece(row, col).setPosition(row, col);
+            updatePiece(row, col);
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
@@ -485,13 +487,20 @@ public class Board implements Cloneable {
         return cellColorIsWhite(row, col) ? Color.WHITE : Color.BLACK;
     }
 
+    public void updatePiece(int row, int col) {
+        Piece piece = getPiece(row, col);
+        sideCache[row][col] = piece.getSide();
+        typeCache[row][col] = piece.getType();
+    }
+
+    public void updatePiece(@NotNull Point pos) {
+        updatePiece(pos.x, pos.y);
+    }
+
     public void updatePieces() {
         pieces = new ArrayList<>();
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
-                Piece piece = getPiece(row, col);
-                sideCache[row][col] = piece.getSide();
-                typeCache[row][col] = piece.getType();
                 if (!isFree(row, col)) {
                     pieces.add(new Point(row, col));
                 }
