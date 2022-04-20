@@ -28,7 +28,7 @@ public class ModestForcedPiece extends Piece {
         return moves;
     }
 
-    private int getCapturePriority(Board board, Point position) {
+    private int getCapturePriority(@NotNull Board board, @NotNull Point position) {
         return MovePriorities.getCapturePriority(board.getType(position.x, position.y));
     }
 }
