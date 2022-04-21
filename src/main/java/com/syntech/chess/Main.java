@@ -256,8 +256,7 @@ public final class Main {
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
-    @NotNull
-    private byte[] loadFromResources(final String fileName) {
+    private byte @NotNull [] loadFromResources(final String fileName) {
         try (InputStream is = Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(fileName));
              ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 

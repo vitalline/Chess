@@ -24,7 +24,8 @@ import java.util.Arrays;
 
 public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
-    private int width, height;
+    private final int width, height;
+    protected final boolean priority;
     private ArrayList<Point> pieces;
     private ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
@@ -55,8 +56,9 @@ public class Board implements Cloneable {
     private Object[] errorArguments = null;
     private static final Piece none = PieceFactory.none();
 
-    private Board(@NotNull Piece[][] board, boolean initialize, boolean update, int turn) {
+    private Board(@NotNull Piece @NotNull [] @NotNull [] board, boolean priority, boolean initialize, boolean update, int turn) {
         this.translation = Translation.EN_US;
+        this.priority = priority;
         this.turn = turn;
         height = board.length;
         width = board.length > 0 ? board[0].length : 0;
@@ -87,16 +89,16 @@ public class Board implements Cloneable {
         }
     }
 
-    public Board(@NotNull Piece[][] board, boolean initialize, boolean update) {
-        this(board, initialize, update, 0);
+    public Board(@NotNull Piece[][] board, boolean priority, boolean initialize, boolean update) {
+        this(board, priority, initialize, update, 0);
     }
 
-    public Board(@NotNull Piece[][] board, int turn) {
-        this(board, false, false, turn);
+    public Board(@NotNull Piece[][] board, boolean priority, int turn) {
+        this(board, priority, false, false, turn);
     }
 
     public Board(@NotNull String errorMessage, Object... errorArguments) {
-        this(new Piece[0][0], false, false, 0);
+        this(new Piece[0][0], false, false, false, 0);
         this.errorMessage = errorMessage;
         this.errorArguments = errorArguments;
     }
@@ -104,7 +106,7 @@ public class Board implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Board clone = (Board) super.clone();
-        Board copy = new Board(board, turn);
+        Board copy = new Board(board, priority, turn);
         clone.board = copy.board;
         clone.previousBoard = previousBoard;
         clone.selectedPiece = pieceNone;
@@ -138,6 +140,10 @@ public class Board implements Cloneable {
 
     public Translation getTranslation() {
         return translation;
+    }
+
+    public boolean hasPriority() {
+        return priority;
     }
 
     public void setTranslation(Translation translation) {
@@ -297,7 +303,8 @@ public class Board implements Cloneable {
         if (enPassantPoint.x == endRow && enPassantPoint.y == endCol
                 && (piece.getType() == PieceType.PAWN)
                 && startCol != endCol) {
-            placePiece(PieceFactory.cell(), endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
+            Point captured = new Point(endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
+            placePiece(PieceFactory.cell(), captured);
             move.setCaptureFlag();
         }
         enPassantPoint = getEnPassantPoint(getTurnSide());
@@ -458,6 +465,7 @@ public class Board implements Cloneable {
         try {
             board[row][col] = piece;
             getPiece(row, col).setPosition(row, col);
+            updatePiece(row, col);
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
     }
@@ -485,13 +493,20 @@ public class Board implements Cloneable {
         return cellColorIsWhite(row, col) ? Color.WHITE : Color.BLACK;
     }
 
+    public void updatePiece(int row, int col) {
+        Piece piece = getPiece(row, col);
+        sideCache[row][col] = piece.getSide();
+        typeCache[row][col] = piece.getType();
+    }
+
+    public void updatePiece(@NotNull Point pos) {
+        updatePiece(pos.x, pos.y);
+    }
+
     public void updatePieces() {
         pieces = new ArrayList<>();
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
-                Piece piece = getPiece(row, col);
-                sideCache[row][col] = piece.getSide();
-                typeCache[row][col] = piece.getType();
                 if (!isFree(row, col)) {
                     pieces.add(new Point(row, col));
                 }
@@ -542,7 +557,7 @@ public class Board implements Cloneable {
                 moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
             }
         }
-        moves = MovePriorities.topPriorityMoves(moves);
+        if (priority) moves = MovePriorities.topPriorityMoves(moves);
         if (side == Side.WHITE) allAvailableWhiteMoves = moves;
         if (side == Side.BLACK) allAvailableBlackMoves = moves;
         return moves;
@@ -594,7 +609,7 @@ public class Board implements Cloneable {
     private ArrayList<Move> getAvailableMoves(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableMoves = getPiece(row, col).getAvailableMoves(this);
-            availableMoves = topPriorityMoves(availableMoves, row, col);
+            if (priority) availableMoves = topPriorityMoves(availableMoves, row, col);
             return availableMoves;
         }
         return new ArrayList<>();
@@ -604,7 +619,7 @@ public class Board implements Cloneable {
     private ArrayList<Move> getAvailableCaptures(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableCaptures = getPiece(row, col).getAvailableCaptures(this);
-            availableCaptures = topPriorityMoves(availableCaptures, row, col);
+            if (priority) availableCaptures = topPriorityMoves(availableCaptures, row, col);
             return availableCaptures;
         }
         return new ArrayList<>();
@@ -654,7 +669,7 @@ public class Board implements Cloneable {
     }
 
     public Board getMoveResultWithoutPromotion(Move move) {
-        Board moveResult = new Board(board, turn);
+        Board moveResult = new Board(board, priority, turn);
         if (move != null) {
             moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }
@@ -779,7 +794,7 @@ public class Board implements Cloneable {
         if (result.length() > 1) {
             sb.append(result);
         }
-        printWriter.print(sb.toString());
+        printWriter.print(sb);
         printWriter.close();
     }
 

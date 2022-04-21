@@ -104,7 +104,7 @@ public final class ForcedXPRules {
         }
     }
 
-    public static String getPowerLabel(int level, Translation translation) {
+    public static @NotNull String getPowerLabel(int level, Translation translation) {
         PieceType type;
         try {
             type = RESISTED_PIECES.get(level - 1);

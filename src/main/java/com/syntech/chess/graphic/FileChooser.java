@@ -28,7 +28,7 @@ public class FileChooser extends Thread {
     /**
      * Whether the menu is used for saving or opening a file.
      */
-    private boolean save;
+    private final boolean save;
 
     /**
      * Constructs a file chooser with the specified mode ("open" by default, "save" if specified).

@@ -16,7 +16,7 @@ public class LevellingForcedPiece extends ForcedPiece {
     private int xp, resistanceXP, powerXP, resistanceLevel, powerLevel;
     private LevellingData levellingData;
     private Point initialPosition;
-    private boolean checkHappened = false, hasRespawned = false;
+    private boolean hasCaptured = false, hasChecked = false, hasRespawned = false;
 
     public LevellingForcedPiece(Side side, MovementType movementType, LevellingData levellingData) {
         this(side, movementType, levellingData, 0, 0, 0, 0, 0, null);
@@ -148,7 +148,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (movementType instanceof SpecialFirstMoveType) {
             ((SpecialFirstMoveType) movementType).move();
         }
-        boolean xpChanged = false;
+        hasCaptured = false;
         hasRespawned = false;
         board.placePiece(PieceFactory.cell(), position);
         Piece capturedPiece = board.getPiece(row, col);
@@ -156,7 +156,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             int captureXP = ForcedXPRules.getPieceXPWorth(board.getType(row, col));
             if (captureXP != 0) {
                 addXP(captureXP);
-                xpChanged = true;
+                hasCaptured = true;
             }
             board.placePiece(this, row, col);
             if (((LevellingForcedPiece) capturedPiece).canLevelDown()) {
@@ -172,21 +172,20 @@ public class LevellingForcedPiece extends ForcedPiece {
             board.updatePieces();
             if (board.isInCheck(side.getOpponent())) {
                 addXP(ForcedXPRules.getCheckXPWorth());
-                checkHappened = true;
-                xpChanged = true;
+                hasChecked = true;
             } else {
-                checkHappened = false;
+                hasChecked = false;
             }
-            if (!xpChanged) {
+            if (!hasChecked && !hasCaptured) {
                 addXP(ForcedXPRules.getMoveXPWorth());
             }
             levelUpPowerAndResistance();
-            if (!canLevelUp()) {
-                xp = 0;
-            } else {
+            if (canLevelUp()) {
                 if (xp >= getMaxXP()) {
                     levelUp(board);
                 }
+            } else {
+                xp = 0;
             }
         }
     }
@@ -231,20 +230,23 @@ public class LevellingForcedPiece extends ForcedPiece {
             morph(board, newPieceType, getPromotionInfo(newPieceType), xp - getMaxXP(), position);
             LevellingForcedPiece newPiece = ((LevellingForcedPiece) board.getPiece(position.x, position.y));
             board.updatePieces();
-            if (board.isInCheck(side.getOpponent()) && !checkHappened) {
-                newPiece.addXP(ForcedXPRules.getCheckXPWorth());
-                newPiece.checkHappened = true;
+            if (hasChecked) {
+                newPiece.hasChecked = true;
+            } else if (board.isInCheck(side.getOpponent())) {
+                if (hasCaptured) {
+                    newPiece.addXP(ForcedXPRules.getCheckXPWorth());
+                } else {
+                    newPiece.addXP(ForcedXPRules.getCheckXPWorth() - ForcedXPRules.getMoveXPWorth());
+                }
+                newPiece.hasChecked = true;
             }
-            if (checkHappened) {
-                newPiece.checkHappened = true;
-            }
+            newPiece.hasCaptured = hasCaptured;
             newPiece.levelUpPowerAndResistance();
             if (newPiece.canLevelUp()) {
                 if (newPiece.xp >= newPiece.getMaxXP()) {
                     newPiece.levelUp(board);
                 }
             }
-            checkHappened = false;
         }
     }
 

@@ -48,28 +48,22 @@ public final class MovePriorities {
     public static int getCapturePriority(@NotNull PieceType type) {
         switch (type) {
             case PAWN:
-            case PAWN_3D:
                 return FORCED_PAWN_CAPTURE;
             case KNIGHT:
-            case KNIGHT_3D:
                 return FORCED_KNIGHT_CAPTURE;
             case BISHOP:
-            case BISHOP_3D:
                 return FORCED_BISHOP_CAPTURE;
             case ROOK:
-            case ROOK_3D:
                 return FORCED_ROOK_CAPTURE;
-            case CARDINAL_3D:
+            case CARDINAL:
                 return FORCED_CARDINAL_CAPTURE;
             case QUEEN:
-            case QUEEN_3D:
                 return FORCED_QUEEN_CAPTURE;
             case AMAZON:
                 return FORCED_AMAZON_CAPTURE;
             case SNIPER:
                 return FORCED_SNIPER_CAPTURE;
             case KING:
-            case KING_3D:
                 return CHECK;
             default:
                 return NORMAL_MOVE;

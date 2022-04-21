@@ -13,7 +13,7 @@ public enum LevellingData {
     FORCE_DOWN(false, true, false, false, true),
     FORCE_UP_DOWN(true, true, false, false, true);
 
-    private boolean canLevelUp, canLevelDown, hasResistance, hasPower, forceInvolution;
+    private final boolean canLevelUp, canLevelDown, hasResistance, hasPower, forceInvolution;
 
     LevellingData(boolean canLevelUp, boolean canLevelDown, boolean hasResistance, boolean hasPower, boolean forceInvolution) {
         this.canLevelUp = canLevelUp;

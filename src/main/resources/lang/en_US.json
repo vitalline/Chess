@@ -241,11 +241,12 @@
     "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
     "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
     "XP can be gained as follows:",
-    " - A non-capturing move not ending in check gives 1 XP, and one ending in check gives 2 XP.",
+    " - A non-capturing move gives 1 XP.",
+    " - A non-capturing move with a check gives 2 XP.",
     " - A capturing move gives XP depending on the captured piece:",
     "   Pawns give 3 XP, knights give 5, bishops give 7, rooks give 12, queens give 20, and amazons give 30 XP.",
     " - If a check happened after a capturing move, it gives 2 extra XP.",
-    " - If a check happened after levelling up but not before levelling up, it gives 2 extra XP.",
+    " - If a check happened after levelling up but not before levelling up, it is considered a check for XP calculations.",
     " - If a check happened before levelling up but went away after levelling up, no XP will be taken away."
   ],
   "chess.forced.up.down.info": [

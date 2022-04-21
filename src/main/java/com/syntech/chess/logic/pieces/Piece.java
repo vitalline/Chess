@@ -92,7 +92,7 @@ public class Piece implements Cloneable {
         ArrayList<Move> availableMoves = getAvailableMovesWithoutSpecialRules(board);
         availableMoves = addPromotions(availableMoves, board);
         availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
-        availableMoves = MovePriorities.topPriorityMoves(availableMoves);
+        if (board.hasPriority()) availableMoves = MovePriorities.topPriorityMoves(availableMoves);
         return availableMoves;
     }
 
@@ -100,7 +100,7 @@ public class Piece implements Cloneable {
         ArrayList<Move> availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
         availableCaptures = addPromotions(availableCaptures, board);
         availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
-        availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
+        if (board.hasPriority()) availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
         return availableCaptures;
     }
 

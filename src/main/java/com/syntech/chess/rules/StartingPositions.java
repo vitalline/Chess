@@ -2,6 +2,7 @@ package com.syntech.chess.rules;
 
 import com.syntech.chess.logic.*;
 import com.syntech.chess.logic.pieces.Piece;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class StartingPositions extends PieceFactory {
@@ -976,18 +977,21 @@ public class StartingPositions extends PieceFactory {
         return piece(baseType, PieceType.PAWN_3D, side, new PromotionInfo(side == Side.WHITE ? 4 : 1, forcedChessPawn3DPromotions()), LevellingData.NONE);
     }
 
+    @Contract(value = " -> new", pure = true)
     @NotNull
-    private static PieceType[] chessPawnPromotions() {
+    private static PieceType @NotNull [] chessPawnPromotions() {
         return new PieceType[]{PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN};
     }
 
+    @Contract(value = " -> new", pure = true)
     @NotNull
-    private static PieceType[] forcedChessPawnPromotions() {
+    private static PieceType @NotNull [] forcedChessPawnPromotions() {
         return new PieceType[]{PieceType.ROOK, PieceType.QUEEN};
     }
 
+    @Contract(value = " -> new", pure = true)
     @NotNull
-    private static PieceType[] forcedChessPawn3DPromotions() {
+    private static PieceType @NotNull [] forcedChessPawn3DPromotions() {
         return new PieceType[]{PieceType.KNIGHT_3D, PieceType.BISHOP_3D, PieceType.ROOK_3D, PieceType.CARDINAL_3D, PieceType.QUEEN_3D};
     }
 
@@ -996,8 +1000,9 @@ public class StartingPositions extends PieceFactory {
         return forcedChessPawn(baseType, side, promotionRow, forcedChessPawnPromotions(), LevellingData.NONE);
     }
 
+    @Contract("_ -> new")
     @NotNull
-    public static Piece[][] mmoRPGForcedChess(LevellingData levellingData) {
+    public static Piece @NotNull [] @NotNull [] mmoRPGForcedChess(LevellingData levellingData) {
         return new Piece[][]{
                 {
                         piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, levellingData),

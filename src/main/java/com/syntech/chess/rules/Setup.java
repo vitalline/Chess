@@ -105,20 +105,21 @@ public enum Setup {
 
     @NotNull
     public Board getBoard() {
-        if (!isEmpty()) {
+        if (isValid()) {
+            boolean priority = gameType.contains("forced");
             if (gameType.contains("cyclic")) {
-                return new CyclicBoard(pieces, true, true);
+                return new CyclicBoard(pieces, priority, true, true);
             } else if (gameType.contains("3d")) {
-                return new Board3D(pieces, 4, true, true);
+                return new Board3D(pieces, priority, 4, true, true);
             } else {
-                return new Board(pieces, true, true);
+                return new Board(pieces, priority, true, true);
             }
         }
         return new Board("error.internal.setup_has_no_pieces");
     }
 
-    public boolean isEmpty() {
-        return pieces == null || pieces.length == 0 || pieces[0].length == 0;
+    public boolean isValid() {
+        return pieces != null && pieces.length != 0 && pieces[0].length != 0;
     }
 
     public Board boardButton(@NotNull Translation translation) {

@@ -6,12 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class CyclicBoard extends Board {
-    public CyclicBoard(@NotNull Piece[][] board, boolean initialize, boolean update) {
-        super(board, initialize, update);
+    public CyclicBoard(@NotNull Piece[][] board, boolean priority, boolean initialize, boolean update) {
+        super(board, priority, initialize, update);
     }
 
-    public CyclicBoard(@NotNull Piece[][] board, int turn) {
-        super(board, turn);
+    public CyclicBoard(@NotNull Piece[][] board, boolean priority, int turn) {
+        super(board, priority, turn);
     }
 
     private int getColumn(int col) {
@@ -53,7 +53,7 @@ public class CyclicBoard extends Board {
 
     @Override
     public Board getMoveResultWithoutPromotion(Move move) {
-        CyclicBoard nextTurn = new CyclicBoard(getBoard(), turn);
+        CyclicBoard nextTurn = new CyclicBoard(getBoard(), priority, turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }

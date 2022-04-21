@@ -335,7 +335,7 @@ public class Move {
                 pgn = pgn.substring(1);
             }
 
-            if (pgn.substring(pgn.length() - 1).equals("#") || pgn.substring(pgn.length() - 1).equals("+")) {
+            if (pgn.endsWith("#") || pgn.endsWith("+")) {
                 pgn = pgn.substring(0, pgn.length() - 1);
             }
 
@@ -359,7 +359,7 @@ public class Move {
                     pgn = pgn.substring(1);
                 }
 
-                if (pgn.charAt(0) == 'x') {
+                if (pgn.startsWith("x")) {
                     pgn = pgn.substring(1);
                 }
             }

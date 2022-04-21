@@ -1,7 +1,7 @@
 package com.syntech.chess.logic;
 
 public class PromotionInfo implements Cloneable {
-    private int promotionCoordinate;
+    private final int promotionCoordinate;
     private PieceType[] possiblePromotionPieces;
 
     public PromotionInfo(int promotionCoordinate, PieceType... pieces) {

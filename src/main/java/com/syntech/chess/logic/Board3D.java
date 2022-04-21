@@ -7,18 +7,18 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 
 public class Board3D extends Board {
-    private int boardWidth;
+    private final int boardWidth;
 
-    public Board3D(@NotNull Piece[][] board, int boardWidth, boolean initialize, boolean update) {
-        super(board, initialize, false);
+    public Board3D(@NotNull Piece[][] board, boolean priority, int boardWidth, boolean initialize, boolean update) {
+        super(board, priority, initialize, false);
         this.boardWidth = boardWidth;
         if (update) {
             updateMovablePieces();
         }
     }
 
-    public Board3D(@NotNull Piece[][] board, int boardWidth, int turn) {
-        super(board, turn);
+    public Board3D(@NotNull Piece[][] board, boolean priority, int boardWidth, int turn) {
+        super(board, priority, turn);
         this.boardWidth = boardWidth;
     }
 
@@ -66,7 +66,7 @@ public class Board3D extends Board {
 
     @Override
     public Board getMoveResultWithoutPromotion(Move move) {
-        Board3D nextTurn = new Board3D(getBoard(), boardWidth, turn);
+        Board3D nextTurn = new Board3D(getBoard(), priority, boardWidth, turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }

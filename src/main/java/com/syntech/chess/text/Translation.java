@@ -53,7 +53,7 @@ public enum Translation {
     }
 
     @NotNull
-    public String get(String str, @NotNull Object... args) {
+    public String get(String str, @NotNull Object @NotNull ... args) {
         String result = get(str);
         for (int i = 0, argsLength = args.length; i < argsLength; i++) {
             if (args[i] instanceof String) {
