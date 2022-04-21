@@ -1,9 +1,7 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.Board;
-import com.syntech.chess.logic.Board3D;
-import com.syntech.chess.logic.CyclicBoard;
 import com.syntech.chess.logic.LevellingData;
+import com.syntech.chess.logic.boards.*;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.text.Translation;
 import imgui.ImGui;
@@ -39,6 +37,9 @@ public enum Setup {
     RESISTANCE_POWER_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.res.pow", StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES_POW)),
     FORCED_INVOLUTION_FORCED_CHESS("chess.forced.down.telefrag", StartingPositions.forcedInvolutionForcedChess),
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
+    MMORPG_FORCED_CHESS_WITH_MOBS("chess.forced.up.mob", StartingPositions.mmoRPGForcedChessWithMobs),
+    HILL_FORCED_CHESS("chess.forced.hill", StartingPositions.hillForcedChess),
+    HILLS_FORCED_CHESS("chess.forced.hills", StartingPositions.hillForcedChess),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
     FORCED_CHESS_3D("chess.forced.3d", StartingPositions.forcedChess3D),
     MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
@@ -107,13 +108,22 @@ public enum Setup {
     public Board getBoard() {
         if (isValid()) {
             boolean priority = gameType.contains("forced");
+            if (gameType.contains("3d")) {
+                return new Board3D(pieces, priority, 4, true, true);
+            }
             if (gameType.contains("cyclic")) {
                 return new CyclicBoard(pieces, priority, true, true);
-            } else if (gameType.contains("3d")) {
-                return new Board3D(pieces, priority, 4, true, true);
-            } else {
-                return new Board(pieces, priority, true, true);
             }
+            if (this == MMORPG_FORCED_CHESS_WITH_MOBS) {
+                return new MobBoard(pieces, priority, true, true);
+            }
+            if (this == HILL_FORCED_CHESS) {
+                return new HillBoard(pieces, priority, true, true);
+            }
+            if (this == HILLS_FORCED_CHESS) {
+                return new HillsBoard(pieces, priority, true, true);
+            }
+            return new Board(pieces, priority, true, true);
         }
         return new Board("error.internal.setup_has_no_pieces");
     }

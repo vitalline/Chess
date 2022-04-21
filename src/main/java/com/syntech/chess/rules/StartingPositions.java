@@ -77,7 +77,6 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
             }
     };
-
     public static final Piece[][] forcedChess8x8 = {
             {
                     piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.WHITE),
@@ -747,6 +746,82 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.FORCE_DOWN),
                     piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.FORCE_DOWN),
                     piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.FORCE_DOWN)
+            }
+    };
+    public static final Piece[][] mmoRPGForcedChessWithMobs = {
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP)
+            },
+            {
+                    cell(), cell(), cell(), cell()
+            },
+            {
+                    mob(), mob(), mob(), mob()
+            },
+            {
+                    mob(), mob(), mob(), mob()
+            },
+            {
+                    cell(), cell(), cell(), cell()
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP)
+            },
+            {
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP)
+            }
+    };
+    public static final Piece[][] hillForcedChess = {
+            {
+                    cell(), cell(), cell(), cell()
+            },
+            {
+                    cell(), cell(), cell(), cell()
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.WHITE, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.WHITE, LevellingData.UP)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.CLIMBING_PAWN, Side.BLACK, LevellingData.UP)
+            },
+            {
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP)
+            },
+            {
+                    cell(), cell(), cell(), cell()
+            },
+            {
+                    cell(), cell(), cell(), cell()
             }
     };
     public static final Piece[][] cloningForcedChess = {

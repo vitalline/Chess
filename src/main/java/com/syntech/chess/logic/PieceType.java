@@ -4,7 +4,9 @@ import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.chess.*;
 import com.syntech.chess.rules.chess3d.*;
 import com.syntech.chess.rules.neutral.ImmovableType;
+import com.syntech.chess.rules.neutral.MobType;
 import com.syntech.chess.rules.variants.AmazonType;
+import com.syntech.chess.rules.variants.ClimbingPawnType;
 import com.syntech.chess.rules.variants.PegasusType;
 import com.syntech.chess.rules.variants.SniperType;
 import com.syntech.chess.text.Translation;
@@ -13,10 +15,11 @@ import org.jetbrains.annotations.Nullable;
 
 public enum PieceType {
     NONE("none", "piece.none"),
-    EMPTY("Cell", "piece.empty"),
-    WALL("Wall", "piece.wall"),
+    EMPTY("cell", "piece.empty"),
+    WALL("wall", "piece.wall"),
     PAWN("Pawn", "piece.pawn"),
     DOUBLE_PAWN("Pawn", "piece.pawn"),
+    CLIMBING_PAWN("Pawn", "piece.pawn"),
     KNIGHT("Knight", "piece.knight"),
     PEGASUS("Knight", "piece.pegasus"),
     BISHOP("Bishop", "piece.bishop"),
@@ -28,6 +31,7 @@ public enum PieceType {
     KING("King", "piece.king"),
     CASTLING_KING("King", "piece.king"),
     AMAZON("Amazon", "piece.amazon"),
+    MOB("Mob", "piece.mob"),
     PAWN_3D("Pawn", "piece.pawn"),
     KNIGHT_3D("Knight", "piece.knight"),
     BISHOP_3D("Bishop", "piece.bishop"),
@@ -73,6 +77,8 @@ public enum PieceType {
                 return new PawnType(side);
             case DOUBLE_PAWN:
                 return new DoublePawnType(side);
+            case CLIMBING_PAWN:
+                return new ClimbingPawnType(side);
             case KNIGHT:
                 return new KnightType(side);
             case PEGASUS:
@@ -93,6 +99,8 @@ public enum PieceType {
                 return new CastlingKingType(side);
             case AMAZON:
                 return new AmazonType(side);
+            case MOB:
+                return new MobType();
             case PAWN_3D:
                 return new Pawn3DType(side);
             case KNIGHT_3D:

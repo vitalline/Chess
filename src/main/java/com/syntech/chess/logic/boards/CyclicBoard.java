@@ -1,16 +1,19 @@
-package com.syntech.chess.logic;
+package com.syntech.chess.logic.boards;
 
+import com.syntech.chess.logic.Move;
+import com.syntech.chess.logic.PieceType;
+import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class CyclicBoard extends Board {
-    public CyclicBoard(@NotNull Piece[][] board, boolean priority, boolean initialize, boolean update) {
+    public CyclicBoard(@NotNull Piece[][] board, Boolean priority, Boolean initialize, Boolean update) {
         super(board, priority, initialize, update);
     }
 
-    public CyclicBoard(@NotNull Piece[][] board, boolean priority, int turn) {
+    public CyclicBoard(@NotNull Piece[][] board, Boolean priority, Integer turn) {
         super(board, priority, turn);
     }
 
@@ -49,15 +52,6 @@ public class CyclicBoard extends Board {
         ArrayList<Move> moves = super.getAllAvailableMoves(side);
         format(moves);
         return moves;
-    }
-
-    @Override
-    public Board getMoveResultWithoutPromotion(Move move) {
-        CyclicBoard nextTurn = new CyclicBoard(getBoard(), priority, turn);
-        if (move != null) {
-            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
-        }
-        return nextTurn;
     }
 
     @Override

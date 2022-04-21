@@ -9,17 +9,22 @@ public class PieceFactory {
 
     @NotNull
     public static Piece none() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.NONE, Side.NEUTRAL);
+        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.NONE, Side.NONE);
     }
 
     @NotNull
     public static Piece cell() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, Side.NEUTRAL);
+        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, Side.NONE);
     }
 
     @NotNull
     public static Piece wall() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.WALL, Side.NEUTRAL);
+        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.WALL, Side.NONE);
+    }
+
+    @NotNull
+    public static Piece mob() {
+        return piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.MOB, Side.NEUTRAL, LevellingData.UP);
     }
 
     @NotNull

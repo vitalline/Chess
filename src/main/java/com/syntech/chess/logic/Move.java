@@ -1,5 +1,6 @@
 package com.syntech.chess.logic;
 
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

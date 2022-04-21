@@ -1,5 +1,6 @@
-package com.syntech.chess.logic;
+package com.syntech.chess.logic.boards;
 
+import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.pieces.Piece;
 import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ import java.awt.*;
 public class Board3D extends Board {
     private final int boardWidth;
 
-    public Board3D(@NotNull Piece[][] board, boolean priority, int boardWidth, boolean initialize, boolean update) {
+    public Board3D(@NotNull Piece[][] board, Boolean priority, Integer boardWidth, Boolean initialize, Boolean update) {
         super(board, priority, initialize, false);
         this.boardWidth = boardWidth;
         if (update) {
@@ -17,7 +18,7 @@ public class Board3D extends Board {
         }
     }
 
-    public Board3D(@NotNull Piece[][] board, boolean priority, int boardWidth, int turn) {
+    public Board3D(@NotNull Piece[][] board, Boolean priority, Integer boardWidth, Integer turn) {
         super(board, priority, turn);
         this.boardWidth = boardWidth;
     }

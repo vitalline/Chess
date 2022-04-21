@@ -21,6 +21,7 @@ public final class ForcedXPRules {
     private static final int ROOK_CAPTURE_XP = 12;
     private static final int QUEEN_CAPTURE_XP = 20;
     private static final int AMAZON_CAPTURE_XP = 30;
+    private static final int MOB_CAPTURE_XP = 10;
 
     public static final ArrayList<PieceType> LEVELS = new ArrayList<>(Arrays.asList(
             PieceType.PAWN, PieceType.KNIGHT, PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN, PieceType.AMAZON
@@ -136,6 +137,8 @@ public final class ForcedXPRules {
                 return ForcedXPRules.QUEEN_CAPTURE_XP;
             case AMAZON:
                 return ForcedXPRules.AMAZON_CAPTURE_XP;
+            case MOB:
+                return ForcedXPRules.MOB_CAPTURE_XP;
             default:
                 return 0;
         }

@@ -1,9 +1,9 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -25,7 +25,7 @@ public class MovementRules {
         while (board.isFree(pos.x + sx * d, pos.y + sy * d)) {
             d++;
         }
-        if (board.getSide(pos.x + sx * d, pos.y + sy * d) == side.getOpponent() && d <= maxDistance) {
+        if (board.isCapturable(pos.x + sx * d, pos.y + sy * d, side) && d <= maxDistance) {
             moves.add(new Move(type, pos, pos.x + sx * d, pos.y + sy * d));
         }
     }
@@ -99,7 +99,7 @@ public class MovementRules {
                     int dy = j * (n > 0 ? b : a);
                     if (dx == 0 && i == 1) continue;
                     if (dy == 0 && j == 1) continue;
-                    if (board.getSide(pos.x + dx, pos.y + dy) == side.getOpponent()) {
+                    if (board.isCapturable(pos.x + dx, pos.y + dy, side)) {
                         moves.add(new Move(type, pos, pos.x + dx, pos.y + dy));
                     }
                 }
@@ -128,10 +128,10 @@ public class MovementRules {
         PieceType type = board.getType(pos.x, pos.y);
         Side side = board.getSide(pos.x, pos.y);
         int moveDirection = getPawnMoveDirection(side);
-        if (board.getSide(pos.x + moveDirection, pos.y - 1) == side.getOpponent()) {
+        if (board.isCapturable(pos.x + moveDirection, pos.y - 1, side)) {
             moves.add(new Move(type, pos, pos.x + moveDirection, pos.y - 1));
         }
-        if (board.getSide(pos.x + moveDirection, pos.y + 1) == side.getOpponent()) {
+        if (board.isCapturable(pos.x + moveDirection, pos.y + 1, side)) {
             moves.add(new Move(type, pos, pos.x + moveDirection, pos.y + 1));
         }
     }
@@ -150,6 +150,14 @@ public class MovementRules {
 
     public static void addOrthogonalCapturing(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
         addOrthogonalCapturing(moves, pos, board, Integer.MAX_VALUE);
+    }
+
+    public static void addMobMovement(ArrayList<Move> moves, @NotNull Point pos, @NotNull Board board) {
+        PieceType type = board.getType(pos.x, pos.y);
+        addDirectionalMovement(moves, pos, board, type, getPawnMoveDirection(board.getTurnSide()), 0, 1);
+        addDirectionalMovement(moves, pos, board, type, 0, pos.y < (board.getWidth() / 2) ? -1 : 1, 1);
+        addDirectionalMovement(moves, pos, board, type, 0, pos.y < (board.getWidth() / 2) ? 1 : -1, 1);
+        addDirectionalMovement(moves, pos, board, type, -getPawnMoveDirection(board.getTurnSide()), 0, 1);
     }
 
 }

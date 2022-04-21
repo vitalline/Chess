@@ -1,6 +1,7 @@
 package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.logic.*;
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
@@ -40,6 +41,10 @@ public class Piece implements Cloneable {
         return clone;
     }
 
+    public Point getPosition() {
+        return this.position;
+    }
+
     public void setPosition(int x, int y) {
         this.position = new Point(x, y);
     }
@@ -61,6 +66,7 @@ public class Piece implements Cloneable {
     }
 
     public String getTextureID() {
+        if (getSide() == Side.NONE || getType() == PieceType.EMPTY) return getType().getTextureID();
         return getSide().getTextureID() + getType().getTextureID();
     }
 
@@ -105,7 +111,7 @@ public class Piece implements Cloneable {
     }
 
     public void move(@NotNull Board board, int row, int col) {
-        board.placePiece(PieceFactory.cell(), position);
+        board.placePiece(PieceFactory.cell(), position.x, position.y);
         board.placePiece(this, row, col);
         if (movementType instanceof SpecialFirstMoveType) {
             ((SpecialFirstMoveType) movementType).move();

@@ -1,9 +1,9 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.Board3D;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board3D;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

@@ -5,6 +5,7 @@ import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;
 
 public enum Side {
+    NONE("", ""),
     NEUTRAL("neutral", ""),
     WHITE("white", "side.white"),
     BLACK("black", "side.black");

@@ -1,8 +1,8 @@
 package com.syntech.chess.ai;
 
-import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.text.Translation;
 import org.jetbrains.annotations.NotNull;

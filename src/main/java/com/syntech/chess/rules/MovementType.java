@@ -1,9 +1,9 @@
 package com.syntech.chess.rules;
 
-import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public abstract class MovementType implements Cloneable {
     protected Side side;
 
     public MovementType() {
-        this(Side.NEUTRAL);
+        this(Side.NONE);
     }
 
     public MovementType(Side side) {

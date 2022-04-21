@@ -2,6 +2,7 @@ package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.logic.*;
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.rules.ForcedXPRules;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
@@ -59,7 +60,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         return currentPower + powerLevel;
     }
 
-    protected Point getInitialPosition() {
+    public Point getInitialPosition() {
         return initialPosition;
     }
 
@@ -99,7 +100,9 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (levellingData.hasPower()) {
             label += '\n' + translation.get("label.power_level", ForcedXPRules.getPowerLabel(getPowerLevel(), translation));
         }
-        label += '\n' + translation.get("label.started_on", Move.getCoordinates(initialPosition));
+        if (levellingData.canLevelDown()) {
+            label += '\n' + translation.get("label.started_on", Move.getCoordinates(initialPosition));
+        }
         if (canLevelDown()) {
             label += '\n' + translation.get("label.will_respawn_as", ForcedXPRules.getPreviousLevel(getType()).getProperName(translation));
         }
@@ -150,7 +153,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         }
         hasCaptured = false;
         hasRespawned = false;
-        board.placePiece(PieceFactory.cell(), position);
+        board.placePiece(PieceFactory.cell(), position.x, position.y);
         Piece capturedPiece = board.getPiece(row, col);
         if (capturedPiece instanceof LevellingForcedPiece) {
             int captureXP = ForcedXPRules.getPieceXPWorth(board.getType(row, col));
@@ -286,8 +289,8 @@ public class LevellingForcedPiece extends ForcedPiece {
         return null;
     }
 
-    private void morph(@NotNull Board board, PieceType newPieceType, PromotionInfo promotionInfo, int xp, Point position) {
-        board.placePiece(PieceFactory.piece(baseType, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition), position);
+    private void morph(@NotNull Board board, PieceType newPieceType, PromotionInfo promotionInfo, int xp, @NotNull Point position) {
+        board.placePiece(PieceFactory.piece(baseType, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition), position.x, position.y);
     }
 
     private boolean canLevelUp() {

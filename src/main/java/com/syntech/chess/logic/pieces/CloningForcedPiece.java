@@ -1,8 +1,8 @@
 package com.syntech.chess.logic.pieces;
 
-import com.syntech.chess.logic.Board;
 import com.syntech.chess.logic.PieceFactory;
 import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +15,9 @@ public class CloningForcedPiece extends ForcedPiece {
     public void move(@NotNull Board board, int row, int col) {
         try {
             if (!board.isFree(row, col)) {
-                board.placePiece(PieceFactory.cell(), position);
+                board.placePiece(PieceFactory.cell(), position.x, position.y);
             } else {
-                board.placePiece((Piece) this.clone(), position);
+                board.placePiece((Piece) this.clone(), position.x, position.y);
             }
             board.placePiece(this, row, col);
         } catch (CloneNotSupportedException ignored) {

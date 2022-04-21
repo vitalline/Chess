@@ -1,7 +1,8 @@
-package com.syntech.chess.logic;
+package com.syntech.chess.logic.boards;
 
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
+import com.syntech.chess.logic.*;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,7 +28,8 @@ public class Board implements Cloneable {
     private static final Point pieceNone = new Point(-1, -1);
     private final int width, height;
     protected final boolean priority;
-    private ArrayList<Point> pieces;
+    protected ArrayList<Point> whitePieces;
+    protected ArrayList<Point> blackPieces;
     private ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
     protected ArrayList<Move> availableCaptures = new ArrayList<>();
@@ -56,7 +59,7 @@ public class Board implements Cloneable {
     private Object[] errorArguments = null;
     private static final Piece none = PieceFactory.none();
 
-    private Board(@NotNull Piece @NotNull [] @NotNull [] board, boolean priority, boolean initialize, boolean update, int turn) {
+    private Board(@NotNull Piece @NotNull [] @NotNull [] board, Boolean priority, Boolean initialize, Boolean update, int turn) {
         this.translation = Translation.EN_US;
         this.priority = priority;
         this.turn = turn;
@@ -89,11 +92,11 @@ public class Board implements Cloneable {
         }
     }
 
-    public Board(@NotNull Piece[][] board, boolean priority, boolean initialize, boolean update) {
+    public Board(@NotNull Piece[][] board, Boolean priority, Boolean initialize, Boolean update) {
         this(board, priority, initialize, update, 0);
     }
 
-    public Board(@NotNull Piece[][] board, boolean priority, int turn) {
+    public Board(@NotNull Piece[][] board, Boolean priority, Integer turn) {
         this(board, priority, false, false, turn);
     }
 
@@ -304,18 +307,18 @@ public class Board implements Cloneable {
                 && (piece.getType() == PieceType.PAWN)
                 && startCol != endCol) {
             Point captured = new Point(endRow + MovementRules.getPawnMoveDirection(enPassantPiece.getSide()), endCol);
-            placePiece(PieceFactory.cell(), captured);
+            placePiece(PieceFactory.cell(), captured.x, captured.y);
             move.setCaptureFlag();
         }
         enPassantPoint = getEnPassantPoint(getTurnSide());
         enPassantPiece = getPiece(enPassantPoint.x, enPassantPoint.y);
         if (enPassantPiece.getType() == PieceType.EMPTY) {
-            placePiece(PieceFactory.cell(), enPassantPoint);
+            placePiece(PieceFactory.cell(), enPassantPoint.x, enPassantPoint.y);
         }
         setEnPassantPoint(getTurnSide(), pieceNone);
         if (piece.getMovementType() instanceof DoublePawnType && endRow - startRow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
             setEnPassantPoint(getTurnSide(), new Point(endRow - MovementRules.getPawnMoveDirection(piece.getSide()), endCol));
-            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()));
+            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()).x, getEnPassantPoint(getTurnSide()).y);
         }
         if (piece.getType() == PieceType.KING && endCol - startCol == 2) {
             getPiece(startRow, startCol + 3).move(this, startRow, startCol + 1);
@@ -470,10 +473,6 @@ public class Board implements Cloneable {
         }
     }
 
-    public void placePiece(Piece piece, @NotNull Point pos) {
-        placePiece(piece, pos.x, pos.y);
-    }
-
     protected boolean cellColorIsWhite(int row, int col) {
         return (getWidth() - col + row) % 2 != 0;
     }
@@ -499,16 +498,14 @@ public class Board implements Cloneable {
         typeCache[row][col] = piece.getType();
     }
 
-    public void updatePiece(@NotNull Point pos) {
-        updatePiece(pos.x, pos.y);
-    }
-
     public void updatePieces() {
-        pieces = new ArrayList<>();
+        whitePieces = new ArrayList<>();
+        blackPieces = new ArrayList<>();
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
                 if (!isFree(row, col)) {
-                    pieces.add(new Point(row, col));
+                    if (getSide(row, col) == Side.WHITE) whitePieces.add(new Point(row, col));
+                    if (getSide(row, col) == Side.BLACK) blackPieces.add(new Point(row, col));
                 }
             }
         }
@@ -520,14 +517,12 @@ public class Board implements Cloneable {
 
     protected void updateMovablePieces() {
         movablePieces = new ArrayList<>();
-        for (Point p : this.pieces) {
-            if (getSide(p.x, p.y) == getTurnSide()) {
-                ArrayList<Move> moves = new ArrayList<>();
-                moves.addAll(getAvailableMoves(p.x, p.y));
-                moves.addAll(getAvailableCaptures(p.x, p.y));
-                if (!moves.isEmpty()) {
-                    movablePieces.add(p);
-                }
+        for (Point p : getPositions(getTurnSide())) {
+            ArrayList<Move> moves = new ArrayList<>();
+            moves.addAll(getAvailableMoves(p.x, p.y));
+            moves.addAll(getAvailableCaptures(p.x, p.y));
+            if (!moves.isEmpty()) {
+                movablePieces.add(p);
             }
         }
     }
@@ -537,10 +532,8 @@ public class Board implements Cloneable {
         if (side == Side.WHITE && allAvailableWhiteCapturesWSR != null) return allAvailableWhiteCapturesWSR;
         if (side == Side.BLACK && allAvailableBlackCapturesWSR != null) return allAvailableBlackCapturesWSR;
         ArrayList<Move> moves = new ArrayList<>();
-        for (Point p : this.pieces) {
-            if (getSide(p.x, p.y) == side) {
-                moves.addAll(getPiece(p.x, p.y).getAvailableCapturesWithoutSpecialRules(this));
-            }
+        for (Point p : getPositions(side)) {
+            moves.addAll(getPiece(p.x, p.y).getAvailableCapturesWithoutSpecialRules(this));
         }
         if (side == Side.WHITE) allAvailableWhiteCapturesWSR = moves;
         if (side == Side.BLACK) allAvailableBlackCapturesWSR = moves;
@@ -551,11 +544,9 @@ public class Board implements Cloneable {
         if (side == Side.WHITE && allAvailableWhiteMoves != null) return allAvailableWhiteMoves;
         if (side == Side.BLACK && allAvailableBlackMoves != null) return allAvailableBlackMoves;
         ArrayList<Move> moves = new ArrayList<>();
-        for (Point p : this.pieces) {
-            if (getSide(p.x, p.y) == side) {
-                moves.addAll(getPiece(p.x, p.y).getAvailableMoves(this));
-                moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
-            }
+        for (Point p : getPositions(side)) {
+            moves.addAll(getPiece(p.x, p.y).getAvailableMoves(this));
+            moves.addAll(getPiece(p.x, p.y).getAvailableCaptures(this));
         }
         if (priority) moves = MovePriorities.topPriorityMoves(moves);
         if (side == Side.WHITE) allAvailableWhiteMoves = moves;
@@ -567,11 +558,16 @@ public class Board implements Cloneable {
         return getType(row, col) == PieceType.EMPTY;
     }
 
+    public boolean isCapturable(int row, int col, Side by) {
+        Side side = getSide(row, col);
+        return side == by.getOpponent() || side == Side.NEUTRAL;
+    }
+
     public Side getSide(int row, int col) {
         try {
             return sideCache[row][col];
         } catch (ArrayIndexOutOfBoundsException ignored) {
-            return Side.NEUTRAL;
+            return Side.NONE;
         }
     }
 
@@ -595,7 +591,7 @@ public class Board implements Cloneable {
         return getPiece(row, col).getLabel(translation);
     }
 
-    private Piece getSelectedPiece() {
+    protected Piece getSelectedPiece() {
         return getPiece(selectedPiece.x, selectedPiece.y);
     }
 
@@ -661,7 +657,7 @@ public class Board implements Cloneable {
         return turnIndicator;
     }
 
-    private void advanceTurn() {
+    protected void advanceTurn() {
         deselectPiece();
         ++turn;
         turnIndicator = turnIndicator.getOpponent();
@@ -669,9 +665,14 @@ public class Board implements Cloneable {
     }
 
     public Board getMoveResultWithoutPromotion(Move move) {
-        Board moveResult = new Board(board, priority, turn);
-        if (move != null) {
-            moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+        Board moveResult = null;
+        try {
+            moveResult = this.getClass().getDeclaredConstructor(Piece[][].class, Boolean.class, Integer.class).newInstance(board, priority, turn);
+            if (move != null) {
+                moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
         }
         return moveResult;
     }
@@ -682,8 +683,8 @@ public class Board implements Cloneable {
 
     public boolean isInCheck(@NotNull Side side) {
         boolean kingIsPresent = false;
-        for (Point p : pieces) {
-            if (getType(p.x, p.y) == PieceType.KING && getSide(p.x, p.y) == side) {
+        for (Point p : getPositions(side)) {
+            if (getType(p.x, p.y) == PieceType.KING) {
                 kingIsPresent = true;
             }
         }
@@ -752,12 +753,16 @@ public class Board implements Cloneable {
         }
     }
 
+    public ArrayList<Point> getPositions(Side side) {
+        if (side == Side.WHITE) return whitePieces;
+        if (side == Side.BLACK) return blackPieces;
+        return new ArrayList<>();
+    }
+
     public ArrayList<Piece> getAllPieces(Side side) {
         ArrayList<Piece> pieces = new ArrayList<>();
-        for (Point point : this.pieces) {
-            if (getSide(point.x, point.y) == side) {
-                pieces.add(getPiece(point.x, point.y));
-            }
+        for (Point point : getPositions(side)) {
+            pieces.add(getPiece(point.x, point.y));
         }
         return pieces;
     }

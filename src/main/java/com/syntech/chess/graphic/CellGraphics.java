@@ -57,8 +57,9 @@ public class CellGraphics {
         loadTexture("ui", "missingno");
 
         loadUITextures();
-        loadTexture(Side.NEUTRAL, PieceType.EMPTY);
-        loadTexture(Side.NEUTRAL, PieceType.WALL);
+        loadTexture(Side.NONE, PieceType.EMPTY);
+        loadTexture(Side.NONE, PieceType.WALL);
+        loadTexture(Side.NEUTRAL, PieceType.MOB);
         loadSet(Side.WHITE);
         loadSet(Side.BLACK);
         loadXPSet(Side.WHITE);
@@ -177,7 +178,6 @@ public class CellGraphics {
      * Loads a set of chess pieces for one side.
      */
     private static void loadSet(Side side) throws IOException {
-        loadTexture(side, PieceType.EMPTY);
         loadTexture(side, PieceType.PAWN);
         loadTexture(side, PieceType.KNIGHT);
         loadTexture(side, PieceType.BISHOP);
@@ -192,7 +192,6 @@ public class CellGraphics {
      * Loads a set of chess pieces with XP bars for one side.
      */
     private static void loadXPSet(Side side) throws IOException {
-        loadXPTextures(side, PieceType.EMPTY);
         loadXPTextures(side, PieceType.PAWN);
         loadXPTextures(side, PieceType.KNIGHT);
         loadXPTextures(side, PieceType.BISHOP);
@@ -221,6 +220,7 @@ public class CellGraphics {
      */
     @NotNull
     private static String getName(@NotNull Side side, @NotNull PieceType type) {
+        if (side == Side.NONE || type == PieceType.NONE || type == PieceType.EMPTY) return type.getTextureID();
         return side.getTextureID() + type.getTextureID();
     }
 

@@ -2,7 +2,7 @@ package com.syntech.chess.ui;
 
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
-import com.syntech.chess.logic.Board;
+import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.rules.Setup;
 import com.syntech.chess.text.Translation;
 import imgui.ImGui;

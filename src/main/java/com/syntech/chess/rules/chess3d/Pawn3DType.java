@@ -1,6 +1,10 @@
 package com.syntech.chess.rules.chess3d;
 
-import com.syntech.chess.logic.*;
+import com.syntech.chess.logic.Move;
+import com.syntech.chess.logic.PieceType;
+import com.syntech.chess.logic.Side;
+import com.syntech.chess.logic.boards.Board;
+import com.syntech.chess.logic.boards.Board3D;
 import com.syntech.chess.rules.MovementRules3D;
 import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.NotNull;
