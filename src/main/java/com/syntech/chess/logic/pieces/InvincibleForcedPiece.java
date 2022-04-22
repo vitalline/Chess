@@ -23,12 +23,12 @@ public class InvincibleForcedPiece extends LevellingForcedPiece {
     }
 
     @Override
-    protected int getResistanceLevel() {
+    public int getResistanceLevel() {
         return ForcedXPRules.getInvincibleResistanceLevel();
     }
 
     @Override
-    protected int getPowerLevel() {
+    public int getPowerLevel() {
         return 1;
     }
 }

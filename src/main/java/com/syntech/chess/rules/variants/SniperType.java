@@ -17,6 +17,11 @@ public class SniperType extends BishopType {
     }
 
     @Override
+    public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Point position, Board board) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Point position, Board board) {
         ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(position, board);
         Move.setPriority(moves, MovePriorities.SNIPER_SHOT);

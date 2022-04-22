@@ -2,7 +2,6 @@ package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.logic.*;
 import com.syntech.chess.logic.boards.Board;
-import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.SpecialFirstMoveType;
 import com.syntech.chess.text.Translation;
@@ -95,18 +94,13 @@ public class Piece implements Cloneable {
     }
 
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board, @NotNull MovementType movementType) {
-        ArrayList<Move> captures = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
-        for (Move move : captures) {
-            move.setCaptureFlag();
-        }
-        return captures;
+        return movementType.getAvailableCapturesWithoutSpecialRules(position, board);
     }
 
     public ArrayList<Move> getAvailableMoves(Board board) {
         ArrayList<Move> availableMoves = getAvailableMovesWithoutSpecialRules(board);
         availableMoves = addPromotions(availableMoves, board);
         availableMoves = board.excludeMovesThatLeaveKingInCheck(side, availableMoves);
-        if (board.hasPriority()) availableMoves = MovePriorities.topPriorityMoves(availableMoves);
         return availableMoves;
     }
 
@@ -114,7 +108,9 @@ public class Piece implements Cloneable {
         ArrayList<Move> availableCaptures = getAvailableCapturesWithoutSpecialRules(board);
         availableCaptures = addPromotions(availableCaptures, board);
         availableCaptures = board.excludeMovesThatLeaveKingInCheck(side, availableCaptures);
-        if (board.hasPriority()) availableCaptures = MovePriorities.topPriorityMoves(availableCaptures);
+        for (Move move : availableCaptures) {
+            move.setCaptureFlag();
+        }
         return availableCaptures;
     }
 

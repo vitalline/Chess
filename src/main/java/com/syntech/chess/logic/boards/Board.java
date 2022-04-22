@@ -3,6 +3,7 @@ package com.syntech.chess.logic.boards;
 import com.syntech.chess.graphic.CellGraphics;
 import com.syntech.chess.graphic.Color;
 import com.syntech.chess.logic.*;
+import com.syntech.chess.logic.pieces.LevellingForcedPiece;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
@@ -558,7 +559,12 @@ public class Board implements Cloneable {
             for (Move detect : king.getAvailableCapturesWithoutSpecialRules(this, movement)) {
                 Piece piece = getPiece(detect.getEndRow(), detect.getEndCol());
                 for (Move move : piece.getAvailableCapturesWithoutSpecialRules(this)) {
-                    if (getType(move.getEndRow(), move.getEndCol()) == PieceType.KING) {
+                    if (getPiece(move.getEndRow(), move.getEndCol()) == king) {
+                        if (piece instanceof LevellingForcedPiece && king instanceof LevellingForcedPiece) {
+                            if (((LevellingForcedPiece) piece).getPowerLevel() <= ((LevellingForcedPiece) king).getResistanceLevel()) {
+                                break;
+                            }
+                        }
                         if (side == Side.WHITE) whiteKingIsInCheck = true;
                         if (side == Side.BLACK) blackKingIsInCheck = true;
                         return true;

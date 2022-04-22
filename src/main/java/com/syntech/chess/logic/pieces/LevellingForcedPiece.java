@@ -61,11 +61,11 @@ public class LevellingForcedPiece extends ForcedPiece {
         return ForcedXPRules.getPowerLevelXP(powerLevel);
     }
 
-    protected int getResistanceLevel() {
+    public int getResistanceLevel() {
         return resistanceLevel;
     }
 
-    protected int getPowerLevel() {
+    public int getPowerLevel() {
         int currentPower = ForcedXPRules.RESISTED_PIECES.indexOf(getType()) + 1;
         return currentPower + powerLevel;
     }
@@ -156,8 +156,8 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     @Override
-    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Board board, @NotNull MovementType movementType) {
-        ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(board, movementType);
+    public ArrayList<Move> getAvailableCaptures(@NotNull Board board) {
+        ArrayList<Move> moves = super.getAvailableCaptures(board);
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
             Piece piece = board.getPiece(move.getEndRow(), move.getEndCol());
