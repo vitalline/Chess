@@ -748,44 +748,6 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.FORCE_DOWN)
             }
     };
-    public static final Piece[][] mmoRPGForcedChessWithMobs = {
-            {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, LevellingData.UP)
-            },
-            {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, LevellingData.UP)
-            },
-            {
-                    cell(), cell(), cell(), cell()
-            },
-            {
-                    mob(), mob(), mob(), mob()
-            },
-            {
-                    mob(), mob(), mob(), mob()
-            },
-            {
-                    cell(), cell(), cell(), cell()
-            },
-            {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, LevellingData.UP)
-            },
-            {
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, LevellingData.UP),
-                    piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, LevellingData.UP)
-            }
-    };
     public static final Piece[][] hillForcedChess = {
             {
                     cell(), cell(), cell(), cell()
@@ -1096,6 +1058,49 @@ public class StartingPositions extends PieceFactory {
                         piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, levellingData),
                         piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, levellingData),
                         piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.PAWN, Side.BLACK, levellingData)
+                },
+                {
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, levellingData)
+                }
+        };
+    }
+
+    @Contract("_, _ -> new")
+    @NotNull
+    public static Piece @NotNull [] @NotNull [] mmoRPGForcedChessWithMobs(LevellingData levellingData, boolean armed) {
+        return new Piece[][]{
+                {
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.QUEEN, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.KING, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.WHITE, levellingData)
+                },
+                {
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.WHITE, levellingData)
+                },
+                {
+                        cell(), cell(), cell(), cell()
+                },
+                {
+                        mob(armed), mob(armed), mob(armed), mob(armed)
+                },
+                {
+                        mob(armed), mob(armed), mob(armed), mob(armed)
+                },
+                {
+                        cell(), cell(), cell(), cell()
+                },
+                {
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, levellingData),
+                        piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.DOUBLE_PAWN, Side.BLACK, levellingData)
                 },
                 {
                         piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.ROOK, Side.BLACK, levellingData),

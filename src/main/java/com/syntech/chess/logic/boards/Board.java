@@ -6,8 +6,11 @@ import com.syntech.chess.logic.*;
 import com.syntech.chess.logic.pieces.Piece;
 import com.syntech.chess.rules.MovePriorities;
 import com.syntech.chess.rules.MovementRules;
+import com.syntech.chess.rules.MovementType;
 import com.syntech.chess.rules.Setup;
 import com.syntech.chess.rules.chess.DoublePawnType;
+import com.syntech.chess.rules.chess.KnightType;
+import com.syntech.chess.rules.chess.QueenType;
 import com.syntech.chess.text.Translation;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -30,17 +33,19 @@ public class Board implements Cloneable {
     protected final boolean priority;
     protected ArrayList<Point> whitePieces;
     protected ArrayList<Point> blackPieces;
+    protected Point whiteKing = null;
+    protected Point blackKing = null;
+    protected Boolean whiteKingIsInCheck = null;
+    protected Boolean blackKingIsInCheck = null;
     private ArrayList<Point> movablePieces = new ArrayList<>();
     protected ArrayList<Move> availableMoves = new ArrayList<>();
     protected ArrayList<Move> availableCaptures = new ArrayList<>();
-    protected ArrayList<Move> allAvailableWhiteCapturesWSR = null; // WSR stands for Without Special Rules
-    protected ArrayList<Move> allAvailableBlackCapturesWSR = null; //  (such as checks or priority rules)
     protected ArrayList<Move> allAvailableWhiteMoves = null;
     protected ArrayList<Move> allAvailableBlackMoves = null;
     private Side[][] sideCache;
     private PieceType[][] typeCache;
     private Board previousBoard = null;
-    private Piece[][] board;
+    protected Piece[][] board;
     private float windowWidth, windowHeight;
     private Side turnIndicator = Side.WHITE;
     private boolean displayPromotionPopup = false;
@@ -117,8 +122,10 @@ public class Board implements Cloneable {
         clone.enPassantPointBlack = new Point(enPassantPointBlack);
         clone.sideCache = copy.sideCache;
         clone.typeCache = copy.typeCache;
-        clone.allAvailableWhiteCapturesWSR = null;
-        clone.allAvailableBlackCapturesWSR = null;
+        clone.whiteKing = copy.whiteKing;
+        clone.blackKing = copy.blackKing;
+        clone.whiteKingIsInCheck = null;
+        clone.blackKingIsInCheck = null;
         clone.allAvailableWhiteMoves = null;
         clone.allAvailableBlackMoves = null;
         //clone.moveLog = new ArrayList<>(moveLog);
@@ -127,10 +134,6 @@ public class Board implements Cloneable {
 
     public void recreateMoveLog() {
         moveLog = new ArrayList<>(moveLog);
-    }
-
-    public Piece[][] getBoard() {
-        return board;
     }
 
     public int getWidth() {
@@ -188,6 +191,7 @@ public class Board implements Cloneable {
                 if (CellGraphics.display(getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
                         size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
+                    updatePiece(selectedPiece.x, selectedPiece.y);
                     displayPromotionPopup = false;
                     ImGui.closeCurrentPopup();
                     Move newMove = new Move(moveLog.get(turn));
@@ -363,11 +367,7 @@ public class Board implements Cloneable {
         if (canRedo()) {
             Move move = moveLog.get(turn);
             move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol());
-            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
-                getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
-                advanceTurn();
-            }
-            displayPromotionPopup = false;
+            promoteIfNeeded(move);
             checkStatusConditions();
         }
     }
@@ -376,15 +376,22 @@ public class Board implements Cloneable {
         if (canRedo()) {
             Move move = moveLog.get(turn);
             move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
-            if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
-                getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
-                advanceTurn();
-            }
-            displayPromotionPopup = false; //not sure if we need this, since this board shouldn't be displayed anyway
+            promoteIfNeeded(move);
         }
     }
 
+    private void promoteIfNeeded(@NotNull Move move) {
+        if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
+            getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
+            updatePiece(move.getEndRow(), move.getEndCol());
+            advanceTurn();
+        }
+        displayPromotionPopup = false;
+    }
+
     public void checkStatusConditions() {
+        whiteKingIsInCheck = null;
+        blackKingIsInCheck = null;
         updateMovablePieces();
         status = getStatusConditions(getTurnSide());
         if (isInCheck(getTurnSide())) {
@@ -493,9 +500,22 @@ public class Board implements Cloneable {
     }
 
     public void updatePiece(int row, int col) {
+        if (whiteKing != null && whiteKing.x == row && whiteKing.y == col) whiteKing = null;
+        if (blackKing != null && blackKing.x == row && blackKing.y == col) blackKing = null;
         Piece piece = getPiece(row, col);
         sideCache[row][col] = piece.getSide();
         typeCache[row][col] = piece.getType();
+    }
+
+    public void addPiece(int row, int col) {
+        if (getSide(row, col) == Side.WHITE) {
+            whitePieces.add(new Point(row, col));
+            if (getType(row, col) == PieceType.KING) whiteKing = new Point(row, col);
+        }
+        if (getSide(row, col) == Side.BLACK) {
+            blackPieces.add(new Point(row, col));
+            if (getType(row, col) == PieceType.KING) blackKing = new Point(row, col);
+        }
     }
 
     public void updatePieces() {
@@ -504,13 +524,12 @@ public class Board implements Cloneable {
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
                 if (!isFree(row, col)) {
-                    if (getSide(row, col) == Side.WHITE) whitePieces.add(new Point(row, col));
-                    if (getSide(row, col) == Side.BLACK) blackPieces.add(new Point(row, col));
+                    addPiece(row, col);
                 }
             }
         }
-        allAvailableWhiteCapturesWSR = null;
-        allAvailableBlackCapturesWSR = null;
+        whiteKingIsInCheck = null;
+        blackKingIsInCheck = null;
         allAvailableWhiteMoves = null;
         allAvailableBlackMoves = null;
     }
@@ -527,17 +546,29 @@ public class Board implements Cloneable {
         }
     }
 
-    @NotNull
-    private ArrayList<Move> getAllAvailableCapturesWithoutSpecialRules(Side side) {
-        if (side == Side.WHITE && allAvailableWhiteCapturesWSR != null) return allAvailableWhiteCapturesWSR;
-        if (side == Side.BLACK && allAvailableBlackCapturesWSR != null) return allAvailableBlackCapturesWSR;
-        ArrayList<Move> moves = new ArrayList<>();
-        for (Point p : getPositions(side)) {
-            moves.addAll(getPiece(p.x, p.y).getAvailableCapturesWithoutSpecialRules(this));
+    protected ArrayList<MovementType> checkMoves(Side side) {
+        return new ArrayList<>(Arrays.asList(new QueenType(side), new KnightType(side)));
+    }
+
+    private boolean isInCheck(@NotNull Piece king) {
+        Side side = king.getSide();
+        if (side == Side.WHITE && whiteKingIsInCheck != null) return whiteKingIsInCheck;
+        if (side == Side.BLACK && blackKingIsInCheck != null) return blackKingIsInCheck;
+        for (MovementType movement : checkMoves(side)) {
+            for (Move detect : king.getAvailableCapturesWithoutSpecialRules(this, movement)) {
+                Piece piece = getPiece(detect.getEndRow(), detect.getEndCol());
+                for (Move move : piece.getAvailableCapturesWithoutSpecialRules(this)) {
+                    if (getType(move.getEndRow(), move.getEndCol()) == PieceType.KING) {
+                        if (side == Side.WHITE) whiteKingIsInCheck = true;
+                        if (side == Side.BLACK) blackKingIsInCheck = true;
+                        return true;
+                    }
+                }
+            }
         }
-        if (side == Side.WHITE) allAvailableWhiteCapturesWSR = moves;
-        if (side == Side.BLACK) allAvailableBlackCapturesWSR = moves;
-        return moves;
+        if (side == Side.WHITE) whiteKingIsInCheck = false;
+        if (side == Side.BLACK) blackKingIsInCheck = false;
+        return false;
     }
 
     public ArrayList<Move> getAllAvailableMoves(Side side) {
@@ -558,7 +589,7 @@ public class Board implements Cloneable {
         return getType(row, col) == PieceType.EMPTY;
     }
 
-    public boolean isCapturable(int row, int col, Side by) {
+    public boolean isCapturable(int row, int col, @NotNull Side by) {
         Side side = getSide(row, col);
         return side == by.getOpponent() || side == Side.NEUTRAL;
     }
@@ -682,29 +713,26 @@ public class Board implements Cloneable {
     }
 
     public boolean isInCheck(@NotNull Side side) {
-        boolean kingIsPresent = false;
-        for (Point p : getPositions(side)) {
-            if (getType(p.x, p.y) == PieceType.KING) {
-                kingIsPresent = true;
-            }
+        Point king = null;
+        if (side == Side.WHITE) {
+            king = whiteKing;
         }
-        if (!kingIsPresent) {
-            return true;
+        if (side == Side.BLACK) {
+            king = blackKing;
         }
-        ArrayList<Move> captures = getAllAvailableCapturesWithoutSpecialRules(side.getOpponent());
-        for (Move capture : captures) {
-            if (getType(capture.getEndRow(), capture.getEndCol()) == PieceType.KING) {
-                return true;
-            }
-        }
-        return false;
+        if (king == null) return true;
+        return isInCheck(getPiece(king.x, king.y));
+    }
+
+    public boolean isSafe(@NotNull Side side) {
+        return !isInCheck(side);
     }
 
     @NotNull
     public ArrayList<Move> excludeMovesThatLeaveKingInCheck(Side side, @NotNull ArrayList<Move> moves) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (!getMoveResultWithoutPromotion(move).isInCheck(side)) {
+            if (getMoveResultWithoutPromotion(move).isSafe(side)) {
                 filteredMoves.add(move);
             }
         }

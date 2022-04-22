@@ -13,8 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static com.syntech.chess.logic.PieceFactory.cell;
+
 public class LevellingForcedPiece extends ForcedPiece {
     private int xp, resistanceXP, powerXP, resistanceLevel, powerLevel;
+    private double hp;
+    private final double maxHP;
     private LevellingData levellingData;
     private Point initialPosition;
     private boolean hasCaptured = false, hasChecked = false, hasRespawned = false;
@@ -28,6 +32,10 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     public LevellingForcedPiece(Side side, MovementType movementType, LevellingData levellingData, PromotionInfo promotionInfo, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel, Point initialPosition) {
+        this(side, movementType, levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, 100, 100, initialPosition);
+    }
+
+    public LevellingForcedPiece(Side side, MovementType movementType, LevellingData levellingData, PromotionInfo promotionInfo, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel, double hp, double maxHP, Point initialPosition) {
         super(side, movementType, promotionInfo);
         baseType = PieceBaseType.LEVELLING_FORCED_PIECE;
         this.levellingData = levellingData;
@@ -36,6 +44,8 @@ public class LevellingForcedPiece extends ForcedPiece {
         this.resistanceLevel = resistanceLevel;
         this.powerXP = powerXP;
         this.powerLevel = powerLevel;
+        this.hp = hp;
+        this.maxHP = maxHP;
         this.initialPosition = initialPosition;
     }
 
@@ -58,6 +68,10 @@ public class LevellingForcedPiece extends ForcedPiece {
     protected int getPowerLevel() {
         int currentPower = ForcedXPRules.RESISTED_PIECES.indexOf(getType()) + 1;
         return currentPower + powerLevel;
+    }
+
+    protected double getHP() {
+        return hp;
     }
 
     public Point getInitialPosition() {
@@ -84,6 +98,9 @@ public class LevellingForcedPiece extends ForcedPiece {
     @Override
     public String getLabel(@NotNull Translation translation) {
         String label = super.getLabel(translation);
+        if (levellingData.hasHP()) {
+            label += '\n' + translation.get("label.hp", hp, maxHP);
+        }
         if (canLevelUp()) {
             label += '\n' + translation.get("label.xp", xp, getMaxXP());
             label += '\n' + translation.get("label.next_level", ForcedXPRules.getNextLevel(getType()).getTranslationString());
@@ -129,9 +146,18 @@ public class LevellingForcedPiece extends ForcedPiece {
         powerXP += amount;
     }
 
+    public void damage(@NotNull Board board, double dmg) {
+        if (levellingData.hasHP()) {
+            hp -= dmg;
+            if (hp <= 0) {
+                board.placePiece(cell(), position.x, position.y);
+            }
+        }
+    }
+
     @Override
-    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Board board) {
-        ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(board);
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(@NotNull Board board, @NotNull MovementType movementType) {
+        ArrayList<Move> moves = super.getAvailableCapturesWithoutSpecialRules(board, movementType);
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
             Piece piece = board.getPiece(move.getEndRow(), move.getEndCol());
@@ -153,7 +179,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         }
         hasCaptured = false;
         hasRespawned = false;
-        board.placePiece(PieceFactory.cell(), position.x, position.y);
+        board.placePiece(cell(), position.x, position.y);
         Piece capturedPiece = board.getPiece(row, col);
         if (capturedPiece instanceof LevellingForcedPiece) {
             int captureXP = ForcedXPRules.getPieceXPWorth(board.getType(row, col));
@@ -290,7 +316,7 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     private void morph(@NotNull Board board, PieceType newPieceType, PromotionInfo promotionInfo, int xp, @NotNull Point position) {
-        board.placePiece(PieceFactory.piece(baseType, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition), position.x, position.y);
+        board.placePiece(PieceFactory.piece(baseType, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition), position.x, position.y);
     }
 
     private boolean canLevelUp() {

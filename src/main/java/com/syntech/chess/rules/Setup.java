@@ -37,9 +37,10 @@ public enum Setup {
     RESISTANCE_POWER_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.res.pow", StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN_RES_POW)),
     FORCED_INVOLUTION_FORCED_CHESS("chess.forced.down.telefrag", StartingPositions.forcedInvolutionForcedChess),
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
-    MMORPG_FORCED_CHESS_WITH_MOBS("chess.forced.up.mob", StartingPositions.mmoRPGForcedChessWithMobs),
-    HILL_FORCED_CHESS("chess.forced.hill", StartingPositions.hillForcedChess),
-    HILLS_FORCED_CHESS("chess.forced.hills", StartingPositions.hillForcedChess),
+    MMORPG_FORCED_CHESS_WITH_MOBS("chess.forced.up.mob", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP, false)),
+    MMORPG_FORCED_CHESS_WITH_ARMED_MOBS("chess.forced.up.mob.armed", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP_HP, true)),
+    MOUNTAIN_FORCED_CHESS("chess.forced.mountain", StartingPositions.hillForcedChess),
+    MOUNTAIN_RANGE_FORCED_CHESS("chess.forced.mountains", StartingPositions.hillForcedChess),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
     FORCED_CHESS_3D("chess.forced.3d", StartingPositions.forcedChess3D),
     MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
@@ -117,11 +118,14 @@ public enum Setup {
             if (this == MMORPG_FORCED_CHESS_WITH_MOBS) {
                 return new MobBoard(pieces, priority, true, true);
             }
-            if (this == HILL_FORCED_CHESS) {
-                return new HillBoard(pieces, priority, true, true);
+            if (this == MMORPG_FORCED_CHESS_WITH_ARMED_MOBS) {
+                return new ArmedMobBoard(pieces, priority, true, true);
             }
-            if (this == HILLS_FORCED_CHESS) {
-                return new HillsBoard(pieces, priority, true, true);
+            if (this == MOUNTAIN_FORCED_CHESS) {
+                return new MountainBoard(pieces, priority, true, true);
+            }
+            if (this == MOUNTAIN_RANGE_FORCED_CHESS) {
+                return new MountainRangeBoard(pieces, priority, true, true);
             }
             return new Board(pieces, priority, true, true);
         }

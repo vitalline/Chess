@@ -32,6 +32,7 @@ public enum PieceType {
     CASTLING_KING("King", "piece.king"),
     AMAZON("Amazon", "piece.amazon"),
     MOB("Mob", "piece.mob"),
+    ARMED_MOB("MobArmed", "piece.mob.armed"),
     PAWN_3D("Pawn", "piece.pawn"),
     KNIGHT_3D("Knight", "piece.knight"),
     BISHOP_3D("Bishop", "piece.bishop"),
@@ -101,6 +102,8 @@ public enum PieceType {
                 return new AmazonType(side);
             case MOB:
                 return new MobType();
+            case ARMED_MOB:
+                return new ImmovableType(Side.NEUTRAL, PieceType.ARMED_MOB);
             case PAWN_3D:
                 return new Pawn3DType(side);
             case KNIGHT_3D:

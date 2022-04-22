@@ -2,6 +2,7 @@ package com.syntech.chess.rules.neutral;
 
 import com.syntech.chess.logic.Move;
 import com.syntech.chess.logic.PieceType;
+import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.boards.Board;
 import com.syntech.chess.rules.MovementType;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,11 @@ public class ImmovableType extends MovementType {
     private final PieceType type;
 
     public ImmovableType(PieceType type) {
+        this.type = type;
+    }
+
+    public ImmovableType(Side side, PieceType type) {
+        this.side = side;
         this.type = type;
     }
 

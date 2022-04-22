@@ -83,10 +83,18 @@ public class Piece implements Cloneable {
     }
 
     public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board) {
+        return getAvailableMovesWithoutSpecialRules(board, movementType);
+    }
+
+    public ArrayList<Move> getAvailableMovesWithoutSpecialRules(Board board, @NotNull MovementType movementType) {
         return movementType.getAvailableMovesWithoutSpecialRules(position, board);
     }
 
     public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board) {
+        return getAvailableCapturesWithoutSpecialRules(board, movementType);
+    }
+
+    public ArrayList<Move> getAvailableCapturesWithoutSpecialRules(Board board, @NotNull MovementType movementType) {
         ArrayList<Move> captures = movementType.getAvailableCapturesWithoutSpecialRules(position, board);
         for (Move move : captures) {
             move.setCaptureFlag();

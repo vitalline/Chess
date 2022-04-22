@@ -23,8 +23,8 @@ public class PieceFactory {
     }
 
     @NotNull
-    public static Piece mob() {
-        return piece(PieceBaseType.LEVELLING_FORCED_PIECE, PieceType.MOB, Side.NEUTRAL, LevellingData.UP);
+    public static Piece mob(boolean armed) {
+        return piece(PieceBaseType.LEVELLING_FORCED_PIECE, armed ? PieceType.ARMED_MOB : PieceType.MOB, Side.NEUTRAL, LevellingData.UP);
     }
 
     @NotNull
@@ -70,7 +70,13 @@ public class PieceFactory {
     @NotNull
     public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, LevellingData levellingData,
                               int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel, Point initialPosition) {
-        return piece(baseType, type, side, null, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition);
+        return piece(baseType, type, side, null, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, 100, 100, initialPosition);
+    }
+
+    @NotNull
+    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, LevellingData levellingData,
+                              int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel, double hp, Point initialPosition) {
+        return piece(baseType, type, side, null, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, hp, initialPosition);
     }
 
     @NotNull
@@ -87,13 +93,13 @@ public class PieceFactory {
     @NotNull
     public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side,
                               PromotionInfo promotionInfo, LevellingData levellingData, Point initialPosition) {
-        return piece(baseType, type, side, promotionInfo, levellingData, 0, 0, 0, 0, 0, initialPosition);
+        return piece(baseType, type, side, promotionInfo, levellingData, 0, 0, 0, 0, 0, 100, 100, initialPosition);
     }
 
     @NotNull
     public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, PromotionInfo promotionInfo,
                               LevellingData levellingData, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel,
-                              Point initialPosition) {
+                              double hp, double maxHP, Point initialPosition) {
         switch (baseType) {
             case NEUTRAL_PIECE:
                 return new NeutralPiece(side, type.getMovementType(side));
@@ -108,7 +114,7 @@ public class PieceFactory {
             case INVINCIBLE_FORCED_PIECE:
                 return new InvincibleForcedPiece(side, type.getMovementType(side));
             case LEVELLING_FORCED_PIECE:
-                return new LevellingForcedPiece(side, type.getMovementType(side), levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, initialPosition);
+                return new LevellingForcedPiece(side, type.getMovementType(side), levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition);
             case CLONING_FORCED_PIECE:
                 return new CloningForcedPiece(side, type.getMovementType(side));
             default:

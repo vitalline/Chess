@@ -60,6 +60,7 @@ public class CellGraphics {
         loadTexture(Side.NONE, PieceType.EMPTY);
         loadTexture(Side.NONE, PieceType.WALL);
         loadTexture(Side.NEUTRAL, PieceType.MOB);
+        loadTexture(Side.NEUTRAL, PieceType.ARMED_MOB);
         loadSet(Side.WHITE);
         loadSet(Side.BLACK);
         loadXPSet(Side.WHITE);

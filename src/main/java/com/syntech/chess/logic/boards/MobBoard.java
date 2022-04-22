@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
 
-public class MobBoard extends AIBoard {
-    private ArrayList<Point> neutralPieces;
+public class MobBoard extends NeutralAIBoard {
     private Piece lastMovedPiece;
 
     public MobBoard(@NotNull Piece[][] board, Boolean priority, Boolean initialize, Boolean update) {
@@ -22,25 +21,6 @@ public class MobBoard extends AIBoard {
 
     public MobBoard(@NotNull Piece[][] board, Boolean priority, Integer turn) {
         super(board, priority, turn);
-    }
-
-    public void updatePieces() {
-        whitePieces = new ArrayList<>();
-        blackPieces = new ArrayList<>();
-        neutralPieces = new ArrayList<>();
-        for (int row = 0; row < getHeight(); row++) {
-            for (int col = 0; col < getWidth(); col++) {
-                if (!isFree(row, col)) {
-                    if (getSide(row, col) == Side.WHITE) whitePieces.add(new Point(row, col));
-                    if (getSide(row, col) == Side.BLACK) blackPieces.add(new Point(row, col));
-                    if (getSide(row, col) == Side.NEUTRAL) neutralPieces.add(new Point(row, col));
-                }
-            }
-        }
-        allAvailableWhiteCapturesWSR = null;
-        allAvailableBlackCapturesWSR = null;
-        allAvailableWhiteMoves = null;
-        allAvailableBlackMoves = null;
     }
 
     private @Nullable Move getNeutralMove(@NotNull Point p) {

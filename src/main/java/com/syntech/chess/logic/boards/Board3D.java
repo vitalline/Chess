@@ -1,11 +1,17 @@
 package com.syntech.chess.logic.boards;
 
 import com.syntech.chess.logic.Move;
+import com.syntech.chess.logic.Side;
 import com.syntech.chess.logic.pieces.Piece;
+import com.syntech.chess.rules.MovementType;
+import com.syntech.chess.rules.chess3d.Knight3DType;
+import com.syntech.chess.rules.chess3d.Queen3DType;
 import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Board3D extends Board {
     private final int boardWidth;
@@ -67,7 +73,7 @@ public class Board3D extends Board {
 
     @Override
     public Board getMoveResultWithoutPromotion(Move move) {
-        Board3D nextTurn = new Board3D(getBoard(), priority, boardWidth, turn);
+        Board3D nextTurn = new Board3D(board, priority, boardWidth, turn);
         if (move != null) {
             nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
         }
@@ -99,5 +105,9 @@ public class Board3D extends Board {
         if (board >= 0 && board < getBoardAmount() && col >= 0 && col < getBoardWidth())
             return board * getBoardWidth() + col;
         return -1;
+    }
+
+    protected ArrayList<MovementType> checkMoves(Side side) {
+        return new ArrayList<>(Arrays.asList(new Queen3DType(side), new Knight3DType(side)));
     }
 }
