@@ -9,17 +9,17 @@ public class PieceFactory {
 
     @NotNull
     public static Piece none() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.NONE, Side.NONE);
+        return piece(PieceBaseType.PIECE, PieceType.NONE, Side.NONE);
     }
 
     @NotNull
     public static Piece cell() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, Side.NONE);
+        return piece(PieceBaseType.PIECE, PieceType.EMPTY, Side.NONE);
     }
 
     @NotNull
     public static Piece wall() {
-        return piece(PieceBaseType.NEUTRAL_PIECE, PieceType.WALL, Side.NONE);
+        return piece(PieceBaseType.PIECE, PieceType.WALL, Side.NONE);
     }
 
     @NotNull
@@ -101,8 +101,6 @@ public class PieceFactory {
                               LevellingData levellingData, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel,
                               double hp, double maxHP, Point initialPosition) {
         switch (baseType) {
-            case NEUTRAL_PIECE:
-                return new NeutralPiece(side, type.getMovementType(side));
             case PIECE:
                 return new Piece(side, type.getMovementType(side), promotionInfo);
             case FORCED_PIECE:

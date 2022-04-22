@@ -1,7 +1,6 @@
 package com.syntech.chess.logic.pieces;
 
 import com.syntech.chess.logic.LevellingData;
-import com.syntech.chess.logic.PieceBaseType;
 import com.syntech.chess.logic.Side;
 import com.syntech.chess.rules.ForcedXPRules;
 import com.syntech.chess.rules.MovementType;
@@ -12,7 +11,6 @@ public class InvincibleForcedPiece extends LevellingForcedPiece {
 
     public InvincibleForcedPiece(Side side, MovementType movementType) {
         super(side, movementType, LevellingData.RES);
-        baseType = PieceBaseType.INVINCIBLE_FORCED_PIECE;
     }
 
     @Override

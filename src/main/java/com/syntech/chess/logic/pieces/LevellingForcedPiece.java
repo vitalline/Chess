@@ -37,7 +37,6 @@ public class LevellingForcedPiece extends ForcedPiece {
 
     public LevellingForcedPiece(Side side, MovementType movementType, LevellingData levellingData, PromotionInfo promotionInfo, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel, double hp, double maxHP, Point initialPosition) {
         super(side, movementType, promotionInfo);
-        baseType = PieceBaseType.LEVELLING_FORCED_PIECE;
         this.levellingData = levellingData;
         this.xp = xp;
         this.resistanceXP = resistanceXP;
@@ -316,7 +315,7 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     private void morph(@NotNull Board board, PieceType newPieceType, PromotionInfo promotionInfo, int xp, @NotNull Point position) {
-        board.placePiece(PieceFactory.piece(baseType, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition), position.x, position.y);
+        board.placePiece(PieceFactory.piece(PieceBaseType.LEVELLING_FORCED_PIECE, newPieceType, side, promotionInfo, levellingData, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition), position.x, position.y);
     }
 
     private boolean canLevelUp() {

@@ -15,7 +15,6 @@ public class Piece implements Cloneable {
     protected Point position;
     protected MovementType movementType;
     private PromotionInfo promotionInfo;
-    protected PieceBaseType baseType;
 
     public Piece(Side side, MovementType movementType) {
         this(side, movementType, null);
@@ -26,7 +25,6 @@ public class Piece implements Cloneable {
         this.position = new Point(0, 0);
         this.movementType = movementType;
         this.promotionInfo = promotionInfo;
-        this.baseType = PieceBaseType.PIECE;
     }
 
     @Override
@@ -56,10 +54,6 @@ public class Piece implements Cloneable {
         return movementType.getType();
     }
 
-    private PieceBaseType getBaseType() {
-        return baseType;
-    }
-
     public MovementType getMovementType() {
         return movementType;
     }
@@ -71,7 +65,6 @@ public class Piece implements Cloneable {
 
     public String getLabel(@NotNull Translation translation) {
         return translation.get("label.name",
-                getBaseType().getTranslationString(),
                 getSide().getTranslationString(),
                 getType().getTranslationString()
         ).trim().replaceAll(" {2}", " ");

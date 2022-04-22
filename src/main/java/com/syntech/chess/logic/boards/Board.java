@@ -323,7 +323,7 @@ public class Board implements Cloneable {
         setEnPassantPoint(getTurnSide(), pieceNone);
         if (piece.getMovementType() instanceof DoublePawnType && endRow - startRow == 2 * MovementRules.getPawnMoveDirection(piece.getSide())) {
             setEnPassantPoint(getTurnSide(), new Point(endRow - MovementRules.getPawnMoveDirection(piece.getSide()), endCol));
-            placePiece(PieceFactory.piece(PieceBaseType.NEUTRAL_PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()).x, getEnPassantPoint(getTurnSide()).y);
+            placePiece(PieceFactory.piece(PieceBaseType.PIECE, PieceType.EMPTY, piece.getSide()), getEnPassantPoint(getTurnSide()).x, getEnPassantPoint(getTurnSide()).y);
         }
         if (piece.getType() == PieceType.KING && endCol - startCol == 2) {
             getPiece(startRow, startCol + 3).move(this, startRow, startCol + 1);
