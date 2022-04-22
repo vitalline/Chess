@@ -463,15 +463,19 @@ public class BaseUI {
 
         if (infoSetup != null) {
             if (prev) {
-                if (infoSetup.getPrevious() != null) {
-                    infoSetup = infoSetup.getPrevious();
-                }
+                do {
+                    if (infoSetup.getPrevious() != null) {
+                        infoSetup = infoSetup.getPrevious();
+                    }
+                } while (infoSetup.getPrevious() != null && !infoSetup.gameInfoExists(translation));
             }
 
             if (next) {
-                if (infoSetup.getNext() != null) {
-                    infoSetup = infoSetup.getNext();
-                }
+                do {
+                    if (infoSetup.getNext() != null) {
+                        infoSetup = infoSetup.getNext();
+                    }
+                } while (infoSetup.getNext() != null && !infoSetup.gameInfoExists(translation));
             }
         }
     }
