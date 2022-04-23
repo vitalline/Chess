@@ -50,6 +50,8 @@ public enum Setup {
     MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
     CYCLIC_CHESS_4x4("chess.4x4.cyclic", StartingPositions.chess4x4),
     DOUBLE_TURN_CHESS_4x4("chess.4x4.double", StartingPositions.chess4x4),
+    CHESS_8X4("chess.8x4", StartingPositions.chess8x4),
+    CYCLIC_CHESS_8X4("chess.cyclic.8x4", StartingPositions.chess8x4),
     FORCED_CHESS_8X4("chess.forced.8x4", StartingPositions.forcedChess8x4),
     CYCLIC_FORCED_CHESS_8X4("chess.forced.cyclic.8x4", StartingPositions.forcedChess8x4),
     FORCED_CHESS_8X8("chess.forced.8x8", StartingPositions.forcedChess8x8),

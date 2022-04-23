@@ -131,6 +131,40 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
             }
     };
+    public static final Piece[][] chess8x4 = {
+            {
+                    cell(), cell(),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.WHITE),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.PIECE, Side.BLACK),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.PIECE, PieceType.ROOK, Side.BLACK),
+                    cell(), cell()
+            }
+    };
     public static final Piece[][] forcedChess8x4 = {
             {
                     cell(), cell(),
