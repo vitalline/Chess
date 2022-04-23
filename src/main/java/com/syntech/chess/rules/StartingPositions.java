@@ -131,6 +131,40 @@ public class StartingPositions extends PieceFactory {
                     piece(PieceBaseType.FORCED_PIECE, PieceType.CASTLING_ROOK, Side.BLACK)
             }
     };
+    public static final Piece[][] forcedChess8x4 = {
+            {
+                    cell(), cell(),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.WHITE),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.WHITE),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.WHITE),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    forcedChessPawn(PieceBaseType.FORCED_PIECE, Side.BLACK),
+                    cell(), cell()
+            },
+            {
+                    cell(), cell(),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.QUEEN, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.KING, Side.BLACK),
+                    piece(PieceBaseType.FORCED_PIECE, PieceType.ROOK, Side.BLACK),
+                    cell(), cell()
+            }
+    };
     public static final Piece[][] chess4x4 = {
             {
                     piece(PieceBaseType.PIECE, PieceType.ROOK, Side.WHITE),

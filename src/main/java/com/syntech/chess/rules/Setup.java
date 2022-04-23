@@ -48,6 +48,10 @@ public enum Setup {
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
     FORCED_CHESS_3D("chess.forced.3d", StartingPositions.forcedChess3D),
     MODEST_FORCED_CHESS_3D("chess.forced.3d.modest", StartingPositions.modestForcedChess3D),
+    CYCLIC_CHESS_4x4("chess.4x4.cyclic", StartingPositions.chess4x4),
+    DOUBLE_TURN_CHESS_4x4("chess.4x4.double", StartingPositions.chess4x4),
+    FORCED_CHESS_8X4("chess.forced.8x4", StartingPositions.forcedChess8x4),
+    CYCLIC_FORCED_CHESS_8X4("chess.forced.cyclic.8x4", StartingPositions.forcedChess8x4),
     FORCED_CHESS_8X8("chess.forced.8x8", StartingPositions.forcedChess8x8),
     CYCLIC_FORCED_CHESS_8X8("chess.forced.cyclic.8x8", StartingPositions.forcedChess8x8),
     CYCLIC_CHESS_8X12("chess.cyclic.8x12", StartingPositions.chess8x12),
@@ -91,13 +95,29 @@ public enum Setup {
     }
 
     @NotNull
-    public String getGameType() {
-        return gameType + ".name";
+    public String getGameType(@NotNull Translation translation) {
+        return translation.get(gameType + ".name");
     }
 
     @NotNull
-    public String getGameType(@NotNull Translation translation) {
-        return translation.get(gameType + ".name");
+    public String getGameTypeStatusString(@NotNull Translation translation) {
+        String gameType = getGameType(translation);
+        int startLength = translation.get("status.game").length() - 2;
+        int spaceCount = 0;
+        for (char ch : gameType.toCharArray()) {
+            if (ch == ' ') spaceCount += 1; else break;
+        }
+        return translation.get("status.game", gameType.indent(Math.max(startLength - spaceCount, 0)).substring(startLength));
+    }
+
+    @NotNull
+    public String getGameTypeTag() {
+        return getGameType(Translation.EN_US).strip().replaceAll("\s*\n\s*", " ");
+    }
+
+    @NotNull
+    public String getGameTypeString(@NotNull Translation translation) {
+        return getGameType(translation).strip().replaceAll("\s*\n\s*", " ");
     }
 
     @NotNull
@@ -176,7 +196,7 @@ public enum Setup {
                 varTokens.removeIf(String::isEmpty);
                 String variant = varTokens.get(0);
                 for (Setup setup : Setup.values()) {
-                    if (setup.getGameType(Translation.EN_US).replaceAll("\n?\s+", " ").equals(variant)) {
+                    if (setup.getGameTypeTag().equals(variant)) {
                         return setup;
                     }
                 }

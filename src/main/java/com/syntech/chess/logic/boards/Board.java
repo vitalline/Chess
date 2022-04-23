@@ -816,7 +816,7 @@ public class Board implements Cloneable {
         printWriter.print("[Black \"Player 2\"]\n");
         printWriter.printf("[Result \"%s\"]\n", getResultString());
         if (setup != Setup.CHESS) {
-            printWriter.printf("[Variant \"%s\"]\n", setup.getGameType(Translation.EN_US).replaceAll("\n?\s+", " "));
+            printWriter.printf("[Variant \"%s\"]\n", setup.getGameTypeTag());
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < turn; i++) {

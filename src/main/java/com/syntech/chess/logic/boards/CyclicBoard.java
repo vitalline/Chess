@@ -47,6 +47,10 @@ public class CyclicBoard extends Board {
         super.placePiece(piece, row, getColumn(col));
     }
 
+    public void updatePiece(int row, int col) {
+        super.updatePiece(row, getColumn(col));
+    }
+
     @Override
     public ArrayList<Move> getAllAvailableMoves(Side side) {
         ArrayList<Move> moves = super.getAllAvailableMoves(side);

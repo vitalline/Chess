@@ -170,7 +170,7 @@ public class BaseUI {
             }
         }
         ImGui.text(status);
-        ImGui.text(translation.get("status.game", setup.getGameType(translation).replace("\n", "\n" + " ".repeat(translation.get("status.game").length() - 2))));
+        ImGui.text(setup.getGameTypeStatusString(translation));
         if (filename != null) {
             if (saveMode) {
                 ImGui.text(translation.get("status.saved_as", filename));
@@ -420,8 +420,8 @@ public class BaseUI {
     private void displayInfoPopup() {
         boolean prev = false, next = false;
 
-        if (ImGui.beginPopupModal(translation.get("window.info"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize)) {
-            ImGui.text(infoSetup.getGameType(translation));
+        if (ImGui.beginPopupModal(translation.get("window.info"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.HorizontalScrollbar)) {
+            ImGui.text(infoSetup.getGameTypeString(translation));
             ImGui.text(infoSetup.getGameInfo(translation));
             ImGui.text("");
             ImGui.sameLine((ImGui.getWindowWidth()) / 2 - (float) cellSize * 4 / 3);

@@ -75,6 +75,14 @@
   "chess.forced.3d.name": "Forced Chess 3D",
   "chess.forced.3d.modest.short": "Modest Forced Chess 3D",
   "chess.forced.3d.modest.name": "Modest Forced Chess 3D",
+  "chess.4x4.cyclic.short": "Cyclic Chess 4×4",
+  "chess.4x4.cyclic.name": "Cyclic Chess 4×4",
+  "chess.4x4.double.short": "Double Chess 4×4",
+  "chess.4x4.double.name": "Double Chess 4×4",
+  "chess.forced.8x4.short": "Forced Chess 8×4",
+  "chess.forced.8x4.name": "Forced Chess 8×4",
+  "chess.forced.cyclic.8x4.short": "Cyclic Forced Chess 8×4",
+  "chess.forced.cyclic.8x4.name": "Cyclic Forced Chess 8×4",
   "chess.forced.8x8.short": "Forced Chess 8×8",
   "chess.forced.8x8.name": "Forced Chess 8×8",
   "chess.forced.cyclic.8x8.short": "Cyclic Forced Chess 8×8",
@@ -178,8 +186,12 @@
     "So if you are confused, you can always rely on it. (Probably.)"
   ],
   "chess.cyclic.info": [
-    "It's the same as regular chess, but the left and right edges are considered adjacent.",
+    "Same as regular chess, but the left and right edges are considered adjacent.",
     "Everything else works as you'd expect - it's just the fact that the edges are connected."
+  ],
+  "chess.double.info": [
+    "Same as regular chess, but you move twice each time.",
+    "Giving your opponent a check on your first turn of the two is not allowed."
   ],
   "chess.forced.info": [
     "The classical Forced Chess. For when you don't have time for regular chess.",
@@ -200,6 +212,10 @@
   "chess.forced.minor.info": [
     "Same as Forced Chess, but every piece (except the kings) is a pawn.",
     "Well, at least they can be promoted."
+  ],
+  "chess.forced.double.info": [
+    "Same as Forced Chess, but you move twice each time.",
+    "Giving your opponent a check on your first turn of the two is not allowed, even if it is a capture."
   ],
   "chess.forced.cyclic.info": [
     "Forced Chess... on a cyclic board.",
@@ -332,6 +348,24 @@
   "chess.forced.3d.modest.info": [
     "Modest Forced Chess 3D. Notice that the rook is considered",
     "more powerful than the bishop, but less powerful than the cardinal."
+  ],
+  "chess.4x4.cyclic.info": [
+    "Chess but on a 4 by 4 cyclic board. Sure."
+  ],
+  "chess.4x4.double.info": [
+    "Chess but on a 4 by 4 board, but you move twice each time. Sounds good."
+  ],
+  "chess.8x4.info": [
+    "Chess but on a 8 by 4 board. We already had tall boards, now it's time for a wide board."
+  ],
+  "chess.cyclic.8x4.info": [
+    "Chess but on a 8 by 4 cyclic board. Wide cylinder goes brrrrr."
+  ],
+  "chess.forced.8x4.info": [
+    "Forced Chess but on a 8 by 4 board. So much movement potential, wasted on forced captures."
+  ],
+  "chess.forced.cyclic.8x4.info": [
+    "Forced Chess but on a 8 by 4 cyclic board. I'm running out of things to say."
   ],
   "chess.forced.8x8.info": [
     "Forced Chess but on an 8 by 8 board-- wait, this is just chess with forced captures! How boring."
