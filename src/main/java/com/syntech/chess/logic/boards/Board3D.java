@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class Board3D extends Board {
     private final int boardWidth;
 
-    public Board3D(@NotNull Piece[][] board, Boolean priority, Integer boardWidth, Boolean initialize, Boolean update) {
+    public Board3D(@NotNull Piece[][] board, Boolean priority, Integer boardWidth, Boolean initialize, @NotNull Boolean update) {
         super(board, priority, initialize, false);
         this.boardWidth = boardWidth;
         if (update) {
@@ -72,12 +72,13 @@ public class Board3D extends Board {
     }
 
     @Override
-    public Board getMoveResultWithoutPromotion(Move move) {
-        Board3D nextTurn = new Board3D(board, priority, boardWidth, turn);
+    public Board getMoveResult(Move move) {
+        Board3D moveResult = new Board3D(board, priority, boardWidth, turn);
         if (move != null) {
-            nextTurn.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+            moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+            moveResult.promoteIfNeeded(move);
         }
-        return nextTurn;
+        return moveResult;
     }
 
     @Override

@@ -20,10 +20,8 @@ public class CloningForcedPiece extends ForcedPiece {
                 board.placePiece((Piece) this.clone(), position.x, position.y);
             }
             board.placePiece(this, row, col);
-        } catch (CloneNotSupportedException ignored) {
-            // do nothing. a piece that was supposed to be moving,
-            // but didn't, would be easier to catch than those
-            // rather nasty cloning bugs (i hope).
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
         if (movementType instanceof SpecialFirstMoveType) {
             ((SpecialFirstMoveType) movementType).move();

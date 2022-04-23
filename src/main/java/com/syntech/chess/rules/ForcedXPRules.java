@@ -113,11 +113,7 @@ public final class ForcedXPRules {
         } catch (IndexOutOfBoundsException ignored) {
             type = level <= 0 ? PieceType.NONE : PieceType.AMAZON;
         }
-        StringBuilder label = new StringBuilder(type.getProperName(translation));
-        for (int i = level; i > RESISTED_PIECES.size(); i--) {
-            label.append('+');
-        }
-        return label.toString();
+        return type.getProperName(translation) + "+".repeat(Math.max(0, level - RESISTED_PIECES.size()));
     }
 
     public static int getMaxPowerLevel() {
@@ -125,26 +121,17 @@ public final class ForcedXPRules {
     }
 
     public static int getPieceXPWorth(@NotNull PieceType type) {
-        switch (type) {
-            case PAWN:
-                return ForcedXPRules.PAWN_CAPTURE_XP;
-            case KNIGHT:
-                return ForcedXPRules.KNIGHT_CAPTURE_XP;
-            case BISHOP:
-                return ForcedXPRules.BISHOP_CAPTURE_XP;
-            case ROOK:
-                return ForcedXPRules.ROOK_CAPTURE_XP;
-            case QUEEN:
-                return ForcedXPRules.QUEEN_CAPTURE_XP;
-            case AMAZON:
-                return ForcedXPRules.AMAZON_CAPTURE_XP;
-            case MOB:
-                return ForcedXPRules.MOB_CAPTURE_XP;
-            case ARMED_MOB:
-                return ForcedXPRules.ARMED_MOB_CAPTURE_XP;
-            default:
-                return 0;
-        }
+        return switch (type) {
+            case PAWN -> ForcedXPRules.PAWN_CAPTURE_XP;
+            case KNIGHT -> ForcedXPRules.KNIGHT_CAPTURE_XP;
+            case BISHOP -> ForcedXPRules.BISHOP_CAPTURE_XP;
+            case ROOK -> ForcedXPRules.ROOK_CAPTURE_XP;
+            case QUEEN -> ForcedXPRules.QUEEN_CAPTURE_XP;
+            case AMAZON -> ForcedXPRules.AMAZON_CAPTURE_XP;
+            case MOB -> ForcedXPRules.MOB_CAPTURE_XP;
+            case ARMED_MOB -> ForcedXPRules.ARMED_MOB_CAPTURE_XP;
+            default -> 0;
+        };
     }
 
     public static int getCheckXPWorth() {

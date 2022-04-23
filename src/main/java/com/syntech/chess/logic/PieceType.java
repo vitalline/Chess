@@ -69,57 +69,31 @@ public enum PieceType {
 
     @Nullable
     public MovementType getMovementType(Side side) {
-        switch (this) {
-            case NONE:
-            case EMPTY:
-            case WALL:
-                return new ImmovableType(this);
-            case PAWN:
-                return new PawnType(side);
-            case DOUBLE_PAWN:
-                return new DoublePawnType(side);
-            case CLIMBING_PAWN:
-                return new ClimbingPawnType(side);
-            case KNIGHT:
-                return new KnightType(side);
-            case PEGASUS:
-                return new PegasusType(side);
-            case BISHOP:
-                return new BishopType(side);
-            case SNIPER:
-                return new SniperType(side);
-            case ROOK:
-                return new RookType(side);
-            case CASTLING_ROOK:
-                return new CastlingRookType(side);
-            case QUEEN:
-                return new QueenType(side);
-            case KING:
-                return new KingType(side);
-            case CASTLING_KING:
-                return new CastlingKingType(side);
-            case AMAZON:
-                return new AmazonType(side);
-            case MOB:
-                return new MobType();
-            case ARMED_MOB:
-                return new ImmovableType(Side.NEUTRAL, PieceType.ARMED_MOB);
-            case PAWN_3D:
-                return new Pawn3DType(side);
-            case KNIGHT_3D:
-                return new Knight3DType(side);
-            case BISHOP_3D:
-                return new Bishop3DType(side);
-            case CARDINAL_3D:
-                return new Cardinal3DType(side);
-            case ROOK_3D:
-                return new Rook3DType(side);
-            case QUEEN_3D:
-                return new Queen3DType(side);
-            case KING_3D:
-                return new King3DType(side);
-            default:
-                return null;
-        }
+        return switch (this) {
+            case NONE, EMPTY, WALL -> new ImmovableType(this);
+            case PAWN -> new PawnType(side);
+            case DOUBLE_PAWN -> new DoublePawnType(side);
+            case CLIMBING_PAWN -> new ClimbingPawnType(side);
+            case KNIGHT -> new KnightType(side);
+            case PEGASUS -> new PegasusType(side);
+            case BISHOP -> new BishopType(side);
+            case SNIPER -> new SniperType(side);
+            case ROOK -> new RookType(side);
+            case CASTLING_ROOK -> new CastlingRookType(side);
+            case QUEEN -> new QueenType(side);
+            case KING -> new KingType(side);
+            case CASTLING_KING -> new CastlingKingType(side);
+            case AMAZON -> new AmazonType(side);
+            case MOB -> new MobType();
+            case ARMED_MOB -> new ImmovableType(Side.NEUTRAL, PieceType.ARMED_MOB);
+            case PAWN_3D -> new Pawn3DType(side);
+            case KNIGHT_3D -> new Knight3DType(side);
+            case BISHOP_3D -> new Bishop3DType(side);
+            case CARDINAL_3D -> new Cardinal3DType(side);
+            case ROOK_3D -> new Rook3DType(side);
+            case QUEEN_3D -> new Queen3DType(side);
+            case KING_3D -> new King3DType(side);
+            default -> null;
+        };
     }
 }

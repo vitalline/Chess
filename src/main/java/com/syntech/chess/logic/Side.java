@@ -37,24 +37,18 @@ public enum Side {
     }
 
     public Color toColor() {
-        switch (this) {
-            case WHITE:
-                return Color.WHITE;
-            case BLACK:
-                return Color.BLACK;
-            default:
-                return Color.NONE;
-        }
+        return switch (this) {
+            case WHITE -> Color.WHITE;
+            case BLACK -> Color.BLACK;
+            default -> Color.NONE;
+        };
     }
 
     public Side getOpponent() {
-        switch (this) {
-            case WHITE:
-                return Side.BLACK;
-            case BLACK:
-                return Side.WHITE;
-            default:
-                return Side.NEUTRAL;
-        }
+        return switch (this) {
+            case WHITE -> Side.BLACK;
+            case BLACK -> Side.WHITE;
+            default -> Side.NEUTRAL;
+        };
     }
 }

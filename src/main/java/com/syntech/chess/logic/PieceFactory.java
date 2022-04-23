@@ -97,26 +97,17 @@ public class PieceFactory {
     }
 
     @NotNull
-    public static Piece piece(@NotNull PieceBaseType baseType, PieceType type, Side side, PromotionInfo promotionInfo,
+    public static Piece piece(@NotNull PieceBaseType baseType, @NotNull PieceType type, Side side, PromotionInfo promotionInfo,
                               LevellingData levellingData, int xp, int resistanceXP, int resistanceLevel, int powerXP, int powerLevel,
                               double hp, double maxHP, Point initialPosition) {
-        switch (baseType) {
-            case PIECE:
-                return new Piece(side, type.getMovementType(side), promotionInfo);
-            case FORCED_PIECE:
-                return new ForcedPiece(side, type.getMovementType(side), promotionInfo);
-            case MODEST_FORCED_PIECE:
-                return new ModestForcedPiece(side, type.getMovementType(side), promotionInfo);
-            case SHOOTING_PIECE:
-                return new ShootingPiece(side, type.getMovementType(side));
-            case INVINCIBLE_FORCED_PIECE:
-                return new InvincibleForcedPiece(side, type.getMovementType(side));
-            case LEVELLING_FORCED_PIECE:
-                return new LevellingForcedPiece(side, type.getMovementType(side), levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition);
-            case CLONING_FORCED_PIECE:
-                return new CloningForcedPiece(side, type.getMovementType(side));
-            default:
-                return none();
-        }
+        return switch (baseType) {
+            case PIECE -> new Piece(side, type.getMovementType(side), promotionInfo);
+            case FORCED_PIECE -> new ForcedPiece(side, type.getMovementType(side), promotionInfo);
+            case MODEST_FORCED_PIECE -> new ModestForcedPiece(side, type.getMovementType(side), promotionInfo);
+            case SHOOTING_PIECE -> new ShootingPiece(side, type.getMovementType(side));
+            case INVINCIBLE_FORCED_PIECE -> new InvincibleForcedPiece(side, type.getMovementType(side));
+            case LEVELLING_FORCED_PIECE -> new LevellingForcedPiece(side, type.getMovementType(side), levellingData, promotionInfo, xp, resistanceXP, resistanceLevel, powerXP, powerLevel, hp, maxHP, initialPosition);
+            case CLONING_FORCED_PIECE -> new CloningForcedPiece(side, type.getMovementType(side));
+        };
     }
 }

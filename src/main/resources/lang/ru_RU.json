@@ -7,6 +7,8 @@
   "chess.name": "Шахматы",
   "chess.cyclic.short": "Цилиндрические шахматы",
   "chess.cyclic.name": "Цилиндрические шахматы",
+  "chess.double.short": "Двухходовые шахматы",
+  "chess.double.name": "Двухходовые шахматы",
   "chess.forced.short": "Форсированные шахматы",
   "chess.forced.name": "Форсированные шахматы",
   "chess.forced.modest.short": "Скромные ФШ",
@@ -15,6 +17,8 @@
   "chess.forced.major.name": "Форс-мажорные шахматы",
   "chess.forced.minor.short": "Форс-минорные шахматы",
   "chess.forced.minor.name": "Форс-минорные шахматы",
+  "chess.forced.double.short": "Двухходовые ФШ",
+  "chess.forced.double.name": "Двухходовые ФШ",
   "chess.forced.cyclic.short": "Цилиндрические ФШ",
   "chess.forced.cyclic.name": "Цилиндрические ФШ",
   "chess.forced.modest.cyclic.short": "Скромные цилиндр. ФШ",
@@ -29,12 +33,12 @@
   "chess.forced.reserve.name": "Резервные ФШ",
   "chess.forced.reserve.modest.short": "Скромные резервные ФШ",
   "chess.forced.reserve.modest.name": "Скромные резервные ФШ",
-  "chess.forced.pegasi_reserve.short": "Резервные ФШ с Пегасами",
-  "chess.forced.pegasi_reserve.name": "Резервные ФШ с Пегасами",
+  "chess.forced.reserve.pegasi.short": "Резервные ФШ с Пегасами",
+  "chess.forced.reserve.pegasi.name": "Резервные ФШ с Пегасами",
   "chess.forced.sniper.reserve.short": "Снайперские резервные ФШ",
   "chess.forced.sniper.reserve.name": "Снайперские резервные ФШ",
-  "chess.forced.sniper.pegasi_reserve.short": "Снайп. рез. ФШ с Пегасами",
-  "chess.forced.sniper.pegasi_reserve.name": "Снайперские резервные ФШ с Пегасами",
+  "chess.forced.sniper.reserve.pegasi.short": "Снайп. рез. ФШ с Пегасами",
+  "chess.forced.sniper.reserve.pegasi.name": "Снайперские резервные ФШ с Пегасами",
   "chess.forced.down.short": "Инволюционные ФШ",
   "chess.forced.down.name": "Инволюционные ФШ",
   "chess.forced.up.short": "ММОРПГ-шные ФШ",
@@ -57,6 +61,10 @@
   "chess.forced.up.mob.name": "ММОРПГ-шные ФШ с мобами",
   "chess.forced.up.mob.armed.short": "ММОРПГФШ с вооруж. мобами",
   "chess.forced.up.mob.armed.name": "ММОРПГ-шные ФШ с вооружёнными мобами",
+  "chess.forced.up.down.res.mob.armed.short": "ИРММОРПГФШСВМИВУ",
+  "chess.forced.up.down.res.mob.armed.name": " Инволюционные резистентные ММОРПГ-шные ФШ \nс вооружёнными мобами и возрастающим уроном",
+  "chess.forced.up.mob.armed.respawn.short": "ОВММОРПГФШСВМИОЗМИЧИУСО",
+  "chess.forced.up.mob.armed.respawn.name": "   Обратновосстановительные ММОРПГ-шные ФШ\nс вооружёнными мобами и обратной зависимостью\n   между их числом и уроном с округлением",
   "chess.forced.mountain.short": "Горные ФШ",
   "chess.forced.mountain.name": "Горные ФШ",
   "chess.forced.mountains.short": "Горносистемные ФШ",
@@ -226,13 +234,13 @@
     "Ничего существенно нового про этот вариант сказать не могу.",
     "Как и в обычных шахматах, конь считается сильнее пешки, но слабее ладьи."
   ],
-  "chess.forced.pegasi_reserve.info": [
+  "chess.forced.reserve.pegasi.info": [
     "Здесь кони заменены на неуязвимых Пегасов, которых невозможно побить, как бы вы ни пытались."
   ],
   "chess.forced.sniper.reserve.info": [
     "Снайперы и кони. Всё просто и понятно."
   ],
-  "chess.forced.sniper.pegasi_reserve.info": [
+  "chess.forced.sniper.reserve.pegasi.info": [
     "Все ваши любимые модификации шахматных фигур в одном флаконе.",
     "Правда, с одним новым правилом: снайперы всё-таки могут бить Пегасов."
   ],

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -103,12 +104,8 @@ public class BaseUI {
 
     void startAI() {
         switch (aiMode) {
-            case TURNS:
-                startRegularAI(aiTurns);
-                break;
-            case SECONDS:
-                startTimedAI(aiSeconds);
-                break;
+            case TURNS -> startRegularAI(aiTurns);
+            case SECONDS -> startTimedAI(aiSeconds);
         }
     }
 
@@ -173,7 +170,7 @@ public class BaseUI {
             }
         }
         ImGui.text(status);
-        ImGui.text(translation.get("status.game", setup.getGameType()));
+        ImGui.text(translation.get("status.game", setup.getGameType(translation).replace("\n", "\n" + " ".repeat(translation.get("status.game").length() - 2))));
         if (filename != null) {
             if (saveMode) {
                 ImGui.text(translation.get("status.saved_as", filename));
@@ -212,7 +209,7 @@ public class BaseUI {
         }
     }
 
-    public void displayLog(@NotNull Board board, float width, float height, float posX, float posY, int characterWidth) {
+    public void displayLog(Board board, float width, float height, float posX, float posY, int characterWidth) {
         ImGui.setWindowSize(LOG_WINDOW_NAME, width, height);
         ImGui.setWindowPos(LOG_WINDOW_NAME, posX, posY);
         ImGui.begin(LOG_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
@@ -500,18 +497,18 @@ public class BaseUI {
             ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
 
             switch (aiMode) {
-                case TURNS:
+                case TURNS -> {
                     aiSettings[0] = aiTurns;
                     if (ImGui.sliderInt("", aiSettings, 1, 5, translation.get("settings.ai.turns"))) {
                         aiTurns = aiSettings[0];
                     }
-                    break;
-                case SECONDS:
+                }
+                case SECONDS -> {
                     aiSettings[0] = aiSeconds;
                     if (ImGui.sliderInt("", aiSettings, 1, 10, translation.get("settings.ai.seconds"))) {
                         aiSeconds = aiSettings[0];
                     }
-                    break;
+                }
             }
 
             ImGui.endPopup();
@@ -524,11 +521,7 @@ public class BaseUI {
 
     private void displayErrorPopup() {
         if (ImGui.beginPopupModal(translation.get("window.error"), new ImBoolean(true), ImGuiWindowFlags.AlwaysAutoResize)) {
-            if (errorMessage != null) {
-                ImGui.text(errorMessage);
-            } else {
-                ImGui.text(translation.get("error.generic"));
-            }
+            ImGui.text(Objects.requireNonNullElseGet(errorMessage, () -> translation.get("error.generic")));
             if (ImGui.button(translation.get("action.ok"))) {
                 showErrorMessage = false;
                 errorMessage = null;

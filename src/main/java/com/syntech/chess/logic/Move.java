@@ -50,6 +50,10 @@ public class Move {
         this.priority = move.priority;
     }
 
+    public boolean hasPromotion() {
+        return this.promotion != PieceType.NONE;
+    }
+
     public boolean hasPromotion(@NotNull PieceType promotion) {
         return this.promotion.getTextureID().equals(promotion.getTextureID());
     }

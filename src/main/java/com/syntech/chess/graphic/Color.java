@@ -44,22 +44,11 @@ public enum Color {
      * Converts a color to the side it belongs to.
      */
     public Side toSide() {
-        switch (this) {
-            case WHITE:
-            case MOVABLE_WHITE:
-            case SELECTED_WHITE:
-            case MOVE_WHITE:
-            case CAPTURE_WHITE:
-                return Side.WHITE;
-            case BLACK:
-            case MOVABLE_BLACK:
-            case SELECTED_BLACK:
-            case MOVE_BLACK:
-            case CAPTURE_BLACK:
-                return Side.BLACK;
-            default:
-                return Side.NONE;
-        }
+        return switch (this) {
+            case WHITE, MOVABLE_WHITE, SELECTED_WHITE, MOVE_WHITE, CAPTURE_WHITE -> Side.WHITE;
+            case BLACK, MOVABLE_BLACK, SELECTED_BLACK, MOVE_BLACK, CAPTURE_BLACK -> Side.BLACK;
+            default -> Side.NONE;
+        };
     }
 
     /**

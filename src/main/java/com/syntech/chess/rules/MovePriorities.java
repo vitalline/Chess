@@ -46,27 +46,17 @@ public final class MovePriorities {
 
     @Contract(pure = true)
     public static int getCapturePriority(@NotNull PieceType type) {
-        switch (type) {
-            case PAWN:
-                return FORCED_PAWN_CAPTURE;
-            case KNIGHT:
-                return FORCED_KNIGHT_CAPTURE;
-            case BISHOP:
-                return FORCED_BISHOP_CAPTURE;
-            case ROOK:
-                return FORCED_ROOK_CAPTURE;
-            case CARDINAL:
-                return FORCED_CARDINAL_CAPTURE;
-            case QUEEN:
-                return FORCED_QUEEN_CAPTURE;
-            case AMAZON:
-                return FORCED_AMAZON_CAPTURE;
-            case SNIPER:
-                return FORCED_SNIPER_CAPTURE;
-            case KING:
-                return CHECK;
-            default:
-                return NORMAL_MOVE;
-        }
+        return switch (type) {
+            case PAWN -> FORCED_PAWN_CAPTURE;
+            case KNIGHT -> FORCED_KNIGHT_CAPTURE;
+            case BISHOP -> FORCED_BISHOP_CAPTURE;
+            case ROOK -> FORCED_ROOK_CAPTURE;
+            case CARDINAL -> FORCED_CARDINAL_CAPTURE;
+            case QUEEN -> FORCED_QUEEN_CAPTURE;
+            case AMAZON -> FORCED_AMAZON_CAPTURE;
+            case SNIPER -> FORCED_SNIPER_CAPTURE;
+            case KING -> CHECK;
+            default -> NORMAL_MOVE;
+        };
     }
 }

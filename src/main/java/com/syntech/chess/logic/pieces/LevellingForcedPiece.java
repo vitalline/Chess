@@ -208,13 +208,7 @@ public class LevellingForcedPiece extends ForcedPiece {
                 addXP(ForcedXPRules.getMoveXPWorth());
             }
             levelUpPowerAndResistance();
-            if (canLevelUp()) {
-                if (xp >= getMaxXP()) {
-                    levelUp(board);
-                }
-            } else {
-                xp = 0;
-            }
+            levelUp(board);
         }
     }
 
@@ -252,6 +246,8 @@ public class LevellingForcedPiece extends ForcedPiece {
     }
 
     private void levelUp(@NotNull Board board) {
+        if (!canLevelUp()) { xp = 0; return; }
+        if (xp < getMaxXP()) return;
         int currentLevel = ForcedXPRules.LEVELS.indexOf(getType());
         if (currentLevel < ForcedXPRules.LEVELS.size() - 1) {
             PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel + 1);
@@ -270,11 +266,7 @@ public class LevellingForcedPiece extends ForcedPiece {
             }
             newPiece.hasCaptured = hasCaptured;
             newPiece.levelUpPowerAndResistance();
-            if (newPiece.canLevelUp()) {
-                if (newPiece.xp >= newPiece.getMaxXP()) {
-                    newPiece.levelUp(board);
-                }
-            }
+            newPiece.levelUp(board);
         }
     }
 

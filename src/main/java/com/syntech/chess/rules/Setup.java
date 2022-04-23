@@ -14,10 +14,12 @@ import java.util.Arrays;
 public enum Setup {
     CHESS("chess", StartingPositions.chess),
     CYCLIC_CHESS("chess.cyclic", StartingPositions.chess),
+    DOUBLE_TURN_CHESS("chess.double", StartingPositions.chess),
     FORCED_CHESS("chess.forced", StartingPositions.forcedChess),
     MODEST_FORCED_CHESS("chess.forced.modest", StartingPositions.modestForcedChess),
     FORCE_MAJOR_CHESS("chess.forced.major", StartingPositions.forceMajorChess),
     FORCE_MINOR_CHESS("chess.forced.minor", StartingPositions.forceMinorChess),
+    DOUBLE_TURN_FORCED_CHESS("chess.forced.double", StartingPositions.forcedChess),
     CYCLIC_FORCED_CHESS("chess.forced.cyclic", StartingPositions.forcedChess),
     CYCLIC_MODEST_FORCED_CHESS("chess.forced.modest.cyclic", StartingPositions.modestForcedChess),
     CHESS_4x4("chess.4x4", StartingPositions.chess4x4),
@@ -25,9 +27,9 @@ public enum Setup {
     MODEST_SNIPER_FORCED_CHESS("chess.forced.sniper.modest", StartingPositions.modestSniperChess),
     RESERVE_FORCED_CHESS("chess.forced.reserve", StartingPositions.reserveChess),
     MODEST_RESERVE_FORCED_CHESS("chess.forced.reserve.modest", StartingPositions.modestReserveChess),
-    PEGASI_RESERVE_FORCED_CHESS("chess.forced.pegasi_reserve", StartingPositions.pegasiReserveChess),
+    PEGASI_RESERVE_FORCED_CHESS("chess.forced.reserve.pegasi", StartingPositions.pegasiReserveChess),
     SNIPER_RESERVE_FORCED_CHESS("chess.forced.sniper.reserve", StartingPositions.sniperReserveChess),
-    SNIPER_PEGASI_RESERVE_FORCED_CHESS("chess.forced.sniper.pegasi_reserve", StartingPositions.sniperPegasiReserveChess),
+    SNIPER_PEGASI_RESERVE_FORCED_CHESS("chess.forced.sniper.reserve.pegasi", StartingPositions.sniperPegasiReserveChess),
     INVOLUTION_FORCED_CHESS("chess.forced.down", StartingPositions.involutionForcedChess),
     MMORPG_FORCED_CHESS("chess.forced.up", StartingPositions.mmoRPGForcedChess(LevellingData.UP)),
     INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down", StartingPositions.mmoRPGForcedChess(LevellingData.UP_DOWN)),
@@ -39,6 +41,8 @@ public enum Setup {
     FORCED_INVOLUTION_MMORPG_FORCED_CHESS("chess.forced.up.down.telefrag", StartingPositions.mmoRPGForcedChess(LevellingData.FORCE_UP_DOWN)),
     MMORPG_FORCED_CHESS_WITH_MOBS("chess.forced.up.mob", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP, false)),
     MMORPG_FORCED_CHESS_WITH_ARMED_MOBS("chess.forced.up.mob.armed", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP_HP, true)),
+    RESISTANCE_INVOLUTION_MMORPG_FORCED_CHESS_WITH_ARMED_MOBS("chess.forced.up.down.res.mob.armed", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP_DOWN_RES_HP, true)),
+    INVERSE_RESPAWN_MMORPG_FORCED_CHESS_WITH_ARMED_MOBS("chess.forced.up.mob.armed.respawn", StartingPositions.mmoRPGForcedChessWithMobs(LevellingData.UP_HP, true)),
     MOUNTAIN_FORCED_CHESS("chess.forced.mountain", StartingPositions.hillForcedChess),
     MOUNTAIN_RANGE_FORCED_CHESS("chess.forced.mountains", StartingPositions.hillForcedChess),
     CLONING_FORCED_CHESS("chess.forced.cloning", StartingPositions.cloningForcedChess),
@@ -115,11 +119,20 @@ public enum Setup {
             if (gameType.contains("cyclic")) {
                 return new CyclicBoard(pieces, priority, true, true);
             }
+            if (gameType.contains("double")) {
+                return new DoubleTurnBoard(pieces, priority, true, true);
+            }
             if (this == MMORPG_FORCED_CHESS_WITH_MOBS) {
                 return new MobBoard(pieces, priority, true, true);
             }
             if (this == MMORPG_FORCED_CHESS_WITH_ARMED_MOBS) {
                 return new ArmedMobBoard(pieces, priority, true, true);
+            }
+            if (this == RESISTANCE_INVOLUTION_MMORPG_FORCED_CHESS_WITH_ARMED_MOBS) {
+                return new IncreasingDamageArmedMobBoard(pieces, priority, true, true);
+            }
+            if (this == INVERSE_RESPAWN_MMORPG_FORCED_CHESS_WITH_ARMED_MOBS) {
+                return new InverseRespawnArmedMobBoard(pieces, priority, true, true);
             }
             if (this == MOUNTAIN_FORCED_CHESS) {
                 return new MountainBoard(pieces, priority, true, true);
@@ -163,7 +176,7 @@ public enum Setup {
                 varTokens.removeIf(String::isEmpty);
                 String variant = varTokens.get(0);
                 for (Setup setup : Setup.values()) {
-                    if (setup.getGameType(Translation.EN_US).equals(variant)) {
+                    if (setup.getGameType(Translation.EN_US).replaceAll("\n?\s+", " ").equals(variant)) {
                         return setup;
                     }
                 }

@@ -48,8 +48,8 @@ public class Board implements Cloneable {
     private Board previousBoard = null;
     protected Piece[][] board;
     private float windowWidth, windowHeight;
-    private Side turnIndicator = Side.WHITE;
-    private boolean displayPromotionPopup = false;
+    protected Side turnIndicator = Side.WHITE;
+    protected ArrayList<PieceType> possiblePromotionPieces = new ArrayList<>();
     private boolean displayResultPopup = false;
     private String status;
     private Side statusSide = Side.WHITE;
@@ -149,10 +149,6 @@ public class Board implements Cloneable {
         return translation;
     }
 
-    public boolean hasPriority() {
-        return priority;
-    }
-
     public void setTranslation(Translation translation) {
         this.translation = translation;
         status = getStatusConditions(getTurnSide());
@@ -179,7 +175,7 @@ public class Board implements Cloneable {
         ImGui.getStyle().setItemSpacing(spacingX, spacingY);
         ImGui.getStyle().setFramePadding(paddingX, paddingY);
 
-        if (displayPromotionPopup) {
+        if (!possiblePromotionPieces.isEmpty()) {
             ImGui.openPopup("Promote");
         }
 
@@ -188,12 +184,11 @@ public class Board implements Cloneable {
         }
 
         if (ImGui.beginPopup("Promote", ImGuiWindowFlags.AlwaysAutoResize)) {
-            for (PieceType pieceType : getSelectedPiece().getPromotionTypes()) {
+            for (PieceType pieceType : possiblePromotionPieces) {
                 if (CellGraphics.display(getSelectedPiece().getSide(), pieceType, pieceType.getProperName(translation),
                         size, getColor(selectedPiece.x, selectedPiece.y).toSide().toColor(), -1)) {
                     getSelectedPiece().promoteTo(pieceType);
                     updatePiece(selectedPiece.x, selectedPiece.y);
-                    displayPromotionPopup = false;
                     ImGui.closeCurrentPopup();
                     Move newMove = new Move(moveLog.get(turn));
                     newMove.setPromotion(pieceType);
@@ -336,15 +331,19 @@ public class Board implements Cloneable {
         updateMove(move);
         if (getSelectedPiece().canBePromoted(this)) {
             updatePieces();
-            displayPromotionPopup = true;
         } else {
             advanceTurn();
         }
     }
 
     private void moveAndCheckStatusConditions(int startRow, int startCol, int endRow, int endCol) {
+        for (Move promotion: isFree(endRow, endCol) ? availableMoves : availableCaptures) {
+            if (promotion.getEndRow() == endRow && promotion.getEndCol() == endCol && promotion.hasPromotion()) {
+                possiblePromotionPieces.add(promotion.getPromotion());
+            }
+        }
         move(startRow, startCol, endRow, endCol);
-        if (!displayPromotionPopup) {
+        if (possiblePromotionPieces.isEmpty()) {
             checkStatusConditions();
         }
     }
@@ -381,13 +380,12 @@ public class Board implements Cloneable {
         }
     }
 
-    private void promoteIfNeeded(@NotNull Move move) {
+    protected void promoteIfNeeded(@NotNull Move move) {
         if (getPiece(move.getEndRow(), move.getEndCol()).canBePromoted(this) && move.getPromotion() != PieceType.NONE) {
             getPiece(move.getEndRow(), move.getEndCol()).promoteTo(move.getPromotion());
             updatePiece(move.getEndRow(), move.getEndCol());
             advanceTurn();
         }
-        displayPromotionPopup = false;
     }
 
     public void checkStatusConditions() {
@@ -556,7 +554,7 @@ public class Board implements Cloneable {
         if (side == Side.WHITE && whiteKingIsInCheck != null) return whiteKingIsInCheck;
         if (side == Side.BLACK && blackKingIsInCheck != null) return blackKingIsInCheck;
         for (MovementType movement : checkMoves(side)) {
-            for (Move detect : king.getAvailableCapturesWithoutSpecialRules(this, movement)) {
+            for (Move detect : movement.getAvailableCapturesWithoutSpecialRules(king.getPosition(), this)) {
                 Piece piece = getPiece(detect.getEndRow(), detect.getEndCol());
                 for (Move move : piece.getAvailableCapturesWithoutSpecialRules(this)) {
                     if (getPiece(move.getEndRow(), move.getEndCol()) == king) {
@@ -639,7 +637,7 @@ public class Board implements Cloneable {
     }
 
     @NotNull
-    private ArrayList<Move> getAvailableMoves(int row, int col) {
+    protected ArrayList<Move> getAvailableMoves(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableMoves = getPiece(row, col).getAvailableMoves(this);
             if (priority) availableMoves = topPriorityMoves(availableMoves, row, col);
@@ -649,7 +647,7 @@ public class Board implements Cloneable {
     }
 
     @NotNull
-    private ArrayList<Move> getAvailableCaptures(int row, int col) {
+    protected ArrayList<Move> getAvailableCaptures(int row, int col) {
         if (getSide(row, col) == getTurnSide()) {
             ArrayList<Move> availableCaptures = getPiece(row, col).getAvailableCaptures(this);
             if (priority) availableCaptures = topPriorityMoves(availableCaptures, row, col);
@@ -659,7 +657,7 @@ public class Board implements Cloneable {
     }
 
     @NotNull
-    private ArrayList<Move> topPriorityMoves(ArrayList<Move> moves, int row, int col) {
+    protected ArrayList<Move> topPriorityMoves(ArrayList<Move> moves, int row, int col) {
         ArrayList<Move> allAvailableMoves = getAllAvailableMoves(getSide(row, col));
         int topPriority = MovePriorities.getTopPriority(allAvailableMoves);
         if (MovePriorities.getTopPriority(moves) < topPriority) {
@@ -670,8 +668,8 @@ public class Board implements Cloneable {
 
     private void deselectPiece() {
         selectedPiece = pieceNone;
-        availableMoves = new ArrayList<>();
-        availableCaptures = new ArrayList<>();
+        availableMoves.clear();
+        availableCaptures.clear();
     }
 
     private boolean nothingIsSelected() {
@@ -698,15 +696,17 @@ public class Board implements Cloneable {
         deselectPiece();
         ++turn;
         turnIndicator = turnIndicator.getOpponent();
+        possiblePromotionPieces.clear();
         updatePieces();
     }
 
-    public Board getMoveResultWithoutPromotion(Move move) {
+    public Board getMoveResult(Move move) {
         Board moveResult = null;
         try {
             moveResult = this.getClass().getDeclaredConstructor(Piece[][].class, Boolean.class, Integer.class).newInstance(board, priority, turn);
             if (move != null) {
                 moveResult.move(move.getStartRow(), move.getStartCol(), move.getEndRow(), move.getEndCol(), false);
+                moveResult.promoteIfNeeded(move);
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -738,7 +738,7 @@ public class Board implements Cloneable {
     public ArrayList<Move> excludeMovesThatLeaveKingInCheck(Side side, @NotNull ArrayList<Move> moves) {
         ArrayList<Move> filteredMoves = new ArrayList<>();
         for (Move move : moves) {
-            if (getMoveResultWithoutPromotion(move).isSafe(side)) {
+            if (getMoveResult(move).isSafe(side)) {
                 filteredMoves.add(move);
             }
         }
@@ -816,7 +816,7 @@ public class Board implements Cloneable {
         printWriter.print("[Black \"Player 2\"]\n");
         printWriter.printf("[Result \"%s\"]\n", getResultString());
         if (setup != Setup.CHESS) {
-            printWriter.printf("[Variant \"%s\"]\n", setup.getGameType(Translation.EN_US));
+            printWriter.printf("[Variant \"%s\"]\n", setup.getGameType(Translation.EN_US).replaceAll("\n?\s+", " "));
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < turn; i++) {

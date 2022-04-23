@@ -7,6 +7,8 @@
   "chess.name": "Chess",
   "chess.cyclic.short": "Cyclic Chess",
   "chess.cyclic.name": "Cyclic Chess",
+  "chess.double.short": "Double Turn Chess",
+  "chess.double.name": "Double Turn Chess",
   "chess.forced.short": "Forced Chess",
   "chess.forced.name": "Forced Chess",
   "chess.forced.modest.short": "Modest Forced Chess",
@@ -15,6 +17,8 @@
   "chess.forced.major.name": "Force Major Chess",
   "chess.forced.minor.short": "Force Minor Chess",
   "chess.forced.minor.name": "Force Minor Chess",
+  "chess.forced.double.short": "Double Turn Forced Chess",
+  "chess.forced.double.name": "Double Turn Forced Chess",
   "chess.forced.cyclic.short": "Cyclic Forced Chess",
   "chess.forced.cyclic.name": "Cyclic Forced Chess",
   "chess.forced.modest.cyclic.short": "Cyclic Modest Frc. Ch.",
@@ -29,12 +33,12 @@
   "chess.forced.reserve.name": "Reserve Forced Chess",
   "chess.forced.reserve.modest.short": "Modest Reserve Frc. Ch.",
   "chess.forced.reserve.modest.name": "Modest Reserve Forced Chess",
-  "chess.forced.pegasi_reserve.short": "Pegasi Reserve Frc. Ch.",
-  "chess.forced.pegasi_reserve.name": "Pegasi Reserve Forced Chess",
+  "chess.forced.reserve.pegasi.short": "Pegasi Reserve Frc. Ch.",
+  "chess.forced.reserve.pegasi.name": "Pegasi Reserve Forced Chess",
   "chess.forced.sniper.reserve.short": "Sniper-Reserve Frc. Ch.",
   "chess.forced.sniper.reserve.name": "Sniper-Reserve Forced Chess",
-  "chess.forced.sniper.pegasi_reserve.short": "Snpr.-Pgs.-Rsrv. Frc. Ch.",
-  "chess.forced.sniper.pegasi_reserve.name": "Sniper-Pegasi-Reserve Forced Chess",
+  "chess.forced.sniper.reserve.pegasi.short": "Snpr.-Pgs.-Rsrv. Frc. Ch.",
+  "chess.forced.sniper.reserve.pegasi.name": "Sniper-Pegasi-Reserve Forced Chess",
   "chess.forced.down.short": "Involution Forced Chess",
   "chess.forced.down.name": "Involution Forced Chess",
   "chess.forced.up.short": "MMORPG Forced Chess",
@@ -57,6 +61,10 @@
   "chess.forced.up.mob.name": "MMORPG Forced Chess with Mobs",
   "chess.forced.up.mob.armed.short": "MMORPG FC with Armed Mobs",
   "chess.forced.up.mob.armed.name": "MMORPG Forced Chess with Armed Mobs",
+  "chess.forced.up.down.res.mob.armed.short": "RMMORPGFCwAM&ID",
+  "chess.forced.up.down.res.mob.armed.name": "Resistance Involution-MMORPG Forced Chess\n  with Armed Mobs and Increasing Damage",
+  "chess.forced.up.mob.armed.respawn.short": "IRMMORPGFCwAM&RDRDDoAoM",
+  "chess.forced.up.mob.armed.respawn.name": "Inverse Respawn MMORPG Forced Chess with\n Armed Mobs and Rounded Down Reciprocal\n   Damage Depending on Amount of Mobs",
   "chess.forced.mountain.short": "Mountain Forced Chess",
   "chess.forced.mountain.name": "Mountain Forced Chess",
   "chess.forced.mountains.short": "Mountain Range Frc. Ch.",
@@ -226,14 +234,14 @@
     "Nothing new to say about this one.",
     "Like in regular chess, knights are considered more powerful than a pawn but less powerful than a rook."
   ],
-  "chess.forced.pegasi_reserve.info": [
+  "chess.forced.reserve.pegasi.info": [
     "Knights have been replaced with invincible Pegasi in this one.",
     "It's impossible to capture a Pegasus, no matter how hard you try."
   ],
   "chess.forced.sniper.reserve.info": [
     "Snipers AND knights. Pretty self-explanatory."
   ],
-  "chess.forced.sniper.pegasi_reserve.info": [
+  "chess.forced.sniper.reserve.pegasi.info": [
     "Everything you know and love, with an additional rule: snipers can capture Pegasi."
   ],
   "chess.forced.down.info": [
