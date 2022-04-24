@@ -593,7 +593,7 @@ public class BaseUI {
                     if (board != null) {
                         board.setTranslation(translation);
                     }
-                    BaseUI.debug("Set language to %s", translation.get("language.name"));
+                    BaseUI.debug("Set language to %s", translation.get("language.code"));
                 }
                 if (ImGui.isItemHovered()) {
                     ImGui.beginTooltip();
