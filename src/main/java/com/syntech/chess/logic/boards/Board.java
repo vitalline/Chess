@@ -13,6 +13,7 @@ import com.syntech.chess.rules.chess.DoublePawnType;
 import com.syntech.chess.rules.chess.KnightType;
 import com.syntech.chess.rules.chess.QueenType;
 import com.syntech.chess.text.Translation;
+import com.syntech.chess.ui.BaseUI;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
@@ -278,6 +279,7 @@ public class Board implements Cloneable {
                     && (Move.contains(availableMoves, row, col)
                     || Move.contains(availableCaptures, row, col))) {
                 moveAndCheckStatusConditions(selectedPiece.x, selectedPiece.y, row, col);
+                BaseUI.debug("[Ply %d] Played %s", turn, moveLog.get(turn - 1).toPGN());
             } else {
                 selectPiece(row, col);
             }
@@ -795,11 +797,6 @@ public class Board implements Cloneable {
 
     public ArrayList<Move> getMoveLog() {
         return new ArrayList<>(moveLog);
-    }
-
-    public Move getLastMove() {
-        if (moveLog.size() == 0) return null;
-        return new Move(moveLog.get(moveLog.size() - 1));
     }
 
     public void saveToPGN(@NotNull String path, Setup setup) throws IOException {

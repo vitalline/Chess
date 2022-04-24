@@ -102,8 +102,7 @@ public class BaseUI {
             if (ai == newAI) {
                 ai.stopEarly();
                 ai.interrupt();
-                board.updateMove(ai.bestMove());
-                board.redo();
+                applyAIMove();
                 ai = null;
             }
         }, seconds, TimeUnit.SECONDS);
@@ -404,7 +403,6 @@ public class BaseUI {
                     board.setTranslation(translation);
                 }
                 if (board.display(BOARD_WINDOW_NAME, cellSize)) {
-                    BaseUI.debug("[Ply %d] Played %s", board.getTurn(), board.getLastMove().toPGN());
                     resetFilename();
                     resetAI();
                 }
