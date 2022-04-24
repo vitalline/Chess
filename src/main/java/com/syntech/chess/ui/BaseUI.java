@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -546,8 +548,8 @@ public class BaseUI {
 
             boolean previousValue = debugOutput.get();
             ImGui.checkbox(translation.get("settings.debug.output"), debugOutput);
-            if (debugOutput.get() && !previousValue) System.out.println("Enabled debugging output");
-            if (!debugOutput.get() && previousValue) System.out.println("Disabled debugging output");
+            if (debugOutput.get() && !previousValue) debug("Enabled debugging output");
+            if (!debugOutput.get() && previousValue) debug(true, "Disabled debugging output");
 
             updateWindowPosition("window.settings");
 
@@ -659,8 +661,10 @@ public class BaseUI {
     }
 
     public static void debug(String str, @NotNull Object @NotNull ... args) {
-        if (debugOutput.get()) {
-            System.out.printf(str + '\n', args);
-        }
+        debug(debugOutput.get(), str, args);
+    }
+
+    public static void debug(boolean force, String str, @NotNull Object @NotNull ... args) {
+        if (force) System.out.printf("[%s] %s\n", DateFormat.getDateTimeInstance().format(new Date()), str.formatted(args));
     }
 }
