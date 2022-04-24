@@ -167,6 +167,7 @@
   "settings.ai.mode.seconds": "Режим ИИ: Секунды",
   "settings.ai.turns": "Ходов: %d",
   "settings.ai.seconds": "Секунд: %d",
+  "settings.debug.output": "Вывод в консоль",
   "window.settings": "Настройки",
   "window.info": "Информация",
   "window.error": "Ошибка!",

@@ -753,7 +753,7 @@ public class Board implements Cloneable {
         return previousBoard;
     }
 
-    protected Move getRandomMove() {
+    public Move getRandomMove() {
         ArrayList<Move> moves = new ArrayList<>();
         for (Point p : movablePieces) {
             moves.addAll(getAvailableMoves(p.x, p.y));
@@ -763,14 +763,6 @@ public class Board implements Cloneable {
             return moves.get((int) (Math.random() * moves.size()));
         }
         return null;
-    }
-
-    public void makeRandomMove() {
-        Move move = getRandomMove();
-        if (move != null) {
-            updateMove(move);
-            redo();
-        }
     }
 
     public Board getInitialBoard() {
@@ -803,6 +795,11 @@ public class Board implements Cloneable {
 
     public ArrayList<Move> getMoveLog() {
         return new ArrayList<>(moveLog);
+    }
+
+    public Move getLastMove() {
+        if (moveLog.size() == 0) return null;
+        return new Move(moveLog.get(moveLog.size() - 1));
     }
 
     public void saveToPGN(@NotNull String path, Setup setup) throws IOException {

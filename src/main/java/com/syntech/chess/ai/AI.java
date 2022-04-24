@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 
+import static com.syntech.chess.ui.BaseUI.debug;
+
 public class AI extends Thread {
     private static final int WIN_SCORE = Integer.MAX_VALUE;
     private final int depth;
@@ -28,7 +30,8 @@ public class AI extends Thread {
         this.depth = depth;
         try {
             this.board = (Board) board.clone();
-        } catch (CloneNotSupportedException ignored) {
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
         currentMoves = new Move[depth];
         deepMoveScores = new ArrayList<>();
@@ -91,10 +94,12 @@ public class AI extends Thread {
         shouldRun = true;
         run(board, depth, 0, -WIN_SCORE, WIN_SCORE);
         shouldRun = false;
+        debug("[Ply %d] Played %s (AI)", board.getTurn() + 1, board.getLastMove().toPGN());
     }
 
     public synchronized void stopEarly() {
         shouldRun = false;
+        debug("Stopped the AI");
     }
 
     private int run(@NotNull Board board, int maxDepth, int currentDepth, int alpha, int beta) {
@@ -191,7 +196,7 @@ public class AI extends Thread {
                     if (currentDepth == 0) {
                         this.bestMove = bestMove;
                         this.bestMove.setData(board);
-                        //System.out.printf("[Ply %d] Depth %d: %d, %s\n", board.getTurn() + 1, maxDepth, bestScore, bestMove.toPGN());
+                        debug("[Ply %d] Depth %d: %d, %s", board.getTurn() + 1, maxDepth, bestScore, bestMove.toPGN());
                         if (Math.abs(bestScore) == WIN_SCORE) {
                             shouldRun = false;
                         }

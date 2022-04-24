@@ -167,6 +167,7 @@
   "settings.ai.mode.seconds": "AI mode: Seconds",
   "settings.ai.turns": "Turns: %d",
   "settings.ai.seconds": "Seconds: %d",
+  "settings.debug.output": "Console Output",
   "window.settings": "Settings",
   "window.info": "Info",
   "window.error": "Error!",

@@ -38,6 +38,7 @@ public class BaseUI {
     private Board board = null;
     private Setup setup = null, infoSetup = null;
     private boolean showLog = false, showInfo = false, showSettings = false, showErrorMessage = false, saveMode = false, lockInput = false;
+    private static final ImBoolean debugOutput = new ImBoolean();
     private String filename = null;
     private String errorMessage = null;
     private FileChooser fileChooser = null;
@@ -71,18 +72,21 @@ public class BaseUI {
         this.board = board;
     }
 
-    void setSetup(Setup setup) {
+    void setSetup(@NotNull Setup setup) {
         this.setup = setup;
+        debug("Selected %s", setup.getGameTypeTag());
     }
 
-    void setInfo(Setup infoSetup) {
+    void setInfo(@NotNull Setup infoSetup) {
         this.infoSetup = infoSetup;
+        debug("Opened info for %s", infoSetup.getGameTypeTag());
     }
 
     private void startRegularAI(int depth) {
         resetFilename();
         ai = new AI(depth, board);
         ai.start();
+        debug("Started regular AI at depth %d", depth);
     }
 
     private void startTimedAI(int seconds) {
@@ -90,6 +94,7 @@ public class BaseUI {
         AI newAI = new AI(99, board);
         ai = newAI;
         ai.start();
+        debug("Started timed AI for %ds", seconds);
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.schedule(() -> {
             if (ai == newAI) {
@@ -116,13 +121,14 @@ public class BaseUI {
             ai.interrupt();
             board.updateMove(ai.bestMove());
             board.redo();
+            BaseUI.debug("[Ply %d] Played %s (AI)", board.getTurn(), board.getLastMove().toPGN());
             ai = null;
         }
     }
 
     void enableInfoWindow() {
         if (setup != null) {
-            this.infoSetup = setup;
+            setInfo(setup);
         }
         this.showInfo = true;
     }
@@ -133,6 +139,7 @@ public class BaseUI {
             ai.interrupt();
             ai = null;
         }
+        debug("Opened settings window");
         this.showSettings = true;
     }
 
@@ -201,16 +208,18 @@ public class BaseUI {
             if (CellGraphics.display("log_opened", translation.get("action.log.close"), cellSize, Color.WHITE, -1)) {
                 filename = saveMode ? null : filename;
                 showLog = false;
+                debug("Closed turn log");
             }
         } else {
             if (CellGraphics.display("log_closed", translation.get("action.log.open"), cellSize, Color.WHITE, -1)) {
                 filename = saveMode ? null : filename;
                 showLog = true;
+                debug("Opened turn log");
             }
         }
     }
 
-    public void displayLog(Board board, float width, float height, float posX, float posY, int characterWidth) {
+    public void displayLog(@NotNull Board board, float width, float height, float posX, float posY, int characterWidth) {
         ImGui.setWindowSize(LOG_WINDOW_NAME, width, height);
         ImGui.setWindowPos(LOG_WINDOW_NAME, posX, posY);
         ImGui.begin(LOG_WINDOW_NAME, new ImBoolean(), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
@@ -268,6 +277,7 @@ public class BaseUI {
         resetFilenameIfGameWasSaved();
         board = board.getPreviousBoard();
         board.setTranslation(translation);
+        debug("[Undo] Moved to Ply %d", board.getTurn());
     }
 
     void undoAll() {
@@ -276,6 +286,7 @@ public class BaseUI {
         resetFilenameIfGameWasSaved();
         board = board.getInitialBoard();
         board.setTranslation(translation);
+        debug("[Undo All] Moved to Ply 0");
     }
 
     void redo() {
@@ -283,6 +294,7 @@ public class BaseUI {
         resetAI();
         resetFilenameIfGameWasSaved();
         board.redo();
+        debug("[Redo] Moved to Ply %d", board.getTurn());
     }
 
     void redoAll() {
@@ -290,12 +302,18 @@ public class BaseUI {
         resetAI();
         resetFilenameIfGameWasSaved();
         board.redoAll();
+        debug("[Redo All] Moved to Ply %d", board.getTurn());
     }
 
     void makeRandomMove() {
         resetAI();
         resetFilename();
-        board.makeRandomMove();
+        Move move = board.getRandomMove();
+        if (move != null) {
+            board.updateMove(move);
+            board.redo();
+            debug("[Ply %d] Played %s (random)", board.getTurn(), board.getLastMove().toPGN());
+        }
     }
 
     void resetAI() {
@@ -310,6 +328,7 @@ public class BaseUI {
         resetAI();
         resetFilename();
         board = setup.getBoard();
+        BaseUI.debug("[Reset] Reset the board");
     }
 
     void resetFilename() {
@@ -331,6 +350,7 @@ public class BaseUI {
         filename = null;
         board = null;
         setup = null;
+        debug("Returned to menu");
     }
 
     void lockInput() {
@@ -380,6 +400,7 @@ public class BaseUI {
                     board.setTranslation(translation);
                 }
                 if (board.display(BOARD_WINDOW_NAME, cellSize)) {
+                    BaseUI.debug("[Ply %d] Played %s", board.getTurn(), board.getLastMove().toPGN());
                     resetFilename();
                     resetAI();
                 }
@@ -418,6 +439,27 @@ public class BaseUI {
         ImGui.render();
     }
 
+    private void updateWindowPosition(String id) {
+        if (windowLoaded) {
+            posX = tweakCoordinate(posX, (width - ImGui.getWindowWidth()) / 2, speed);
+            posY = tweakCoordinate(posY, (height - ImGui.getWindowHeight()) / 2, speed);
+            ImGui.setWindowPos(translation.get(id), posX, posY);
+        } else if (posX == -1 && posY == -1) {
+            posX = (width - ImGui.getWindowWidth()) / 2;
+            posY = (height - ImGui.getWindowHeight()) / 2;
+        } else {
+            windowLoaded = true;
+            posX = (width - ImGui.getWindowWidth()) / 2;
+            posY = (height - ImGui.getWindowHeight()) / 2;
+        }
+    }
+
+    private void unloadWindowPosition() {
+        windowLoaded = false;
+        posX = -1;
+        posY = -1;
+    }
+
     private void displayInfoPopup() {
         boolean prev = false, next = false;
 
@@ -432,38 +474,26 @@ public class BaseUI {
             ImGui.sameLine((ImGui.getWindowWidth()) / 2 - (float) cellSize / 3);
             if (ImGui.button(translation.get("action.ok"))) {
                 ImGui.closeCurrentPopup();
+                debug("Closed info for %s", infoSetup.getGameTypeTag());
             }
             ImGui.sameLine((ImGui.getWindowWidth()) / 2 + (float) cellSize * 2 / 3);
             if (ImGui.button(">>")) {
                 next = true;
             }
-            if (windowLoaded) {
-                posX = tweakCoordinate(posX, (width - ImGui.getWindowWidth()) / 2, speed);
-                posY = tweakCoordinate(posY, (height - ImGui.getWindowHeight()) / 2, speed);
-                ImGui.setWindowPos(translation.get("window.info"), posX, posY);
-            } else if (posX == -1 && posY == -1) {
-                posX = (width - ImGui.getWindowWidth()) / 2;
-                posY = (height - ImGui.getWindowHeight()) / 2;
-            } else {
-                windowLoaded = true;
-                posX = (width - ImGui.getWindowWidth()) / 2;
-                posY = (height - ImGui.getWindowHeight()) / 2;
-            }
+            updateWindowPosition("window.info");
             ImGui.endPopup();
         }
 
         if (!ImGui.isPopupOpen(translation.get("window.info")) && !prev && !next) {
             showInfo = false;
-            windowLoaded = false;
-            posX = -1;
-            posY = -1;
+            unloadWindowPosition();
         }
 
         if (infoSetup != null) {
             if (prev) {
                 do {
                     if (infoSetup.getPrevious() != null) {
-                        infoSetup = infoSetup.getPrevious();
+                        setInfo(infoSetup.getPrevious());
                     }
                 } while (infoSetup.getPrevious() != null && !infoSetup.gameInfoExists(translation));
             }
@@ -471,7 +501,7 @@ public class BaseUI {
             if (next) {
                 do {
                     if (infoSetup.getNext() != null) {
-                        infoSetup = infoSetup.getNext();
+                        setInfo(infoSetup.getNext());
                     }
                 } while (infoSetup.getNext() != null && !infoSetup.gameInfoExists(translation));
             }
@@ -486,6 +516,7 @@ public class BaseUI {
             if (CellGraphics.display("ai_turns", translation.get("settings.ai.mode.turns"), cellSize * 2,
                     (aiMode == AIMode.TURNS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
                 aiMode = AIMode.TURNS;
+                BaseUI.debug("Set AI mode to TURNS");
             }
 
             ImGui.sameLine();
@@ -493,6 +524,7 @@ public class BaseUI {
             if (CellGraphics.display("ai_seconds", translation.get("settings.ai.mode.seconds"), cellSize * 2,
                     (aiMode == AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
                 aiMode = AIMode.SECONDS;
+                BaseUI.debug("Set AI mode to SECONDS");
             }
 
             ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
@@ -512,11 +544,24 @@ public class BaseUI {
                 }
             }
 
+            boolean previousValue = debugOutput.get();
+            ImGui.checkbox(translation.get("settings.debug.output"), debugOutput);
+            if (debugOutput.get() && !previousValue) System.out.println("Enabled debugging output");
+            if (!debugOutput.get() && previousValue) System.out.println("Disabled debugging output");
+
+            updateWindowPosition("window.settings");
+
             ImGui.endPopup();
         }
 
         if (!ImGui.isPopupOpen(translation.get("window.settings"))) {
             showSettings = false;
+            unloadWindowPosition();
+            switch (aiMode) {
+                case TURNS -> BaseUI.debug("Set AI depth to %d", aiTurns);
+                case SECONDS -> BaseUI.debug("Set AI time to %d", aiSeconds);
+            }
+            debug("Closed settings window");
         }
     }
 
@@ -546,6 +591,7 @@ public class BaseUI {
                     if (board != null) {
                         board.setTranslation(translation);
                     }
+                    BaseUI.debug("Set language to %s", translation.get("language.name"));
                 }
                 if (ImGui.isItemHovered()) {
                     ImGui.beginTooltip();
@@ -562,6 +608,7 @@ public class BaseUI {
         this.saveMode = saveMode;
         this.fileChooser = new FileChooser(saveMode);
         this.fileChooser.start();
+        BaseUI.debug(saveMode ? "Saving game..." : "Loading game...");
     }
 
     //TODO: apply movement to "game info" (status) window
@@ -582,6 +629,7 @@ public class BaseUI {
                         String[] path = fileChooser.getFilePath().split("[/\\\\]");
                         filename = path[path.length - 1];
                         board.saveToPGN(fileChooser.getFilePath(), setup);
+                        BaseUI.debug("Saved game to %s", fileChooser.getFilePath());
                     }
                 } else if (new File(fileChooser.getFilePath()).length() > MAX_PGN_SIZE) {
                     showErrorMessage = true;
@@ -600,10 +648,19 @@ public class BaseUI {
                         filename = path[path.length - 1];
                         setup = newSetup;
                         board = newBoard;
+                        BaseUI.debug("Loaded game from %s", fileChooser.getFilePath());
                     }
                 }
+            } else {
+                BaseUI.debug(saveMode ? "Saving cancelled" : "Loading cancelled");
             }
             unlockInput();
+        }
+    }
+
+    public static void debug(String str, @NotNull Object @NotNull ... args) {
+        if (debugOutput.get()) {
+            System.out.printf(str + '\n', args);
         }
     }
 }

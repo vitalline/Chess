@@ -71,7 +71,7 @@ public class CyclicBoard extends Board {
         }
     }
 
-    protected Move getRandomMove() {
+    public Move getRandomMove() {
         Move move = super.getRandomMove();
         move.setEndCol(getColumn(move.getEndCol()));
         return move;

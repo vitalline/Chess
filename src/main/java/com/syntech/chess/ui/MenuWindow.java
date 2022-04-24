@@ -34,22 +34,20 @@ public class MenuWindow {
             }
         }
 
-        if (menuPage > 0) {
-            if (CellGraphics.display("left", translation.get("action.previous"), cellSize, Color.WHITE, -2)) {
-                --menuPage;
+        if (CellGraphics.display("left", translation.get("action.previous"), cellSize, Color.WHITE, -2)) {
+            --menuPage;
+            if (menuPage < 0) {
+                menuPage = (Setup.values().length - 2) / MENU_BUTTON_AMOUNT;
             }
-        } else {
-            CellGraphics.display("left", translation.get("action.previous"), cellSize, Color.NONE, -2);
         }
 
         ImGui.sameLine();
 
-        if (menuPage < (Setup.values().length - 2) / MENU_BUTTON_AMOUNT) {
-            if (CellGraphics.display("right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
-                ++menuPage;
+        if (CellGraphics.display("right", translation.get("action.next"), cellSize, Color.WHITE, -2)) {
+            ++menuPage;
+            if (menuPage > (Setup.values().length - 2) / MENU_BUTTON_AMOUNT) {
+                menuPage = 0;
             }
-        } else {
-            CellGraphics.display("right", translation.get("action.next"), cellSize, Color.NONE, -2);
         }
 
         ImGui.sameLine();
@@ -64,6 +62,12 @@ public class MenuWindow {
         if (CellGraphics.display("load", translation.get("action.load"), cellSize, Color.WHITE, -1)) {
             baseUI.lockInput();
             baseUI.enableFileChooser(false);
+        }
+
+        ImGui.sameLine();
+
+        if (CellGraphics.display("settings", translation.get("action.settings"), cellSize, Color.WHITE, -1)) {
+            baseUI.enableSettingsWindow();
         }
 
         ImGui.end();
