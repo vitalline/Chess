@@ -130,8 +130,9 @@ public class AI extends Thread {
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
-            run(copy, maxDepth - 1, 0, alpha, beta);
+            run(copy, maxDepth - 2, 0, alpha, beta);
         }
+        if (maxDepth < 0) maxDepth = 0;
         Hashtable<Move, Integer> finalMoveScores = deepMoveScores.get(currentDepth);
         Hashtable<Move, Integer> finalMoveCounts = deepMoveCounts.get(currentDepth);
         moves.sort(Comparator.comparingDouble(move ->
@@ -190,6 +191,7 @@ public class AI extends Thread {
                     if (currentDepth == 0) {
                         this.bestMove = bestMove;
                         this.bestMove.setData(board);
+                        //System.out.printf("[Ply %d] Depth %d: %d, %s\n", board.getTurn() + 1, maxDepth, bestScore, bestMove.toPGN());
                         if (Math.abs(bestScore) == WIN_SCORE) {
                             shouldRun = false;
                         }

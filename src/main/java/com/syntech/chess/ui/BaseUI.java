@@ -43,7 +43,7 @@ public class BaseUI {
     private FileChooser fileChooser = null;
     private AI ai = null;
     private int aiTurns = 3;
-    private int aiSeconds = 5;
+    private int aiSeconds = 10;
     private AIMode aiMode = AIMode.TURNS;
     private final MenuWindow menuWindow = new MenuWindow(this);
     private final StatusWindow statusWindow = new StatusWindow(this);
@@ -87,11 +87,12 @@ public class BaseUI {
 
     private void startTimedAI(int seconds) {
         resetFilename();
-        ai = new AI(25, board);
+        AI newAI = new AI(99, board);
+        ai = newAI;
         ai.start();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.schedule(() -> {
-            if (ai != null) {
+            if (ai == newAI) {
                 ai.stopEarly();
                 ai.interrupt();
                 board.updateMove(ai.bestMove());
@@ -505,7 +506,7 @@ public class BaseUI {
                 }
                 case SECONDS -> {
                     aiSettings[0] = aiSeconds;
-                    if (ImGui.sliderInt("", aiSettings, 1, 10, translation.get("settings.ai.seconds"))) {
+                    if (ImGui.sliderInt("", aiSettings, 1, 25, translation.get("settings.ai.seconds"))) {
                         aiSeconds = aiSettings[0];
                     }
                 }
