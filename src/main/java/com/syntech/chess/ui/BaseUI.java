@@ -121,11 +121,20 @@ public class BaseUI {
         if (ai != null) {
             ai.stopEarly();
             ai.interrupt();
-            board.updateMove(ai.bestMove());
-            board.redo();
-            BaseUI.debug("[Ply %d] Played %s (AI)", board.getTurn(), board.getLastMove().toPGN());
-            ai = null;
+            applyAIMove();
         }
+    }
+
+    private void applyAIMove() {
+        Move aiMove = ai.bestMove();
+        if (aiMove != null) {
+            board.updateMove(aiMove);
+            board.redo();
+            debug("[Ply %d] Played %s (AI)", board.getTurn(), aiMove.toPGN());
+        } else {
+            board.checkStatusConditions();
+        }
+        ai = null;
     }
 
     void enableInfoWindow() {
@@ -168,15 +177,8 @@ public class BaseUI {
                 } else {
                     status = translation.get("status.ai_thinking", ai.thoughts(translation));
                 }
-            } else { //this is probably the wrong place to put this but
-                Move aiMove = ai.bestMove();
-                if (aiMove != null) {
-                    board.updateMove(aiMove);
-                    board.redo();
-                } else {
-                    board.checkStatusConditions();
-                }
-                ai = null;
+            } else {
+                applyAIMove();
             }
         }
         ImGui.text(status);
@@ -314,7 +316,7 @@ public class BaseUI {
         if (move != null) {
             board.updateMove(move);
             board.redo();
-            debug("[Ply %d] Played %s (random)", board.getTurn(), board.getLastMove().toPGN());
+            debug("[Ply %d] Played %s (random)", board.getTurn(), move.toPGN());
         }
     }
 
@@ -330,7 +332,7 @@ public class BaseUI {
         resetAI();
         resetFilename();
         board = setup.getBoard();
-        BaseUI.debug("[Reset] Reset the board");
+        BaseUI.debug("Reset the board");
     }
 
     void resetFilename() {
