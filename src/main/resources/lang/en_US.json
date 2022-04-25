@@ -201,6 +201,7 @@
   "chess.forced.info": [
     "The classical Forced Chess. For when you don't have time for regular chess.",
     "The main differences are as follows:",
+    "",
     "1. Capturing is not optional anymore. You have to capture, even if it puts you in a bad position.",
     "2. Pawns can only move one space ahead, not two.",
     "3. Moves like castling and en passant are not allowed, simply because of the space limitations.",
@@ -277,6 +278,7 @@
     "The order of levelling is as follows: Pawn > Knight > Bishop > Rook > Queen > Amazon (i.e. Queen + Knight).",
     "To level up, a pawn needs 4 XP, a knight needs 9, a bishop needs 16, a rook needs 25, and a queen needs 36 XP.",
     "XP can be gained as follows:",
+    "",
     " - A non-capturing move gives 1 XP.",
     " - A non-capturing move with a check gives 2 XP.",
     " - A capturing move gives XP depending on the captured piece:",
@@ -296,6 +298,7 @@
     "Each resistance level also grants resistance bonuses of all previous levels.",
     "This also applies to kings. It's impossible to check (or checkmate) a king with a piece it has resistance to.",
     "Resistance levels and the amounts of XP needed to get one are as follows:",
+    "",
     "Level 1: Resistance to pawns (2 XP);",
     "Level 2: Resistance to knights (3 XP);",
     "Level 3: Resistance to bishops (5 XP);",
@@ -309,12 +312,14 @@
     "If a piece has upgraded its power by 1, it can capture pieces that have resistance to its initial type.",
     "Upgrading power by 2 grants the ability to capture pieces of the next resistance level, and so on.",
     "The amounts of XP needed to upgrade power are as follows:",
+    "",
     "Power +1: 6 XP;",
     "Power +2: 15 XP;",
     "Power +3: 28 XP;",
     "Power +4: 45 XP;",
     "Power +5: 66 XP;",
     "Power +6: 91 XP.",
+    "",
     "This sums up to a total of 251 XP, which should not be a problem for a true hardcore chess gamer."
   ],
   "chess.forced.up.down.res.info": [
@@ -332,6 +337,27 @@
   "chess.forced.up.down.telefrag.info": [
     "Both levelling up and forced respawning."
   ],
+  "chess.forced.up.mob.info": [
+  ],
+  "chess.forced.up.mob.armed.info": [
+  ],
+  "chess.forced.up.down.res.mob.armed.info": [
+  ],
+  "chess.forced.up.mob.armed.respawn.info": [
+  ],
+  "chess.forced.mountain.info": [
+    "Here the board is bent into a mountain between the fourth and fifth ranks, though it's not obvious from above.",
+    "Every time both sides make 2 moves, all pieces slide in the direction of the nearest horizontal edge.",
+    "If a piece was standing on the first of eighth rank, it slides off the edge and into oblivion.",
+    "You still have to capture, but saving your king from sliding off the board is prioritized.",
+    "If it's impossible to save the king from sliding off, it's a checkmate if there's a check or a stalemate otherwise.",
+    "The pawns can always move up 2 spaces if they are moving away from the edge and don't cross the center.",
+    "Sliding to the promotion rank does not automatically promote a pawn."
+  ],
+  "chess.forced.mountains.info": [
+    "A version of Mountain Forced Chess where pieces slide in parts instead of all at once.",
+    "After each side makes a move, pieces standing on one file slide in order of a -> b -> c -> d -> a (etc.)"
+  ],
   "chess.forced.cloning.info": [
     "Any piece except for the king will clone itself before making any non-capturing move.",
     "The question of which of the two pieces actually makes the move will forever be left unanswered."
@@ -341,6 +367,7 @@
     "Diagonals in Forced Chess 3D are divided into 2 types: flat, which lie completely",
     "in one of the planes, and spatial - going at a 45° angle to all planes.",
     "The pieces move as follows:",
+    "",
     "Pawn - moves 1 square vertically, captures 1 square up (white) or down (black) on a flat diagonal.",
     "Knight - moves and captures 2 squares in one direction and 1 square in another,",
     "         through four-dimensional space (by jumping \"through\" the pieces).",

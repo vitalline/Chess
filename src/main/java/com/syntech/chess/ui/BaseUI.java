@@ -39,7 +39,7 @@ public class BaseUI {
     private Translation translation = Translation.EN_US;
     private Board board = null;
     private Setup setup = null, infoSetup = null;
-    private boolean showLog = false, showInfo = false, showSettings = false, showErrorMessage = false, saveMode = false, lockInput = false;
+    private boolean showLog = false, showInfo = false, showSettings = false, showErrorMessage = false, saveMode = false, lockInput = false, valueSet = true;
     private static final ImBoolean debugOutput = new ImBoolean();
     private String filename = null;
     private String errorMessage = null;
@@ -467,7 +467,7 @@ public class BaseUI {
 
         if (ImGui.beginPopupModal(translation.get("window.info"), new ImBoolean(true), ImGuiWindowFlags.NoMove | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.HorizontalScrollbar)) {
             ImGui.text(infoSetup.getGameTypeString(translation));
-            ImGui.text(infoSetup.getGameInfo(translation));
+            for (String line : infoSetup.getGameInfo(translation).split("\n\n")) ImGui.text(line);
             ImGui.text("");
             ImGui.sameLine((ImGui.getWindowWidth()) / 2 - (float) cellSize * 4 / 3);
             if (ImGui.button("<<")) {
@@ -518,7 +518,7 @@ public class BaseUI {
             if (CellGraphics.display("ai_turns", translation.get("settings.ai.mode.turns"), cellSize * 2,
                     (aiMode == AIMode.TURNS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
                 aiMode = AIMode.TURNS;
-                BaseUI.debug("Set AI mode to TURNS");
+                BaseUI.debug("Set AI depth to %d", aiTurns);
             }
 
             ImGui.sameLine();
@@ -526,7 +526,7 @@ public class BaseUI {
             if (CellGraphics.display("ai_seconds", translation.get("settings.ai.mode.seconds"), cellSize * 2,
                     (aiMode == AIMode.SECONDS) ? Color.MOVE_WHITE : Color.WHITE, -1)) {
                 aiMode = AIMode.SECONDS;
-                BaseUI.debug("Set AI mode to SECONDS");
+                BaseUI.debug("Set AI time to %ds", aiSeconds);
             }
 
             ImGui.setNextItemWidth(ImGui.getWindowWidth() - ImGui.getStyle().getWindowPaddingX() * 2);
@@ -545,6 +545,15 @@ public class BaseUI {
                     }
                 }
             }
+            if (ImGui.isItemActive()) {
+                valueSet = true;
+            } else if (valueSet) {
+                switch (aiMode) {
+                    case TURNS -> BaseUI.debug("Set AI depth to %d", aiTurns);
+                    case SECONDS -> BaseUI.debug("Set AI time to %ds", aiSeconds);
+                }
+                valueSet = false;
+            }
 
             boolean previousValue = debugOutput.get();
             ImGui.checkbox(translation.get("settings.debug.output"), debugOutput);
@@ -559,10 +568,6 @@ public class BaseUI {
         if (!ImGui.isPopupOpen(translation.get("window.settings"))) {
             showSettings = false;
             unloadWindowPosition();
-            switch (aiMode) {
-                case TURNS -> BaseUI.debug("Set AI depth to %d", aiTurns);
-                case SECONDS -> BaseUI.debug("Set AI time to %d", aiSeconds);
-            }
             debug("Closed settings window");
         }
     }
