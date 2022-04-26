@@ -100,38 +100,43 @@ public class BaseUI {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.schedule(() -> {
             if (ai == newAI) {
-                ai.stopEarly();
-                ai.interrupt();
-                applyAIMove();
-                ai = null;
+                applyAIMove(true);
             }
         }, seconds, TimeUnit.SECONDS);
         executor.shutdown();
     }
 
     void startAI() {
+        resetAI();
         switch (aiMode) {
             case TURNS -> startRegularAI(aiTurns);
             case SECONDS -> startTimedAI(aiSeconds);
         }
     }
 
-    void stopAI() {
-        if (ai != null) {
-            ai.stopEarly();
-            ai.interrupt();
-            applyAIMove();
-        }
+    void applyAIMove(boolean interrupt) {
+        endAIAction(interrupt, true);
     }
 
-    private void applyAIMove() {
-        Move aiMove = ai.bestMove();
-        if (aiMove != null) {
-            board.updateMove(aiMove);
-            board.redo();
-            debug("[Ply %d] Played %s (AI)", board.getTurn(), aiMove.toPGN());
-        } else {
-            board.checkStatusConditions();
+    void resetAI() {
+        endAIAction(true, false);
+    }
+
+    synchronized void endAIAction(boolean interrupt, boolean move) {
+        if (ai == null) return;
+        if (interrupt) {
+            ai.stopEarly();
+            ai.interrupt();
+        }
+        if (move) {
+            Move aiMove = ai.bestMove();
+            if (aiMove != null) {
+                board.updateMove(aiMove);
+                board.redo();
+                debug("[Ply %d] Played %s (AI)", board.getTurn(), aiMove.toPGN());
+            } else {
+                board.checkStatusConditions();
+            }
         }
         ai = null;
     }
@@ -144,11 +149,7 @@ public class BaseUI {
     }
 
     void enableSettingsWindow() {
-        if (ai != null) {
-            ai.stopEarly();
-            ai.interrupt();
-            ai = null;
-        }
+        resetAI();
         debug("Opened settings window");
         this.showSettings = true;
     }
@@ -177,7 +178,7 @@ public class BaseUI {
                     status = translation.get("status.ai_thinking", ai.thoughts(translation));
                 }
             } else {
-                applyAIMove();
+                applyAIMove(false);
             }
         }
         ImGui.text(status);
@@ -316,14 +317,6 @@ public class BaseUI {
             board.updateMove(move);
             board.redo();
             debug("[Ply %d] Played %s (random)", board.getTurn(), move.toPGN());
-        }
-    }
-
-    void resetAI() {
-        if (ai != null) {
-            ai.stopEarly();
-            ai.interrupt();
-            ai = null;
         }
     }
 

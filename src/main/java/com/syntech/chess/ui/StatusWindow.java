@@ -90,7 +90,7 @@ public class StatusWindow {
         }
         ImGui.sameLine();
         if (CellGraphics.display("stop", translation.get("action.ai.stop"), cellSize, Color.SELECTED_WHITE, -1)) {
-            baseUI.stopAI();
+            baseUI.applyAIMove(true);
         }
         ImGui.sameLine();
         if (CellGraphics.display("settings", translation.get("action.settings"), cellSize, Color.MOVABLE_WHITE, -1)) {
