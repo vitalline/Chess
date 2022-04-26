@@ -4,7 +4,7 @@ import com.syntech.chess.logic.pieces.LevellingForcedPiece;
 import com.syntech.chess.logic.pieces.Piece;
 import org.jetbrains.annotations.NotNull;
 
-public class IncreasingDamageArmedMobBoard extends BaseArmedMobBoard {
+public class IncreasingDamageArmedMobBoard extends ArmedMobBoard {
 
     public IncreasingDamageArmedMobBoard(@NotNull Piece[][] board, Boolean priority, Boolean initialize, Boolean update) {
         super(board, priority, initialize, update);
@@ -41,7 +41,7 @@ public class IncreasingDamageArmedMobBoard extends BaseArmedMobBoard {
     }
 
     @Override
-    protected double getDamage(LevellingForcedPiece piece) {
+    protected double getDamage(@NotNull LevellingForcedPiece piece) {
         return getBaseDamage(piece) * (1 + 0.1D * (turn >> 1)) * getResistanceMultiplier(piece.getResistanceLevel());
     }
 }

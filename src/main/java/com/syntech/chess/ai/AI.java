@@ -94,7 +94,6 @@ public class AI extends Thread {
         shouldRun = true;
         run(board, depth, 0, -WIN_SCORE, WIN_SCORE);
         shouldRun = false;
-        debug("[Ply %d] Played %s (AI)", board.getTurn() + 1, board.getLastMove().toPGN());
     }
 
     public synchronized void stopEarly() {

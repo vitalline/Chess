@@ -149,6 +149,9 @@ public class LevellingForcedPiece extends ForcedPiece {
         if (levellingData.hasHP()) {
             hp -= dmg;
             if (hp <= 0) {
+                if (canLevelDown()) {
+                    respawn(board);
+                }
                 board.placePiece(cell(), position.x, position.y);
             }
         }
@@ -238,6 +241,7 @@ public class LevellingForcedPiece extends ForcedPiece {
         resistanceLevel = resistanceLevel > 0 ? resistanceLevel - 1 : 0;
         powerXP = 0;
         powerLevel = powerLevel > 0 ? powerLevel - 1 : 0;
+        hp = maxHP;
         int currentLevel = ForcedXPRules.LEVELS.indexOf(getType());
         if (currentLevel > 0) {
             PieceType newPieceType = ForcedXPRules.LEVELS.get(currentLevel - 1);
