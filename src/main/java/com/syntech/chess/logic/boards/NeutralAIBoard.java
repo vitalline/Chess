@@ -30,6 +30,8 @@ public abstract class NeutralAIBoard extends AIBoard {
                 }
             }
         }
+        whiteKingIsInCheck = null;
+        blackKingIsInCheck = null;
         allAvailableWhiteMoves = null;
         allAvailableBlackMoves = null;
     }
