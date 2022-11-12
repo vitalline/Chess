@@ -116,7 +116,7 @@ public class AI extends Thread {
             Collections.shuffle(moves);
             if (currentDepth == 0) {
                 if (moves.size() > 0) {
-                    this.bestMove = moves.get(0);
+                    this.bestMove = new Move(moves.get(0));
                     this.bestMove.setData(board);
                 }
                 if (moves.size() == 1) {
@@ -193,9 +193,9 @@ public class AI extends Thread {
                 if (shouldRun) {
                     this.currentDepth = currentDepth;
                     if (currentDepth == 0) {
-                        this.bestMove = bestMove;
+                        this.bestMove = new Move(bestMove);
                         this.bestMove.setData(board);
-                        debug("[Ply %d] Depth %d: %d, %s", board.getTurn() + 1, maxDepth, bestScore, bestMove.toPGN());
+                        debug("[Ply %d] Depth %d: %d, %s", board.getTurn() + 1, maxDepth, bestScore, this.bestMove.toPGN());
                         if (Math.abs(bestScore) == WIN_SCORE) {
                             shouldRun = false;
                         }
