@@ -114,7 +114,7 @@ public enum Setup {
 
     @NotNull
     public String getGameTypeTag() {
-        return getGameType(Translation.EN_US).strip().replaceAll("\s*\n\s*", " ");
+        return getGameType(Translation.EN_US).strip().replaceAll("\s*\n\s*", " ").replaceAll("×", "x");
     }
 
     @NotNull
